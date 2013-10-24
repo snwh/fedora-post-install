@@ -108,13 +108,14 @@ echo 'Installing favourite system utilities...'
 echo ''
 echo 'Current package list:
 dconf-editor
+gpg
 java
 openssh-server
 samba
 supybot
 symlinks
 virt-manager
-xorg-x11-apps.x86_64'
+xorg-x11-apps'
 echo ''
 read -p 'Proceed? (Y)es, (N)o : ' REPLY
 case $REPLY in
@@ -122,7 +123,7 @@ case $REPLY in
 [Yy]* )
     echo 'Requires root privileges:'
     # Feel free to change to whatever suits your preferences.
-    sudo yum install -y dconf-editor java-*-openjdk openssh-server samba supybot symlinks virt-manager xorg-x11-apps.x86_64
+    sudo yum install -y dconf-editor gpg java-*-openjdk openssh-server samba supybot symlinks virt-manager xorg-x11-apps
     echo 'Done.'
     clear && main
     ;;
@@ -144,6 +145,7 @@ function development {
 echo ''
 echo '1. Install development tools?'
 echo '2. Install GNOME development tools?'
+echo '3. Install Fedora packaging tools?'
 echo 'r. Return'
 echo ''
 read -p 'What would you like to do? (Enter your choice) : ' REPLY
@@ -184,10 +186,19 @@ case $REPLY in
     ;;
 # Install GNOME developer tools
 2)
-    # Group Install packages
+    # Install packages
     echo 'Installing software for GNOME development...'
     echo 'Requires root privileges:'
     sudo yum groupinstall -y development-libs development-tools gnome-software-development
+    echo 'Done.'
+    development
+    ;;
+# Install Fedora packaging tools
+3)
+    # Install packages
+    echo 'Installing Fedora packaging tools...'
+    echo 'Requires root privileges:'
+    sudo yum install -y fedora-packager
     echo 'Done.'
     development
     ;;
