@@ -321,7 +321,7 @@ echo ''
 echo '1. Google Chrome?'
 echo '2. Google Talk Plugin?'
 echo '3. Google Music Manager?'
-echo '4. Dropbox?'
+echo '4. Nautilus Dropbox?'
 echo '5. Sublime Text 3 (build 3047)?'
 echo 'r. Return'
 echo ''
@@ -330,6 +330,7 @@ case $REPLY in
 # Google Chrome
 1) 
     echo 'Downloading Google Chrome...'
+    cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm
@@ -349,6 +350,7 @@ case $REPLY in
 # Google Talk Plugin
 2)
     echo 'Downloading Google Talk Plugin...'
+    cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
         wget https://dl.google.com/linux/direct/google-talkplugin_current_i386.rpm
@@ -368,6 +370,7 @@ case $REPLY in
 # Google Music Manager
 3)
     echo 'Downloading Google Music Manager...'
+    cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
         wget https://dl.google.com/linux/direct/google-musicmanager-beta_current_i386.rpm
@@ -387,11 +390,12 @@ case $REPLY in
 # Dropbox
 4)
     echo 'Downloading Dropbox...'
+    cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://www.dropbox.com/download?dl=packages/fedora/nautilus-dropbox-1.6.0-1.fedora.i386.rpm
+        wget https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://www.dropbox.com/download?dl=packages/fedora/nautilus-dropbox-1.6.0-1.fedora.x86_64.rpm
+        wget https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Dropbox...'
