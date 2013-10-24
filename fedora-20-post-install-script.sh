@@ -39,7 +39,7 @@ case $REPLY in
     # Update repository information
     echo 'Performing system update...'
     echo 'Requires root privileges:'
-    sudo yum update
+    sudo yum update -y
     echo 'Done.'
     main
     ;;
@@ -224,7 +224,7 @@ case $REPLY in
     echo 'Done.'
     # Update system
     echo 'Updating system...'
-    sudo yum -y update
+    sudo yum update -y 
     echo 'Done'
     ;;
 # Return
@@ -243,7 +243,7 @@ cd $HOME/Downloads
 echo 'Downloading Sublime Text 3 (build 3047)...'
 # Download tarball that matches system architecture
 if [ $(uname -i) = 'i386' ]; then
-    http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3047.tar.bz2
+    wget http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3047.tar.bz2
 elif [ $(uname -i) = 'x86_64' ]; then
     wget http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3047_x64.tar.bz2
 fi
@@ -254,7 +254,21 @@ tar xf sublime*.tar.bz2
 # Move Sublime Text 3 to /opt
 echo 'Installing...'
 echo 'Requires root privileges:'
-sudo mv sublime_text_3 /opt/
+if [ -d /opt/sublime_text_3 ]; then
+    echo
+    read -p "Found an existing installation. Replace it? (Y)es, (N)o : " INPUT
+    case $INPUT in
+        [Yy]* ) 
+            sudo rm -Rf /opt/sublime_text_3 2>/dev/null
+            sudo mv sublime_text_3 /opt/
+            ;;
+        [Nn]* ) echo 'Okay, cancelling' && thirdparty;;
+        * )
+        clear && echo 'Sorry, try again.'
+        thirdparty
+        ;;
+    esac
+fi
 echo 'Done.'
 # Create symbolic link
 echo 'Creating symbolic link...'
@@ -262,13 +276,34 @@ echo 'Requires root privileges:'
 sudo ln -sf /opt/sublime_text_3/sublime_text /usr/bin/sublime
 echo 'Done.'
 # Create .desktop file
-echo 'Setting up installation.'
-echo 'Creating application menu link...'
-cd /opt/sublime_text_3
-sudo cp -r sublime_text.desktop /usr/share/applications/sublime_text.desktop
-echo 'Copying icon...'
-cd /opt/sublime_text_3/Icon
-sudo cp -r * /usr/share/icons/hicolor
+echo 'Setting up installation:'
+echo 'Creating .desktop file...'
+echo "[Desktop Entry]
+Version=3
+Name=Sublime Text 3
+GenericName=Text Editor
+ 
+Exec=sublime
+Terminal=false
+Icon=sublime-text
+Type=Application
+Categories=TextEditor;IDE;Development
+X-Ayatana-Desktop-Shortcuts=NewWindow
+
+[NewWindow Shortcut Group]
+Name=New Window
+Exec=sublime -n" >> sublime-text.desktop
+# Move .desktop file
+echo 'Moving .desktop file to /usr/share/applications'
+sudo mv -f sublime-text.desktop /usr/share/applications/
+echo 'Done.'
+# Install icon
+echo 'Copying icons...'
+sudo cp -r /opt/sublime_text_3/Icon/16x16/* /usr/share/icons/hicolor/16x16/apps
+sudo cp -r /opt/sublime_text_3/Icon/32x32/* /usr/share/icons/hicolor/32x32/apps
+sudo cp -r /opt/sublime_text_3/Icon/48x48/* /usr/share/icons/hicolor/48x48/apps
+sudo cp -r /opt/sublime_text_3/Icon/128x128/* /usr/share/icons/hicolor/128x128/apps
+sudo cp -r /opt/sublime_text_3/Icon/256x256/* /usr/share/icons/hicolor/256x256/apps
 sudo gtk-update-icon-cache /usr/share/icons/hicolor
 echo 'Done.'
 # Cleanup & finish
@@ -368,7 +403,6 @@ case $REPLY in
     echo 'Done.'
     thirdparty
     ;;
-
 # Sublime Text 3
 5)
     sublime3
@@ -424,6 +458,7 @@ echo ''
 echo '1. Set preferred application-specific settings?'
 echo '2. Show all startup applications?'
 echo '3. Enable middle button scrolling on Thinkpads.'
+echo '4. Change SELinux perm.'
 echo 'r. Return'
 echo ''
 read -p 'What would you like to do? (Enter your choice) : ' REPLY
@@ -492,7 +527,16 @@ EndSection" >> 20-thinkpad-trackpoint.conf
     echo 'Done.'
     # Install
     echo 'Installing configuration...'
+    echo 'Requires root privileges:'  
     sudo mv -r 20-thinkpad-trackpoint.conf /etc/X11/xorg.conf.d/
+    echo 'Done.'
+    config
+    ;;
+# SELinux
+4)
+    echo 'Setting SELinux to permissive mode...'
+    echo 'Requires root privileges:'  
+    sudo sed --in-place 's/SELINUX=.*$/SELINUX=permissive/g' /etc/selinux/config
     echo 'Done.'
     config
     ;;
