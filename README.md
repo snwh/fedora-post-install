@@ -5,7 +5,7 @@ Version: 20
 
 License: GPLv3
 
-Original source can be found at https://github.com/snwh/fedora-post-install.
+Original source can be found [here](https://github.com/snwh/fedora-post-install).
 
 You can get the latest version from the git repository:
 
@@ -15,7 +15,7 @@ You can get the latest version from the git repository:
 
 Run from source folder:
 
-    bash fedora-post-install-script-<appropriate-version>.sh
+    bash fedora-<appropriate-version>-post-install-script.sh
 
 By adding the path of the script to your .bashrc you can run it anytime from a terminal
 	
