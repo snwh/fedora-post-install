@@ -141,37 +141,62 @@ esac
 
 # INSTALL DEVELOPMENT TOOLS
 function development {
-# Install Development Tools
-echo 'Installing development tools...'
 echo ''
-echo 'Current package list:
-bzr
-devscripts
-git
-glade
-gnome-common
-python3-distutils-extra
-ruby'
+echo '1. Install development tools?'
+echo '2. Install GNOME development tools?'
+echo 'r. Return'
 echo ''
-read -p 'Proceed? (Y)es, (N)o : ' REPLY
+read -p 'What would you like to do? (Enter your choice) : ' REPLY
 case $REPLY in
-# Positive action
-[Yy]* ) 
+# Install Development Tools
+1)
+    echo 'Installing development tools...'
+    echo ''
+    echo 'Current package list:
+    bzr
+    devscripts
+    git
+    glade
+    gnome-common
+    python3-distutils-extra
+    ruby'
+    echo ''
+    read -p 'Proceed? (Y)es, (N)o : ' REPLY
+    case $REPLY in
+    # Positive action
+    [Yy]* ) 
+        echo 'Requires root privileges:'
+        # Feel free to change to whatever suits your preferences.
+        sudo yum install -y anjuta bzr devhelp devscripts git glade gnome-common python3-distutils-extra ruby
+        echo 'Done.'
+        main
+        ;;
+    # Negative action
+    [Nn]* )
+        clear && main
+        ;;
+    # Error
+    * )
+        clear && echo 'Sorry, try again.'
+        main
+        ;;
+    esac
+    ;;
+# Install GNOME developer tools
+2)
+    # Group Install packages
+    echo 'Installing software for GNOME development...'
     echo 'Requires root privileges:'
-    # Feel free to change to whatever suits your preferences.
-    sudo yum install -y bzr devscripts git glade gnome-common python3-distutils-extra ruby
+    sudo yum groupinstall -y development-libs development-tools gnome-software-development
     echo 'Done.'
-    main
+    development
     ;;
-# Negative action
-[Nn]* )
-    clear && main
-    ;;
-# Error
-* )
-    clear && echo 'Sorry, try again.'
-    main
-    ;;
+# Return
+[Rr]*) 
+    clear && main;;
+# Invalid choice
+* ) 
+    clear && echo 'Not an option, try again.' && development;;
 esac
 }
 
