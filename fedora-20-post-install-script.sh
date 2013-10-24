@@ -487,7 +487,7 @@ case $REPLY in
     gsettings set org.gnome.nautilus.desktop font 'Cantarell 10'
     gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 10'
     gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'rgba'
-    gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'full'
+    gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
     echo 'Done. '
     # GNOME Shell Settings
     echo 'Setting GNOME Shell window button preferences...'
@@ -508,7 +508,7 @@ case $REPLY in
     gsettings set org.gnome.rhythmbox.rhythmdb monitor-library true
     gsettings set org.gnome.rhythmbox.sources browser-views 'artists-albums'
     # Tap-To-Click
-    echo 'Enabling Tap-to-click...'
+    echo 'Enabling Tap-to-click on touchpads...'
     gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
     # Done
     echo "Done."
