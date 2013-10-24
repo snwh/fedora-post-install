@@ -427,18 +427,32 @@ read -p 'Enter your choice: ' REPLY
 case $REPLY in
 # Google Chrome
 1) 
-    echo 'Requires RPM Fusion repository'
-    # Add repository
-    echo 'Adding RPM Fusion to repositories...'
-    echo 'Requires root privileges:'
-    su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
-    echo 'Done.'
-    # Update system
-    echo 'Updating system...'
-    sudo yum -y update
-    echo 'Done'
+    if [ -e /etc/yum.repos.d/rpmfusion-free-rawhide.repo ]; then
+    read -p "The driver requires the RPM Fusion repository. Add it? (Y)es, (N)o : " INPUT
+    case $INPUT in
+        [Yy]* ) 
+            echo 'Adding RPM Fusion to repositories...'
+            echo 'Requires root privileges:'
+            su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+            echo 'Done.'
+            # Update system
+            echo 'Performing system update...'
+            sudo yum -y update
+            echo 'Done'
+            ;;
+        [Nn]* ) echo 'Okay, aborting' && drivers;;
+        * )
+        clear && echo 'Sorry, try again.'
+        drivers
+        ;;
+    esac
+    fi
     echo 'Installing Broadcom wireless drivers...'
-    sudo yum install -y kmod-wl.x86_64
+    if [ $(uname -i) = 'i386' ]; then
+        sudo yum install -y kmod-wl.i386
+    elif [ $(uname -i) = 'x86_64' ]; then
+        sudo yum install -y kmod-wl.x86_64
+    fi    
     echo 'Done.'
     drivers
     ;;
@@ -458,7 +472,7 @@ echo ''
 echo '1. Set preferred application-specific settings?'
 echo '2. Show all startup applications?'
 echo '3. Enable middle button scrolling on Thinkpads.'
-echo '4. Change SELinux perm.'
+echo '4. Set SELinux to be more permissive.'
 echo 'r. Return'
 echo ''
 read -p 'What would you like to do? (Enter your choice) : ' REPLY
@@ -627,7 +641,7 @@ echo '9. Configure system?'
 echo '10. Cleanup the system?'
 echo 'q. Quit?'
 echo ''
-read -p 'What would you like to do? (Enter the your choice) : ' REPLY
+read -p 'What would you like to do? (Enter your choice) : ' REPLY
 case $REPLY in
     1) sysupgrade;; # System Upgrade
     2) clear && favourites;; # Install Favourite Applications
