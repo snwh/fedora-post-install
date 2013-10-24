@@ -438,7 +438,7 @@ case $REPLY in
     gsettings set org.gnome.nautilus.desktop font 'Cantarell 10'
     gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 10'
     gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'rgba'
-    gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
+    gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'full'
     echo 'Done. '
     # GNOME Shell Settings
     echo 'Setting GNOME Shell window button preferences...'
