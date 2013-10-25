@@ -75,6 +75,7 @@ grsync
 nautilus-open-terminal
 pyrenamer
 sparkleshare
+transmission
 xchat
 vlc
 wget'
@@ -85,7 +86,7 @@ case $REPLY in
 [Yy]* ) 
     echo 'Requires root privileges:'
     # Feel free to change to whatever suits your preferences.
-    sudo yum install -y cheese darktable easytag filezilla gnome-maps gnome-online-accounts gnome-tweak-tool gnome-weather gpick grsync nano nautilus-open-terminal pyrenamer sparkleshare xchat vlc wget
+    sudo yum install -y cheese darktable easytag filezilla gnome-maps gnome-online-accounts gnome-tweak-tool gnome-weather gpick grsync nano nautilus-open-terminal pyrenamer sparkleshare transmission xchat vlc wget
     echo 'Done.'
     main
     ;;
