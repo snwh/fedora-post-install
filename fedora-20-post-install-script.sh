@@ -77,8 +77,7 @@ pyrenamer
 sparkleshare
 transmission
 xchat
-vlc
-wget'
+vlc'
 echo ''
 read -p 'Proceed? (Y)es, (N)o : ' REPLY
 case $REPLY in
@@ -86,7 +85,7 @@ case $REPLY in
 [Yy]* ) 
     echo 'Requires root privileges:'
     # Feel free to change to whatever suits your preferences.
-    sudo yum install -y cheese darktable easytag filezilla gnome-maps gnome-online-accounts gnome-tweak-tool gnome-weather gpick grsync nano nautilus-open-terminal pyrenamer sparkleshare transmission xchat vlc wget
+    sudo yum install -y cheese darktable easytag filezilla gnome-maps gnome-online-accounts gnome-tweak-tool gnome-weather gpick grsync nautilus-open-terminal pyrenamer sparkleshare transmission xchat vlc
     echo 'Done.'
     main
     ;;
@@ -111,12 +110,10 @@ echo 'Current package list:
 dconf-editor
 gpg
 java
+nano
 openssh-server
 samba
-supybot
-symlinks
-virt-manager
-xorg-x11-apps'
+wget'
 echo ''
 read -p 'Proceed? (Y)es, (N)o : ' REPLY
 case $REPLY in
@@ -124,7 +121,7 @@ case $REPLY in
 [Yy]* )
     echo 'Requires root privileges:'
     # Feel free to change to whatever suits your preferences.
-    sudo yum install -y dconf-editor gpg java-*-openjdk openssh-server samba supybot symlinks virt-manager xorg-x11-apps
+    sudo yum install -y dconf-editor gpg java-*-openjdk nano openssh-server samba wget
     echo 'Done.'
     clear && main
     ;;
@@ -156,13 +153,18 @@ case $REPLY in
     echo 'Installing development tools...'
     echo ''
     echo 'Current package list:
+    anjuta
     bzr
+    devhelp
     devscripts
+    dh-make
     git
     glade
     gnome-common
+    icon-naming-utils
     python3-distutils-extra
-    ruby'
+    ruby
+    symlinks'
     echo ''
     read -p 'Proceed? (Y)es, (N)o : ' REPLY
     case $REPLY in
@@ -170,18 +172,18 @@ case $REPLY in
     [Yy]* ) 
         echo 'Requires root privileges:'
         # Feel free to change to whatever suits your preferences.
-        sudo yum install -y anjuta bzr devhelp devscripts git glade gnome-common python3-distutils-extra ruby
+        sudo yum install -y anjuta bzr devhelp devscripts dh-make git glade gnome-common icon-naming-utils python3-distutils-extra ruby symlinks
         echo 'Done.'
-        main
+        development
         ;;
     # Negative action
     [Nn]* )
-        clear && main
+        clear && development
         ;;
     # Error
     * )
         clear && echo 'Sorry, try again.'
-        main
+        development
         ;;
     esac
     ;;
@@ -254,15 +256,23 @@ read -p 'Enter your choice: ' REPLY
 case $REPLY in
 # RPM Fusion
 1)
-    # Add repository
-    echo 'Adding RPM Fusion to repositories...'
-    echo 'Requires root privileges:'
-    su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
-    echo 'Done.'
-    # Update system
-    echo 'Updating system...'
-    sudo yum update -y 
-    echo 'Done'
+    # Check
+    if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
+        clear
+        echo 'RPM Fusion is already in the repositories.'
+        echo ''
+    else
+        # Add repository
+        echo 'Adding RPM Fusion to repositories...'
+        echo 'Requires root privileges:'
+        su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+        echo 'Done.'
+        # Update system
+        echo 'Performing system update...'
+        sudo yum -y update
+        echo 'Done'
+    fi
+    repos
     ;;
 # Return
 [Rr]*) 
@@ -305,6 +315,8 @@ if [ -d /opt/sublime_text_3 ]; then
         thirdparty
         ;;
     esac
+else
+    sudo mv sublime_text_3 /opt/
 fi
 echo 'Done.'
 # Create symbolic link
@@ -353,6 +365,26 @@ thirdparty
 
 # THIRD PARTY APPLICATIONS
 function thirdparty {
+wget=$(rpm -qa | grep wget)
+if [[ "$wget" == *wget* ]];then
+    echo ''
+else
+    echo ''
+    echo "Downloading third-party applications requires 'wget'."
+    read -p "Install now? (Y)es, (N)o : " INPUT
+    case $INPUT in
+        [Yy]* ) 
+            sudo yum install -y wget
+            ;;
+        [Nn]* ) echo 'Okay, aborting.' && main;;
+        * )
+        clear && echo 'Sorry, try again.'
+        thirdparty
+        ;;
+    esac
+    clear
+    echo ''
+fi
 echo 'What would you like to install? '
 echo ''
 echo '1. Google Chrome?'
@@ -466,27 +498,29 @@ echo 'r. Return'
 echo ''
 read -p 'Enter your choice: ' REPLY
 case $REPLY in
-# Google Chrome
+# Broadcom Wireless Drivers
 1) 
-    if [ -e /etc/yum.repos.d/rpmfusion-free-rawhide.repo ]; then
-    read -p "The driver requires the RPM Fusion repository. Add it? (Y)es, (N)o : " INPUT
-    case $INPUT in
-        [Yy]* ) 
-            echo 'Adding RPM Fusion to repositories...'
-            echo 'Requires root privileges:'
-            su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
-            echo 'Done.'
-            # Update system
-            echo 'Performing system update...'
-            sudo yum -y update
-            echo 'Done'
+    if [ -e /etc/yum.repos.d/rpmfusion* ]; then
+        continue
+    else
+        read -p "The driver requires the RPM Fusion repository. Add it? (Y)es, (N)o : " INPUT
+        case $INPUT in
+            [Yy]* ) 
+                echo 'Adding RPM Fusion to repositories...'
+                echo 'Requires root privileges:'
+                su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+                echo 'Done.'
+                # Update system
+                echo 'Performing system update...'
+                sudo yum -y update
+                echo 'Done'
+                ;;
+            [Nn]* ) echo 'Okay, aborting' && drivers;;
+            * )
+            clear && echo 'Sorry, try again.'
+            drivers
             ;;
-        [Nn]* ) echo 'Okay, aborting' && drivers;;
-        * )
-        clear && echo 'Sorry, try again.'
-        drivers
-        ;;
-    esac
+        esac
     fi
     echo 'Installing Broadcom wireless drivers...'
     if [ $(uname -i) = 'i386' ]; then
@@ -530,10 +564,6 @@ case $REPLY in
     gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'rgba'
     gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
     echo 'Done. '
-    # GNOME Shell Settings
-    echo 'Setting GNOME Shell window button preferences...'
-    gsettings set org.gnome.shell.overrides button-layout ':close'
-    echo 'Done. '
     # Nautilus Preferences
     echo 'Setting Nautilus preferences...'
     gsettings set org.gnome.nautilus.preferences sort-directories-first true
@@ -544,10 +574,6 @@ case $REPLY in
     gsettings set org.gnome.gedit.preferences.editor auto-save true
     gsettings set org.gnome.gedit.preferences.editor insert-spaces true
     gsettings set org.gnome.gedit.preferences.editor tabs-size 4
-    # Rhythmbox Preferences
-    echo 'Setting Rhythmbox preferences...'
-    gsettings set org.gnome.rhythmbox.rhythmdb monitor-library true
-    gsettings set org.gnome.rhythmbox.sources browser-views 'artists-albums'
     # Tap-To-Click
     echo 'Enabling Tap-to-click on touchpads...'
     gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
@@ -569,7 +595,7 @@ case $REPLY in
     # Create .conf file
     echo 'Creating configuration file...'
     touch 20-thinkpad-trackpoint.conf
-    echo "Section "InputClass"
+    echo 'Section "InputClass"
 Identifier  "Trackpoint Wheel Emulation"
 MatchProduct    "TPPS/2 IBM TrackPoint|DualPoint Stick|Synaptics Inc. Composite TouchPad / TrackPoint|ThinkPad USB Keyboard with TrackPoint|USB Trackpoint pointing device|Composite TouchPad / TrackPoint"
 MatchDevicePath "/dev/input/event*"
@@ -578,12 +604,12 @@ Option      "EmulateWheelButton"    "2"
 Option      "Emulate3Buttons"   "false"
 Option      "XAxisMapping"      "6 7"
 Option      "YAxisMapping"      "4 5"
-EndSection" >> 20-thinkpad-trackpoint.conf
+EndSection' >> 20-thinkpad-trackpoint.conf
     echo 'Done.'
     # Install
     echo 'Installing configuration...'
     echo 'Requires root privileges:'  
-    sudo mv -r 20-thinkpad-trackpoint.conf /etc/X11/xorg.conf.d/
+    sudo mv 20-thinkpad-trackpoint.conf /etc/X11/xorg.conf.d/
     echo 'Done.'
     config
     ;;
@@ -676,8 +702,8 @@ echo '3. Install favourite system utilities?'
 echo '4. Install development tools?'
 echo '5. Install design tools?'
 echo '6. Install third-party applications?'
-echo '7. Install third-party drivers?'
-echo '8. Configure third-party repositories?'
+echo '7. Install drivers?'
+echo '8. Configure repositories?'
 echo '9. Configure system?'
 echo '10. Cleanup the system?'
 echo 'q. Quit?'
@@ -689,9 +715,9 @@ case $REPLY in
     3) clear && system;; # Install Favourite Tools
     4) clear && development;; # Install Dev Tools
     5) clear && design;; # Install Design Tools
-    6) clear && thirdparty;; # Install Third-Party Applications
-    7) clear && drivers;; # Install Third-Party Drivers
-    8) clear && repos;; # Configure Third-Party Repositories
+    6) thirdparty;; # Install Third-Party Applications
+    7) clear && drivers;; # Install Drivers
+    8) clear && repos;; # Configure Repositories
     9) clear && config;; # Configure system
     10) clear && cleanup;; # Cleanup System
     [Qq]* ) echo '' && quit;; # Quit
