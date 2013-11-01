@@ -144,6 +144,7 @@ echo ''
 echo '1. Install development tools?'
 echo '2. Install GNOME development tools?'
 echo '3. Install Fedora packaging tools?'
+echo '4. Install JHBuild dependencies?'
 echo 'r. Return'
 echo ''
 read -p 'What would you like to do? (Enter your choice) : ' REPLY
@@ -202,6 +203,15 @@ case $REPLY in
     echo 'Installing Fedora packaging tools...'
     echo 'Requires root privileges:'
     sudo yum install -y fedora-packager
+    echo 'Done.'
+    development
+    ;;
+# Install JHBuild dependencies
+4)
+    # Install packages
+    echo 'Installing JHBuild dependencies...'
+    echo 'Requires root privileges:'
+    sudo yum install -y libjpeg-devel pam-devel libdb-devel libcurl-devel libudev-devel libtasn1-tools libarchive-devel cyrus-sasl-devel perl-Text-CSV wget yajl-devel device-mapper-devel libnl-devel exiv2-devel libexif-devel mesa-libGLU-devel boost-devel soundtouch-devel perl-XML-Simple openssl-devel xcb-util-devel libtiff-devel pam-devel wireless-tools-devel libudev-devel gperf libacl-devel libuuid-devel ppp-devel cmake libicu-devel lcov valgrind-devel gdbm-devel libtool-ltdl-devel libvorbis-devel openldap-devel vala vala-devel perl-Parse-Yapp samba4-pidl gnome-doc-utils cups-devel folks-devel libXtst-devel gnome-bluetooth-libs-devel readline-devel mpfr-devel neon-devel libchamplain-gtk-devel python-devel libjpeg-turbo-devel usbutils libgudev1-devel libXt-devel libusb1-devel libudisks2-devel udisks2 xorg-x11-drv-wacom-devel libtasn1-tools dbus-python libffi-devel libxml2-python js-devel libgudev1-devel libtasn1-tools systemd-devel cups-devel cmake opencc-devel tracker-devel gperf libicu-devel yelp-tools gettext-devel intltool gcc-c++ asciidoc
     echo 'Done.'
     development
     ;;
