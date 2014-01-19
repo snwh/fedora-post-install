@@ -65,15 +65,15 @@ echo 'Current package list:
 cheese
 darktable
 easytag
-filezilla
 gnome-maps
 gnome-tweak-tool
 gnome-online-accounts
 gnome-weather
 gpick
-grsync
+icedtea-web
 nautilus-open-terminal
 pyrenamer
+screenruler
 sparkleshare
 transmission
 xchat
@@ -85,7 +85,7 @@ case $REPLY in
 [Yy]* ) 
     echo 'Requires root privileges:'
     # Feel free to change to whatever suits your preferences.
-    sudo yum install -y cheese darktable easytag filezilla gnome-maps gnome-online-accounts gnome-tweak-tool gnome-weather gpick grsync nautilus-open-terminal pyrenamer sparkleshare transmission xchat vlc
+    sudo yum install -y cheese darktable easytag gnome-maps gnome-music gnome-online-accounts gnome-tweak-tool gnome-weather gpick icedtea-web nautilus-open-terminal pyrenamer screenruler sparkleshare transmission xchat vlc
     echo 'Done.'
     main
     ;;
@@ -112,7 +112,6 @@ gpg
 java
 nano
 openssh-server
-samba
 wget'
 echo ''
 read -p 'Proceed? (Y)es, (N)o : ' REPLY
@@ -121,7 +120,7 @@ case $REPLY in
 [Yy]* )
     echo 'Requires root privileges:'
     # Feel free to change to whatever suits your preferences.
-    sudo yum install -y dconf-editor gpg java-*-openjdk nano openssh-server samba wget
+    sudo yum install -y dconf-editor gpg java-*-openjdk nano openssh-server wget 
     echo 'Done.'
     clear && main
     ;;
@@ -154,7 +153,6 @@ case $REPLY in
     echo 'Installing development tools...'
     echo ''
     echo 'Current package list:
-    anjuta
     bzr
     devhelp
     devscripts
@@ -162,9 +160,13 @@ case $REPLY in
     git
     glade
     gnome-common
+    gtk3-devel
     icon-naming-utils
+    nodejs
     python3-distutils-extra
     ruby
+    rubygems
+    ruby-devel
     symlinks'
     echo ''
     read -p 'Proceed? (Y)es, (N)o : ' REPLY
@@ -173,7 +175,7 @@ case $REPLY in
     [Yy]* ) 
         echo 'Requires root privileges:'
         # Feel free to change to whatever suits your preferences.
-        sudo yum install -y anjuta bzr devhelp devscripts dh-make git glade gnome-common icon-naming-utils python3-distutils-extra ruby symlinks
+        sudo yum install -y bzr devhelp devscripts dh-make git gnome-common gtk3-devel icon-naming-utils nodejs python3-distutils-extra ruby rubygems ruby-devel symlinks
         echo 'Done.'
         development
         ;;
@@ -297,16 +299,16 @@ esac
 function sublime3 {
 # Downloading Sublime Text 3
 cd $HOME/Downloads
-echo 'Downloading Sublime Text 3 (build 3047)...'
+echo 'Downloading Sublime Text 3 (build 3059)...'
 # Download tarball that matches system architecture
 if [ $(uname -i) = 'i386' ]; then
-    wget http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3047.tar.bz2
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059.tar.bz2
 elif [ $(uname -i) = 'x86_64' ]; then
-    wget http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3047_x64.tar.bz2
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059_x64.tar.bz2
 fi
 # Extract Tarball
 cd $HOME/Downloads
-echo 'Extracting Sublime Text 3 (build 3047)...'
+echo 'Extracting Sublime Text 3 (build 3059)...'
 tar xf sublime*.tar.bz2
 # Move Sublime Text 3 to /opt
 echo 'Installing...'
@@ -333,6 +335,7 @@ echo 'Done.'
 echo 'Creating symbolic link...'
 echo 'Requires root privileges:'
 sudo ln -sf /opt/sublime_text_3/sublime_text /usr/bin/sublime
+sudo chmod +x /usr/bin/sublime
 echo 'Done.'
 # Create .desktop file
 echo 'Setting up installation:'
@@ -347,7 +350,8 @@ Terminal=false
 Icon=sublime-text
 Type=Application
 Categories=TextEditor;IDE;Development
-X-Ayatana-Desktop-Shortcuts=NewWindow
+
+X-GNOME-FullName=Sublime Text 3
 
 [NewWindow Shortcut Group]
 Name=New Window
@@ -375,33 +379,13 @@ thirdparty
 
 # THIRD PARTY APPLICATIONS
 function thirdparty {
-wget=$(rpm -qa | grep wget)
-if [[ "$wget" == *wget* ]];then
-    echo ''
-else
-    echo ''
-    echo "Downloading third-party applications requires 'wget'."
-    read -p "Install now? (Y)es, (N)o : " INPUT
-    case $INPUT in
-        [Yy]* ) 
-            sudo yum install -y wget
-            ;;
-        [Nn]* ) echo 'Okay, aborting.' && main;;
-        * )
-        clear && echo 'Sorry, try again.'
-        thirdparty
-        ;;
-    esac
-    clear
-    echo ''
-fi
 echo 'What would you like to install? '
 echo ''
 echo '1. Google Chrome?'
 echo '2. Google Talk Plugin?'
 echo '3. Google Music Manager?'
 echo '4. Nautilus Dropbox?'
-echo '5. Sublime Text 3 (build 3047)?'
+echo '5. Sublime Text 3 (build 3059)?'
 echo 'r. Return'
 echo ''
 read -p 'Enter your choice: ' REPLY
@@ -412,9 +396,9 @@ case $REPLY in
     cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm
+        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Google Chrome...'
@@ -432,9 +416,9 @@ case $REPLY in
     cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://dl.google.com/linux/direct/google-talkplugin_current_i386.rpm
+        curl -O https://dl.google.com/linux/direct/google-talkplugin_current_i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://dl.google.com/linux/direct/google-talkplugin_current_x86_64.rpm
+        curl -O https://dl.google.com/linux/direct/google-talkplugin_current_x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Google Talk Plugin...'
@@ -452,9 +436,9 @@ case $REPLY in
     cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://dl.google.com/linux/direct/google-musicmanager-beta_current_i386.rpm
+        curl -O https://dl.google.com/linux/direct/google-musicmanager-beta_current_i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://dl.google.com/linux/direct/google-musicmanager-beta_current_x86_64.rpm
+        curl -O https://dl.google.com/linux/direct/google-musicmanager-beta_current_x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Google Music Manager...'
@@ -472,9 +456,9 @@ case $REPLY in
     cd $HOME/Downloads
     # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.i386.rpm
+        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.x86_64.rpm
+        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Dropbox...'
@@ -510,8 +494,8 @@ read -p 'Enter your choice: ' REPLY
 case $REPLY in
 # Broadcom Wireless Drivers
 1) 
-    if [ -e /etc/yum.repos.d/rpmfusion* ]; then
-        continue
+    if [ -e /etc/yum.repos.d/rpmfusion-free.repo ] && [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
+        echo ''
     else
         read -p "The driver requires the RPM Fusion repository. Add it? (Y)es, (N)o : " INPUT
         case $INPUT in
@@ -550,6 +534,47 @@ case $REPLY in
 esac
 }
 
+# CODECS
+function codecs {
+echo 'What would you like to install? '
+echo ''
+echo '1. GStreamer codecs for media playback.'
+echo 'r. Return'
+echo ''
+read -p 'Enter your choice: ' REPLY
+case $REPLY in
+# Gstreamer Codecs
+1) 
+    if [ -e /etc/yum.repos.d/rpmfusion-free.repo ] && [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
+        echo ''
+    else
+        read -p "Gettings all codecs requires the RPM Fusion repository. Add it? (Y)es, (N)o : " INPUT
+        case $INPUT in
+            [Yy]* )
+                echo 'Adding RPM Fusion to repositories...'
+                echo 'Requires root privileges:'
+                su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+                echo 'Done.'
+                ;;
+            [Nn]* ) echo 'Okay, aborting' && codecs;;
+            * ) clear && echo 'Sorry, try again.' && codecs
+            ;;
+        esac
+    fi
+    echo 'Installing Gstreamer codecs...'
+    sudo yum install gstreamer gstreamer*plugins-good gstreamer*plugins-bad  gstreamer*plugins-bad-free gstreamer*plugins-bad-nonfree gstreamer*plugins-bad-freeworld gstreamer*plugins-ugly gstreamer-plugins-*-extras gstreamer1 gstreamer-ffmpeg 
+    echo 'Done.'
+    codecs
+    ;;
+# Return
+[Rr]*) 
+    clear && main;;
+# Invalid choice
+* ) 
+    clear && echo 'Not an option, try again.' && codecs;;
+esac
+}
+
 
 # CONFIGURE SYSTEM
 function config {
@@ -567,10 +592,10 @@ case $REPLY in
     # Font settings
     echo 'Setting font preferences...'
     gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
-    gsettings set org.gnome.desktop.interface document-font-name 'Cantarell 10'
-    gsettings set org.gnome.desktop.interface font-name 'Cantarell 10'
-    gsettings set org.gnome.nautilus.desktop font 'Cantarell 10'
-    gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 10'
+    gsettings set org.gnome.desktop.interface document-font-name 'Cantarell 11'
+    gsettings set org.gnome.desktop.interface font-name 'Cantarell 11'
+    gsettings set org.gnome.nautilus.desktop font 'Cantarell 11'
+    gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 11'
     gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'rgba'
     gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
     echo 'Done. '
@@ -712,10 +737,11 @@ echo '3. Install favourite system utilities?'
 echo '4. Install development tools?'
 echo '5. Install design tools?'
 echo '6. Install third-party applications?'
-echo '7. Install drivers?'
-echo '8. Configure repositories?'
-echo '9. Configure system?'
-echo '10. Cleanup the system?'
+echo '7. Install media playback codecs?'
+echo '8. Install drivers?'
+echo '9. Configure repositories?'
+echo '10. Configure system?'
+echo '11. Cleanup the system?'
 echo 'q. Quit?'
 echo ''
 read -p 'What would you like to do? (Enter your choice) : ' REPLY
@@ -726,10 +752,11 @@ case $REPLY in
     4) clear && development;; # Install Dev Tools
     5) clear && design;; # Install Design Tools
     6) thirdparty;; # Install Third-Party Applications
-    7) clear && drivers;; # Install Drivers
-    8) clear && repos;; # Configure Repositories
-    9) clear && config;; # Configure system
-    10) clear && cleanup;; # Cleanup System
+    7) codecs;; # Install Third-Party Applications
+    8) clear && drivers;; # Install Drivers
+    9) clear && repos;; # Configure Repositories
+    10) clear && config;; # Configure system
+    11) clear && cleanup;; # Cleanup System
     [Qq]* ) echo '' && quit;; # Quit
     * ) clear && echo 'Not an option, try again.' && main;;
 esac
