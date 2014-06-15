@@ -32,7 +32,7 @@ case $REPLY in
     # Positive action
     [Yy]* )
         echo 'Requires root privileges:'
-        su -c "yum remove $(cat $PURGED)"
+        sudo yum remove $(cat $PURGED)
         echo 'Done.'
         cleanup
         ;;
@@ -51,7 +51,7 @@ case $REPLY in
 2)
     echo 'Removing old Kernel(s)...'
     echo 'Requires root privileges:'
-    su -c "package-cleanup -y --oldkernels --count=1"
+    sudo package-cleanup -y --oldkernels --count=1
     echo 'Done.'
     cleanup
     ;;
@@ -67,8 +67,8 @@ case $REPLY in
 4)
     echo 'Cleaning package cache...'
     echo 'Requires root privileges:'
-    su -c "yum clean packages"
-    su -c "yum clean headers"
+    sudo yum clean packages
+    sudo yum clean headers
     echo 'Done.'
     cleanup
     ;;

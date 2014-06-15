@@ -40,7 +40,6 @@ echo '#-------------------------------------#'
 . ./functions/repos
 . ./functions/system
 . ./functions/sysupgrade
-. ./functions/themes
 . ./functions/thirdparty
 
 #----- MAIN FUNCTIONS -----#

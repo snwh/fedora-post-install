@@ -1,5 +1,87 @@
 #!/bin/bash
 
+# INSTALL SUBLIME TEXT 3
+function sublime3 {
+# Downloading Sublime Text 3
+cd $HOME/Downloads
+echo 'Downloading Sublime Text 3 (build 3059)...'
+# Download tarball that matches system architecture
+if [ $(uname -i) = 'i386' ]; then
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059.tar.bz2
+elif [ $(uname -i) = 'x86_64' ]; then
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059_x64.tar.bz2
+fi
+# Extract Tarball
+cd $HOME/Downloads
+echo 'Extracting Sublime Text 3 (build 3059)...'
+tar xf sublime*.tar.bz2
+# Move Sublime Text 3 to /opt
+echo 'Installing...'
+echo 'Requires root privileges:'
+if [ -d /opt/sublime_text_3 ]; then
+    echo
+    read -p "Found an existing installation. Replace it? (Y)es, (N)o : " INPUT
+    case $INPUT in
+        [Yy]* ) 
+            sudo rm -Rf /opt/sublime_text_3 2>/dev/null
+            sudo mv sublime_text_3 /opt/
+            ;;
+        [Nn]* ) echo 'Okay, cancelling' && thirdparty;;
+        * )
+        clear && echo 'Sorry, try again.'
+        thirdparty
+        ;;
+    esac
+else
+    sudo mv sublime_text_3 /opt/
+fi
+echo 'Done.'
+# Create symbolic link
+echo 'Creating symbolic link...'
+echo 'Requires root privileges:'
+sudo ln -sf /opt/sublime_text_3/sublime_text /usr/bin/sublime
+sudo chmod +x /usr/bin/sublime
+echo 'Done.'
+# Create .desktop file
+echo 'Setting up installation:'
+echo 'Creating .desktop file...'
+echo "[Desktop Entry]
+Version=3
+Name=Sublime Text 3
+GenericName=Text Editor
+ 
+Exec=sublime
+Terminal=false
+Icon=sublime-text
+Type=Application
+Categories=TextEditor;IDE;Development
+
+X-GNOME-FullName=Sublime Text 3
+
+[NewWindow Shortcut Group]
+Name=New Window
+Exec=sublime -n" >> sublime-text.desktop
+# Move .desktop file
+echo 'Moving .desktop file to /usr/share/applications'
+sudo mv -f sublime-text.desktop /usr/share/applications/
+echo 'Done.'
+# Install icon
+echo 'Copying icons...'
+sudo cp -r /opt/sublime_text_3/Icon/16x16/* /usr/share/icons/hicolor/16x16/apps
+sudo cp -r /opt/sublime_text_3/Icon/32x32/* /usr/share/icons/hicolor/32x32/apps
+sudo cp -r /opt/sublime_text_3/Icon/48x48/* /usr/share/icons/hicolor/48x48/apps
+sudo cp -r /opt/sublime_text_3/Icon/128x128/* /usr/share/icons/hicolor/128x128/apps
+sudo cp -r /opt/sublime_text_3/Icon/256x256/* /usr/share/icons/hicolor/256x256/apps
+sudo gtk-update-icon-cache /usr/share/icons/hicolor
+echo 'Done.'
+# Cleanup & finish
+rm sublime*.tar.bz2
+cd
+echo ''
+echo 'Installation of Sublime Text 3 complete.'
+thirdparty
+}
+
 # THIRD PARTY APPLICATIONS
 function thirdparty {
 echo 'What would you like to install? '
@@ -7,9 +89,8 @@ echo ''
 echo '1. Google Chrome?'
 echo '2. Google Talk Plugin?'
 echo '3. Google Music Manager?'
-echo '4. Steam?'
+echo '4. Nautilus Dropbox?'
 echo '5. Sublime Text 3 (build 3059)?'
-echo '6. Spotify client'
 echo 'r. Return'
 echo ''
 read -p 'Enter your choice: ' REPLY
@@ -17,19 +98,19 @@ case $REPLY in
 # Google Chrome
 1) 
     echo 'Downloading Google Chrome...'
-    # Download Debian file that matches system architecture
+    cd $HOME/Downloads
+    # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
+        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Google Chrome...'
-    echo 'Requires root privileges:'b
-    sudo dpkg -i google-chrome*.deb
-    sudo apt-get install -fy
+    echo 'Requires root privileges:'
+    sudo yum --nogpgcheck localinstall -y google-chrome*.rpm
     # Cleanup and finish
-    rm google-chrome*.deb
+    rm google-chrome*.rpm
     cd
     echo 'Done.'
     thirdparty
@@ -37,19 +118,19 @@ case $REPLY in
 # Google Talk Plugin
 2)
     echo 'Downloading Google Talk Plugin...'
-    # Download Debian file that matches system architecture
+    cd $HOME/Downloads
+    # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://dl.google.com/linux/direct/google-talkplugin_current_i386.deb
+        curl -O https://dl.google.com/linux/direct/google-talkplugin_current_i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://dl.google.com/linux/direct/google-talkplugin_current_amd64.deb
+        curl -O https://dl.google.com/linux/direct/google-talkplugin_current_x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Google Talk Plugin...'
     echo 'Requires root privileges:'
-    sudo dpkg -i google-talkplugin_current*.deb
-    sudo apt-get install -fy
+    sudo yum --nogpgcheck localinstall -y google-talkplugin_current*.rpm
     # Cleanup and finish
-    rm google-talkplugin_current*.deb
+    rm google-talkplugin_current*.rpm
     cd
     echo 'Done.'
     thirdparty
@@ -57,91 +138,46 @@ case $REPLY in
 # Google Music Manager
 3)
     echo 'Downloading Google Music Manager...'
-    # Download Debian file that matches system architecture
+    cd $HOME/Downloads
+    # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget https://dl.google.com/linux/direct/google-musicmanager-beta_current_i386.deb
+        curl -O https://dl.google.com/linux/direct/google-musicmanager-beta_current_i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget https://dl.google.com/linux/direct/google-musicmanager-beta_current_amd64.deb
+        curl -O https://dl.google.com/linux/direct/google-musicmanager-beta_current_x86_64.rpm
     fi
     # Install package(s)
     echo 'Installing Google Music Manager...'
     echo 'Requires root privileges:'
-    sudo dpkg -i google-musicmanager-*.deb
-    sudo apt-get install -fy
+    sudo yum --nogpgcheck localinstall -y google-musicmanager-*.rpm
     # Cleanup and finish
-    rm google-musicmanager*.deb
+    rm google-musicmanager*.rpm
     cd
     echo 'Done.'
     thirdparty
     ;;
-# Steam
+# Dropbox
 4)
-    echo 'Downloading Steam...'
+    echo 'Downloading Dropbox...'
     cd $HOME/Downloads
-    # Download Debian file that matches system architecture
+    # Download RPM file that matches system architecture
     if [ $(uname -i) = 'i386' ]; then
-        wget http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
+        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.i386.rpm
     elif [ $(uname -i) = 'x86_64' ]; then
-        wget http://repo.steampowered.com/steam/archive/precise/steam_latest.deb
+        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.x86_64.rpm
     fi
     # Install package(s)
-    echo 'Installing Steam...'
+    echo 'Installing Dropbox...'
     echo 'Requires root privileges:'
-    sudo dpkg -i steam*.deb
-    sudo apt-get install -fy
-    echo 'Installing Steam dependencies...'
-    echo 'Requires root privileges:'
-    sudo apt-get install -y libgl1-mesa-glx libgl1-mesa-dev libgl1-mesa-dri:i386 libgl1-mesa-glx:i386 libc6:i386
+    sudo yum --nogpgcheck localinstall -y nautilus-dropbox-*.rpm
     # Cleanup and finish
-    rm steam*.deb
+    rm nautilus-dropbox-*.rpm
     cd
     echo 'Done.'
     thirdparty
     ;;
-# Sublime Text 3 (build 3059)
+# Sublime Text 3
 5)
-    echo 'Downloading Sublime Text 3 (build 3059)...'
-    # Download Debian file that matches system architecture
-    if [ $(uname -i) = 'i386' ]; then
-        wget http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3059_i386.deb
-    elif [ $(uname -i) = 'x86_64' ]; then
-        wget http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3059_amd64.deb
-    fi
-    # Install package(s)
-    echo 'Installing Sublime Text 3 (build 3059)...'
-    echo 'Requires root privileges:'
-    sudo dpkg -i sublime-text_build-3059*.deb
-    sudo apt-get install -fy
-    # Create symbolic link
-    echo 'Creating symbolic link...'
-    echo 'Requires root privileges:'
-    sudo ln -sf /opt/sublime_text/sublime_text /usr/bin/sublime
-    echo 'Done.'
-    # Cleanup and finish
-    rm sublime-text_build-3059*.deb
-    cd
-    echo 'Done.'
-    thirdparty
-    ;;
-# Spotify
-6)
-    # Add repository
-    echo 'Adding Spotify repository to sources...'
-    echo 'Creating apt list file...'
-    touch spotify.list
-    echo "deb http://repository.spotify.com stable non-free" >> spotify.list
-    echo 'Requires root privileges:'
-    sudo mv -f spotify.list /etc/apt/sources.list.d/
-    echo 'Done.'
-    # Update repository information
-    echo 'Adding repository key and updating repository information...'
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59
-    sudo apt-get update
-    # Install package(s)
-    echo 'Installing Spotify client...'
-    sudo apt-get install -y spotify-client
-    echo 'Done.'
-    thirdparty
+    sublime3
     ;;
 # Return
 [Rr]*) 

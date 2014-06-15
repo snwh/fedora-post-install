@@ -2,6 +2,7 @@
 
 # THIRD PARTY REPOS
 function repos {
+echo ''
 echo 'Which repositories would you like to enable? '
 echo ''
 echo '1. RPM Fusion?'

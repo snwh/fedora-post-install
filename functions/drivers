@@ -2,6 +2,7 @@
 
 # THIRD PARTY DRIVERS
 function drivers {
+echo ''
 echo 'What would you like to install? '
 echo ''
 echo '1. Broadcom wireless drivers (kmod-wl).'

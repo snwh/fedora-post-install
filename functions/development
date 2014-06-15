@@ -9,9 +9,8 @@ function development {
 echo ''
 echo '1. Install development tools?'
 echo '2. Install GNOME development tools?'
-echo '3. Install Fedora packaging tools?'
-echo '4. Install potential JHBuild dependencies?'
-echo '5. Install Android development dependencies?'
+echo '3. Install JHBuild dependencies?'
+echo '4. Install Android development dependencies?'
 echo 'r. Return'
 echo ''
 read -p 'What would you like to do? (Enter your choice) : ' REPLY
@@ -58,17 +57,8 @@ case $REPLY in
     echo 'Done.'
     development
     ;;
-# Install Fedora packaging tools
-3)
-    # Install packages
-    echo 'Installing Fedora packaging tools...'
-    echo 'Requires root privileges:'
-    sudo yum install -y fedora-packager
-    echo 'Done.'
-    development
-    ;;
 # Install potential JHBuild dependencies
-4)
+3)
     # Install packages
     echo 'Installing potential JHBuild dependencies...'
     echo 'Requires root privileges:'
@@ -77,11 +67,11 @@ case $REPLY in
     development
     ;;
 # Install Android development dependencies
-5)
+4)
     # Install packages
     echo 'Installing Android development dependencies...'
     echo 'Requires root privileges:'
-    sudo yum install -y glibc.i686 libstdc++.i686  zlib.i686
+    sudo yum install -y glibc.i686 libstdc++.i686 zlib.i686
     echo 'Done.'
     development
     ;;
