@@ -1,0 +1,76 @@
+#!/bin/bash
+
+#----- DECLARATIONS -----#
+
+CODECS="data/codecs.list"
+
+# CODECS
+function codecs {
+echo 'What would you like to install? '
+echo ''
+echo '1. GStreamer codecs for media playback.'
+echo 'r. Return'
+echo ''
+read -p 'Enter your choice: ' REPLY
+case $REPLY in
+# Gstreamer Codecs
+1) 
+    if [ -e /etc/yum.repos.d/rpmfusion-free.repo ] && [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
+        echo ''
+    else
+        read -p "Installing codecs requires the RPM Fusion repository. Add it? (Y)es, (N)o : " INPUT
+        case $INPUT in
+            [Yy]* )
+                echo 'Adding RPM Fusion to repositories...'
+                echo 'Requires root privileges:'
+                su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+                echo 'Done.'
+                ;;
+            [Nn]* ) echo 'Okay, aborting' && codecs;;
+            * ) clear && echo 'Sorry, try again.' && codecs
+            ;;
+        esac
+    fi
+    echo 'Installing Gstreamer tools...'
+    echo ''
+    echo 'Current package list:'
+    echo ''
+    for package in $(cat $CODECS)
+    do 
+    echo $package
+    done
+    echo ''
+    read -p 'Proceed? (Y)es, (N)o : ' REPLY
+    echo ''
+    case $REPLY in
+    # Positive action
+    [Yy]* ) 
+        echo 'Requires root privileges:'
+        # Feel free to change the contents of "codecs.list" to whatever suits your preferences.
+        su -c "yum install -y $(cat $CODECS)"
+        echo 'Done.'
+        development
+        ;;
+    # Negative action
+    [Nn]* )
+        clear && development
+        ;;
+    # Error
+    * )
+        clear && echo 'Sorry, try again.'
+        development
+        ;;
+    esac
+    echo 'Installing Gstreamer codecs...'
+    sudo yum install 
+    echo 'Done.'
+    codecs
+    ;;
+# Return
+[Rr]*) 
+    clear && main;;
+# Invalid choice
+* ) 
+    clear && echo 'Not an option, try again.' && codecs;;
+esac
+}

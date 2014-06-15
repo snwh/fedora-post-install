@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# SYSTEM UPGRADE
+function sysupgrade {
+# Perform system upgrade
+echo ''
+read -p 'Proceed with system upgrade? (Y)es, (N)o : ' REPLY
+echo ''
+case $REPLY in
+# Positive action
+[Yy]* )
+    # Upgrading system
+    echo 'Performing system upgrade...'
+    sudo yum update -y
+    echo 'Done.'
+    main
+    ;;
+# Negative action
+[Nn]* )
+    clear && main
+    ;;
+# Error
+* )
+    clear && echo 'Sorry, try again.'
+    sysupgrade
+    ;;
+esac
+}

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# CONFIGURE SYSTEM
+function config {
+echo ''
+echo '1. Set preferred application-specific settings?'
+echo '2. Show all startup applications?'
+echo '3. Enable middle button scrolling on Thinkpads.'
+echo '4. Set SELinux to be more permissive.'
+echo 'r. Return'
+echo ''
+read -p 'What would you like to do? (Enter your choice) : ' REPLY
+case $REPLY in
+# GSettings
+1)  
+    # Font settings
+    echo 'Setting font preferences...'
+    gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
+    gsettings set org.gnome.desktop.interface document-font-name 'Cantarell 11'
+    gsettings set org.gnome.desktop.interface font-name 'Cantarell 11'
+    gsettings set org.gnome.nautilus.desktop font 'Cantarell 11'
+    gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 11'
+    gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'rgba'
+    gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
+    echo 'Done. '
+    # Nautilus Preferences
+    echo 'Setting Nautilus preferences...'
+    gsettings set org.gnome.nautilus.preferences sort-directories-first true
+    # Gedit Preferences
+    echo 'Setting Gedit preferences...'
+    gsettings set org.gnome.gedit.preferences.editor display-line-numbers true
+    gsettings set org.gnome.gedit.preferences.editor create-backup-copy false
+    gsettings set org.gnome.gedit.preferences.editor auto-save true
+    gsettings set org.gnome.gedit.preferences.editor insert-spaces true
+    gsettings set org.gnome.gedit.preferences.editor tabs-size 4
+    # Tap-To-Click
+    echo 'Enabling Tap-to-click on touchpads...'
+    gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
+    # Done
+    echo "Done."
+    config
+    ;;
+# Startup Applications
+2)
+    echo 'Changing display of startup applications.'
+    echo 'Requires root privileges:'    
+    cd /etc/xdg/autostart/ && sudo sed --in-place 's/NoDisplay=true/NoDisplay=false/g' *.desktop
+    cd
+    echo 'Done.'
+    config
+    ;;    
+# Enable Thinkpad Scrolling
+3)
+    # Create .conf file
+    echo 'Creating configuration file...'
+    touch 20-thinkpad-trackpoint.conf
+    echo 'Section "InputClass"
+Identifier  "Trackpoint Wheel Emulation"
+MatchProduct    "TPPS/2 IBM TrackPoint|DualPoint Stick|Synaptics Inc. Composite TouchPad / TrackPoint|ThinkPad USB Keyboard with TrackPoint|USB Trackpoint pointing device|Composite TouchPad / TrackPoint"
+MatchDevicePath "/dev/input/event*"
+Option      "EmulateWheel"      "true"
+Option      "EmulateWheelButton"    "2"
+Option      "Emulate3Buttons"   "false"
+Option      "XAxisMapping"      "6 7"
+Option      "YAxisMapping"      "4 5"
+EndSection' >> 20-thinkpad-trackpoint.conf
+    echo 'Done.'
+    # Install
+    echo 'Installing configuration...'
+    echo 'Requires root privileges:'  
+    sudo mv 20-thinkpad-trackpoint.conf /etc/X11/xorg.conf.d/
+    echo 'Done.'
+    config
+    ;;
+# SELinux
+4)
+    echo 'Setting SELinux to permissive mode...'
+    echo 'Requires root privileges:'  
+    sudo sed --in-place 's/SELINUX=.*$/SELINUX=permissive/g' /etc/selinux/config
+    echo 'Done.'
+    config
+    ;;
+# Return
+[Rr]*) 
+    clear && main;;
+# Invalid choice
+* ) 
+    clear && echo 'Not an option, try again.' && config;;
+esac
+}

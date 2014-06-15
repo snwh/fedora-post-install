@@ -1,0 +1,9 @@
+gstreamer
+gstreamer*plugins-bad
+gstreamer*plugins-bad-free
+gstreamer*plugins-bad-freeworld
+gstreamer*plugins-bad-nonfree
+gstreamer*plugins-good
+gstreamer*plugins-ugly
+gstreamer-plugins-*-extras
+gstreamer1 gstreamer-ffmpeg 
