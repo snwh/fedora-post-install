@@ -29,20 +29,20 @@ echo '#-------------------------------------#'
 
 #----- FUNCTIONS -----#
 
-. ./functions/cleanup
-. ./functions/codecs
-. ./functions/config
-. ./functions/customize
-. ./functions/design
-. ./functions/development
-. ./functions/drivers
-. ./functions/favourites
-. ./functions/gnome
-. ./functions/repos
-. ./functions/system
-. ./functions/sysupgrade
-. ./functions/themes
-. ./functions/thirdparty
+. functions/cleanup
+. functions/codecs
+. functions/config
+. functions/customize
+. functions/design
+. functions/development
+. functions/drivers
+. functions/favourites
+. functions/gnome
+. functions/repos
+. functions/system
+. functions/sysupgrade
+. functions/themes
+. functions/thirdparty
 
 #----- MAIN FUNCTIONS -----#
 
