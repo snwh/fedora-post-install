@@ -1,6 +1,8 @@
 Fedora Post Install Script
 ==========================
 
+Original Author: Sam Hewitt
+
 License: GPLv3
 
 Original source can be found [here](https://github.com/snwh/fedora-post-install).
