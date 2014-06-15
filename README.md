@@ -17,10 +17,6 @@ Run from source folder:
 
     bash fedora-<appropriate-version>-post-install-script.sh
 
-By adding the path of the script to your .bashrc you can run it anytime from a terminal
-	
-	export PATH=${PATH}:$HOME/<path-to-fedora-post-install-script>/
-
 
 ##About:
 
