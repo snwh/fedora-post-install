@@ -1,0 +1,83 @@
+# INSTALL SUBLIME TEXT 3
+function sublime3 {
+# Downloading Sublime Text 3
+cd $HOME/Downloads
+echo 'Downloading Sublime Text 3 (build 3059)...'
+# Download tarball that matches system architecture
+if [ $(uname -i) = 'i386' ]; then
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059.tar.bz2
+elif [ $(uname -i) = 'x86_64' ]; then
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059_x64.tar.bz2
+fi
+# Extract Tarball
+cd $HOME/Downloads
+echo 'Extracting Sublime Text 3 (build 3059)...'
+tar xf sublime*.tar.bz2
+# Move Sublime Text 3 to /opt
+echo 'Installing...'
+echo 'Requires root privileges:'
+if [ -d /opt/sublime_text_3 ]; then
+    echo
+    read -p "Found an existing installation. Replace it? (Y)es, (N)o : " INPUT
+    case $INPUT in
+        [Yy]* ) 
+            sudo rm -Rf /opt/sublime_text_3 2>/dev/null
+            sudo mv sublime_text_3 /opt/
+            ;;
+        [Nn]* ) echo 'Okay, cancelling' && thirdparty;;
+        * )
+        clear && echo 'Sorry, try again.'
+        thirdparty
+        ;;
+    esac
+else
+    sudo mv sublime_text_3 /opt/
+fi
+echo 'Done.'
+# Create symbolic link
+echo 'Creating symbolic link...'
+echo 'Requires root privileges:'
+sudo ln -sf /opt/sublime_text_3/sublime_text /usr/bin/sublime
+sudo chmod +x /usr/bin/sublime
+echo 'Done.'
+# Create .desktop file
+echo 'Setting up installation:'
+echo 'Creating .desktop file...'
+echo "[Desktop Entry]
+Version=3
+Name=Sublime Text 3
+GenericName=Text Editor
+ 
+Exec=sublime
+Terminal=false
+Icon=sublime-text
+Type=Application
+Categories=TextEditor;IDE;Development
+
+X-GNOME-FullName=Sublime Text 3
+
+[NewWindow Shortcut Group]
+Name=New Window
+Exec=sublime -n" >> sublime-text.desktop
+# Move .desktop file
+echo 'Moving .desktop file to /usr/share/applications'
+sudo mv -f sublime-text.desktop /usr/share/applications/
+# sudo chmod 755 /usr/share/applications/sublime-text.desktop
+echo 'Done.'
+# Install icon
+echo 'Copying icons...'
+sudo cp -r /opt/sublime_text_3/Icon/16x16/* /usr/share/icons/hicolor/16x16/apps
+sudo cp -r /opt/sublime_text_3/Icon/32x32/* /usr/share/icons/hicolor/32x32/apps
+sudo cp -r /opt/sublime_text_3/Icon/48x48/* /usr/share/icons/hicolor/48x48/apps
+sudo cp -r /opt/sublime_text_3/Icon/128x128/* /usr/share/icons/hicolor/128x128/apps
+sudo cp -r /opt/sublime_text_3/Icon/256x256/* /usr/share/icons/hicolor/256x256/apps
+sudo gtk-update-icon-cache /usr/share/icons/hicolor
+echo 'Done.'
+# Cleanup & finish
+rm sublime*.tar.bz2
+cd
+echo ''
+echo 'Installation of Sublime Text 3 complete.'
+thirdparty
+}
+}

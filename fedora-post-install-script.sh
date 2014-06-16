@@ -40,9 +40,9 @@ echo '#-------------------------------------#'
 . functions/gnome
 . functions/repos
 . functions/system
-. functions/sysupgrade
 . functions/themes
 . functions/thirdparty
+. functions/upgrade
 
 #----- MAIN FUNCTIONS -----#
 
@@ -65,26 +65,28 @@ echo '3. Install favourite system utilities?'
 echo '4. Install development tools?'
 echo '5. Install design tools?'
 echo '6. Install third-party applications?'
-echo '7. Install media playback codecs?'
-echo '8. Install drivers?'
-echo '9. Configure repositories?'
-echo '10. Configure system?'
-echo '11. Cleanup the system?'
+echo '7. Install extra GNOME applications?'
+echo '8. Install media playback codecs?'
+echo '9. Install drivers?'
+echo '10. Configure repositories?'
+echo '11. Configure system?'
+echo '12. Cleanup the system?'
 echo 'q. Quit?'
 echo ''
 read -p 'What would you like to do? (Enter your choice) : ' REPLY
 case $REPLY in
-    1) clear && sysupgrade;; # System Upgrade
+    1) clear && upgrade;; # System Upgrade
     2) clear && favourites;; # Install Favourite Applications
     3) clear && utilities;; # Install Favourite Tools
     4) clear && development;; # Install Dev Tools
     5) clear && design;; # Install Design Tools
     6) clear && thirdparty;; # Install Third-Party Applications
-    7) clear && codecs;; # Install Third-Party Applications
-    8) clear && drivers;; # Install Drivers
-    9) clear && repos;; # Configure Repositories
-    10) clear && config;; # Configure system
-    11) clear && cleanup;; # Cleanup System
+    7) clear && gnome;; # Install Extra GNOME Applications
+    8) clear && codecs;; # Install Third-Party Applications
+    9) clear && drivers;; # Install Drivers
+    10) clear && repos;; # Configure Repositories
+    11) clear && config;; # Configure system
+    12) clear && cleanup;; # Cleanup System
     [Qq]* ) echo '' && quit;; # Quit
     * ) clear && echo 'Not an option, try again.' && main;;
 esac
