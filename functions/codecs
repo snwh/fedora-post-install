@@ -54,16 +54,16 @@ case $REPLY in
         # Feel free to change the contents of "codecs.list" to whatever suits your preferences.
         sudo yum install -y $(cat $CODECS)
         echo 'Done.'
-        development
+        codecs
         ;;
     # Negative action
     [Nn]* )
-        clear && development
+        clear && codecs
         ;;
     # Error
     * )
         clear && echo 'Sorry, try again.'
-        development
+        codecs
         ;;
     esac
     echo 'Installing Gstreamer codecs...'
