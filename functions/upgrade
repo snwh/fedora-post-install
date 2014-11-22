@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#----- DECLARATIONS -----#
+
+dir="$(dirname "$0")"
+
 # SYSTEM UPGRADE
 function upgrade {
 # Perform system upgrade

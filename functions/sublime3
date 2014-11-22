@@ -1,17 +1,23 @@
+#!/bin/bash
+
+#----- DECLARATIONS -----#
+
+dir="$(dirname "$0")"
+
 # INSTALL SUBLIME TEXT 3
 function sublime3 {
 # Downloading Sublime Text 3
 cd $HOME/Downloads
-echo 'Downloading Sublime Text 3 (build 3059)...'
+echo 'Downloading Sublime Text 3 (build 3065)...'
 # Download tarball that matches system architecture
 if [ $(uname -i) = 'i386' ]; then
-    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059.tar.bz2
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3065.tar.bz2
 elif [ $(uname -i) = 'x86_64' ]; then
-    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3059_x64.tar.bz2
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3065_x64.tar.bz2
 fi
 # Extract Tarball
 cd $HOME/Downloads
-echo 'Extracting Sublime Text 3 (build 3059)...'
+echo 'Extracting Sublime Text 3 (build 3065)...'
 tar xf sublime*.tar.bz2
 # Move Sublime Text 3 to /opt
 echo 'Installing...'
@@ -79,5 +85,4 @@ cd
 echo ''
 echo 'Installation of Sublime Text 3 complete.'
 thirdparty
-}
 }

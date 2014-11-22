@@ -21,28 +21,33 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, see <https://www.gnu.org/licenses/gpl-3.0.txt>
 
+tabs 4
 clear
 echo ''
 echo '#-------------------------------------#'
 echo '#     Fedora Post-Install Script      #'
 echo '#-------------------------------------#'
 
+#----- DECLARATIONS -----#
+
+dir="$(dirname "$0")"
+
 #----- FUNCTIONS -----#
 
-. functions/cleanup
-. functions/codecs
-. functions/config
-. functions/customize
-. functions/design
-. functions/development
-. functions/drivers
-. functions/favourites
-. functions/gnome
-. functions/repos
-. functions/system
-. functions/themes
-. functions/thirdparty
-. functions/upgrade
+. $dir/functions/cleanup
+. $dir/functions/codecs
+. $dir/functions/config
+. $dir/functions/customize
+. $dir/functions/design
+. $dir/functions/development
+. $dir/functions/drivers
+. $dir/functions/favourites
+. $dir/functions/gnome
+. $dir/functions/repos
+. $dir/functions/system
+. $dir/functions/themes
+. $dir/functions/thirdparty
+. $dir/functions/upgrade
 
 #----- MAIN FUNCTIONS -----#
 

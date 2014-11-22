@@ -1,11 +1,8 @@
 bzr
-devhelp
 devscripts
 dh-make
 fedora-packager
 git
-gitg
-glade
 gnome-common
 gtk3-devel
 icon-naming-utils

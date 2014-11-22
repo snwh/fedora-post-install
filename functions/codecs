@@ -2,7 +2,9 @@
 
 #----- DECLARATIONS -----#
 
-CODECS="data/codecs.list"
+dir="$(dirname "$0")"
+
+CODECS="$dir/data/codecs.list"
 
 # CODECS
 function codecs {

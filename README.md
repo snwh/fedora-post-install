@@ -13,9 +13,9 @@ You can get the latest version from the git repository:
 
 ##Usage:
 
-Run from source folder:
+Download and run from the containing folder:
 
-    bash fedora-<appropriate-version>-post-install-script.sh
+    bash fedora-post-install-script.sh
 
 
 ##About:
