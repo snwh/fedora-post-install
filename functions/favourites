@@ -26,7 +26,7 @@ case $REPLY in
 [Yy]* ) 
     echo 'Requires root privileges:'
     # Feel free to change the contents of 'favourites.list' to whatever suits your preferences.
-    sudo yum install -y $(cat $FAVS)
+    sudo dnf install -y $(cat $FAVS)
     echo 'Done.'
     main
     ;;

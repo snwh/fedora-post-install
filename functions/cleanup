@@ -34,7 +34,7 @@ case $REPLY in
     # Positive action
     [Yy]* )
         echo 'Requires root privileges:'
-        sudo yum remove $(cat $PURGED)
+        sudo dnf remove $(cat $PURGED)
         echo 'Done.'
         cleanup
         ;;
@@ -69,8 +69,8 @@ case $REPLY in
 4)
     echo 'Cleaning package cache...'
     echo 'Requires root privileges:'
-    sudo yum clean packages
-    sudo yum clean headers
+    sudo dnf clean packages
+    sudo dnf clean headers
     echo 'Done.'
     cleanup
     ;;

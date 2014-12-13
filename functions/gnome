@@ -25,7 +25,7 @@ case $REPLY in
 [Yy]* )
     echo 'Requires root privileges:'
     # Feel free to change the contents of "gnome-extras.list" to whatever suits your preferences.
-    sudo yum install -y $(cat $EXTRAS)
+    sudo dnf install -y $(cat $EXTRAS)
     echo 'Done.'
     main
     ;;

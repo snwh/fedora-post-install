@@ -35,7 +35,7 @@ case $REPLY in
     [Yy]* ) 
         echo 'Requires root privileges:'
         # Feel free to change the contents of "dev-tools.list" to whatever suits your preferences.
-        sudo yum install -y $(cat $DEVTOOLS)
+        sudo dnf install -y $(cat $DEVTOOLS)
         echo 'Done.'
         development
         ;;
@@ -55,7 +55,7 @@ case $REPLY in
     # Install packages
     echo 'Installing software for GNOME development...'
     echo 'Requires root privileges:'
-    sudo yum groupinstall -y development-libs development-tools gnome-software-development
+    sudo dnf groupinstall -y development-libs development-tools gnome-software-development
     echo 'Done.'
     development
     ;;
@@ -64,7 +64,7 @@ case $REPLY in
     # Install packages
     echo 'Installing potential JHBuild dependencies...'
     echo 'Requires root privileges:'
-    sudo yum install -y libjpeg-devel pam-devel libdb-devel libcurl-devel libudev-devel libtasn1-tools libarchive-devel cyrus-sasl-devel perl-Text-CSV wget yajl-devel device-mapper-devel libnl-devel exiv2-devel libexif-devel mesa-libGLU-devel boost-devel soundtouch-devel perl-XML-Simple openssl-devel xcb-util-devel libtiff-devel pam-devel wireless-tools-devel libudev-devel gperf libacl-devel libuuid-devel ppp-devel cmake libicu-devel lcov valgrind-devel gdbm-devel libtool-ltdl-devel libvorbis-devel openldap-devel vala vala-devel perl-Parse-Yapp samba4-pidl gnome-doc-utils cups-devel folks-devel libXtst-devel gnome-bluetooth-libs-devel readline-devel mpfr-devel neon-devel libchamplain-gtk-devel python-devel libjpeg-turbo-devel usbutils libgudev1-devel libXt-devel libusb1-devel libudisks2-devel udisks2 xorg-x11-drv-wacom-devel libtasn1-tools dbus-python libffi-devel libxml2-python js-devel libgudev1-devel libtasn1-tools systemd-devel cups-devel cmake opencc-devel tracker-devel gperf libicu-devel yelp-tools gettext-devel intltool gcc-c++ asciidoc
+    sudo dnf install -y libjpeg-devel pam-devel libdb-devel libcurl-devel libudev-devel libtasn1-tools libarchive-devel cyrus-sasl-devel perl-Text-CSV wget yajl-devel device-mapper-devel libnl-devel exiv2-devel libexif-devel mesa-libGLU-devel boost-devel soundtouch-devel perl-XML-Simple openssl-devel xcb-util-devel libtiff-devel pam-devel wireless-tools-devel libudev-devel gperf libacl-devel libuuid-devel ppp-devel cmake libicu-devel lcov valgrind-devel gdbm-devel libtool-ltdl-devel libvorbis-devel openldap-devel vala vala-devel perl-Parse-Yapp samba4-pidl gnome-doc-utils cups-devel folks-devel libXtst-devel gnome-bluetooth-libs-devel readline-devel mpfr-devel neon-devel libchamplain-gtk-devel python-devel libjpeg-turbo-devel usbutils libgudev1-devel libXt-devel libusb1-devel libudisks2-devel udisks2 xorg-x11-drv-wacom-devel libtasn1-tools dbus-python libffi-devel libxml2-python js-devel libgudev1-devel libtasn1-tools systemd-devel cups-devel cmake opencc-devel tracker-devel gperf libicu-devel yelp-tools gettext-devel intltool gcc-c++ asciidoc
     echo 'Done.'
     development
     ;;
@@ -73,7 +73,7 @@ case $REPLY in
     # Install packages
     echo 'Installing Android development dependencies...'
     echo 'Requires root privileges:'
-    sudo yum install -y glibc.i686 libstdc++.i686 zlib.i686
+    sudo dnf install -y glibc.i686 libstdc++.i686 zlib.i686
     echo 'Done.'
     development
     ;;

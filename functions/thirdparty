@@ -33,7 +33,7 @@ case $REPLY in
     # Install package(s)
     echo 'Installing Google Chrome...'
     echo 'Requires root privileges:'
-    sudo yum --nogpgcheck localinstall -y google-chrome*.rpm
+    sudo dnf --nogpgcheck localinstall -y google-chrome*.rpm
     # Cleanup and finish
     rm google-chrome*.rpm
     cd
@@ -53,7 +53,7 @@ case $REPLY in
     # Install package(s)
     echo 'Installing Google Talk Plugin...'
     echo 'Requires root privileges:'
-    sudo yum --nogpgcheck localinstall -y google-talkplugin_current*.rpm
+    sudo dnf --nogpgcheck localinstall -y google-talkplugin_current*.rpm
     # Cleanup and finish
     rm google-talkplugin_current*.rpm
     cd
@@ -73,7 +73,7 @@ case $REPLY in
     # Install package(s)
     echo 'Installing Dropbox...'
     echo 'Requires root privileges:'
-    sudo yum --nogpgcheck localinstall -y nautilus-dropbox-*.rpm
+    sudo dnf --nogpgcheck localinstall -y nautilus-dropbox-*.rpm
     # Cleanup and finish
     rm nautilus-dropbox-*.rpm
     cd

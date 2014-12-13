@@ -18,7 +18,7 @@ read -p 'Enter your choice: ' REPLY
 case $REPLY in
 # Gstreamer Codecs
 1) 
-    if [ -e /etc/yum.repos.d/rpmfusion-free.repo ] && [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
+    if [ -e /etc/dnf.repos.d/rpmfusion-free.repo ] && [ -e /etc/dnf.repos.d/rpmfusion-nonfree.repo ]; then
         echo ''
     else
         read -p "Installing codecs requires the RPM Fusion repository. Add it? (Y)es, (N)o : " INPUT
@@ -27,7 +27,7 @@ case $REPLY in
             [Yy]* )
                 echo 'Adding RPM Fusion to repositories...'
                 echo 'Requires root privileges:'
-                su -c 'yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+                su -c 'dnf localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
                 echo 'Done.'
                 echo ''
                 ;;
@@ -52,7 +52,7 @@ case $REPLY in
     [Yy]* ) 
         echo 'Requires root privileges:'
         # Feel free to change the contents of "codecs.list" to whatever suits your preferences.
-        sudo yum install -y $(cat $CODECS)
+        sudo dnf install -y $(cat $CODECS)
         echo 'Done.'
         codecs
         ;;
@@ -67,7 +67,7 @@ case $REPLY in
         ;;
     esac
     echo 'Installing Gstreamer codecs...'
-    sudo yum install 
+    sudo dnf install 
     echo 'Done.'
     codecs
     ;;

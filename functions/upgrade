@@ -15,7 +15,7 @@ case $REPLY in
 [Yy]* )
     # Upgrading system
     echo 'Performing system upgrade...'
-    sudo yum update -y
+    sudo dnf update -y
     echo 'Done.'
     main
     ;;
