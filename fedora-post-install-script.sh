@@ -45,7 +45,6 @@ dir="$(dirname "$0")"
 . $dir/functions/gnome
 . $dir/functions/repos
 . $dir/functions/system
-. $dir/functions/themes
 . $dir/functions/thirdparty
 . $dir/functions/upgrade
 
