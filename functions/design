@@ -23,10 +23,10 @@ echo ''
 case $REPLY in
 # Positive action
 [Yy]* ) 
-    echo 'Requires root privileges:'
+    show_info 'Requires root privileges:'
     # Feel free to change the contents of "design-tools.list" to whatever suits your preferences.
-    sudo dnf install -y $(cat $DESTOOLS)
-    echo 'Done.'
+    sudo yum install -y $(cat $DESTOOLS)
+    show_success 'Done.'
     main
     ;;
 # Negative action
@@ -35,7 +35,7 @@ case $REPLY in
     ;;
 # Error
 * )
-    clear && echo 'Sorry, try again.' && design
+    clear && show_error '\aSorry, try again.' && design
     ;;
 esac
 }

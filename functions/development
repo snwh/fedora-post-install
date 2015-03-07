@@ -9,13 +9,15 @@ DEVTOOLS="$dir/data/development.list"
 # INSTALL DEVELOPMENT TOOLS
 function development {
 echo ''
+show_info 'What would you like to do?'
+echo ''
 echo '1. Install development tools?'
 echo '2. Install GNOME development tools?'
 echo '3. Install JHBuild dependencies?'
 echo '4. Install Android development dependencies?'
 echo 'r. Return'
 echo ''
-read -p 'What would you like to do? (Enter your choice) : ' REPLY
+show_info 'Enter your choice:' && read REPLY
 case $REPLY in
 # Install Development Tools
 1)
@@ -33,10 +35,10 @@ case $REPLY in
     case $REPLY in
     # Positive action
     [Yy]* ) 
-        echo 'Requires root privileges:'
+        show_info 'Requires root privileges:'
         # Feel free to change the contents of "dev-tools.list" to whatever suits your preferences.
-        sudo dnf install -y $(cat $DEVTOOLS)
-        echo 'Done.'
+        sudo yum install -y $(cat $DEVTOOLS)
+        show_success 'Done.'
         development
         ;;
     # Negative action
@@ -45,7 +47,7 @@ case $REPLY in
         ;;
     # Error
     * )
-        clear && echo 'Sorry, try again.'
+        clear && show_error '\aSorry, try again.'
         development
         ;;
     esac
@@ -54,27 +56,27 @@ case $REPLY in
 2)
     # Install packages
     echo 'Installing software for GNOME development...'
-    echo 'Requires root privileges:'
-    sudo dnf groupinstall -y development-libs development-tools gnome-software-development
-    echo 'Done.'
+    show_info 'Requires root privileges:'
+    sudo yum groupinstall -y development-libs development-tools gnome-software-development
+    show_success 'Done.'
     development
     ;;
 # Install potential JHBuild dependencies
 3)
     # Install packages
     echo 'Installing potential JHBuild dependencies...'
-    echo 'Requires root privileges:'
-    sudo dnf install -y libjpeg-devel pam-devel libdb-devel libcurl-devel libudev-devel libtasn1-tools libarchive-devel cyrus-sasl-devel perl-Text-CSV wget yajl-devel device-mapper-devel libnl-devel exiv2-devel libexif-devel mesa-libGLU-devel boost-devel soundtouch-devel perl-XML-Simple openssl-devel xcb-util-devel libtiff-devel pam-devel wireless-tools-devel libudev-devel gperf libacl-devel libuuid-devel ppp-devel cmake libicu-devel lcov valgrind-devel gdbm-devel libtool-ltdl-devel libvorbis-devel openldap-devel vala vala-devel perl-Parse-Yapp samba4-pidl gnome-doc-utils cups-devel folks-devel libXtst-devel gnome-bluetooth-libs-devel readline-devel mpfr-devel neon-devel libchamplain-gtk-devel python-devel libjpeg-turbo-devel usbutils libgudev1-devel libXt-devel libusb1-devel libudisks2-devel udisks2 xorg-x11-drv-wacom-devel libtasn1-tools dbus-python libffi-devel libxml2-python js-devel libgudev1-devel libtasn1-tools systemd-devel cups-devel cmake opencc-devel tracker-devel gperf libicu-devel yelp-tools gettext-devel intltool gcc-c++ asciidoc
-    echo 'Done.'
+    show_info 'Requires root privileges:'
+    sudo yum install -y libjpeg-devel pam-devel libdb-devel libcurl-devel libudev-devel libtasn1-tools libarchive-devel cyrus-sasl-devel perl-Text-CSV wget yajl-devel device-mapper-devel libnl-devel exiv2-devel libexif-devel mesa-libGLU-devel boost-devel soundtouch-devel perl-XML-Simple openssl-devel xcb-util-devel libtiff-devel pam-devel wireless-tools-devel libudev-devel gperf libacl-devel libuuid-devel ppp-devel cmake libicu-devel lcov valgrind-devel gdbm-devel libtool-ltdl-devel libvorbis-devel openldap-devel vala vala-devel perl-Parse-Yapp samba4-pidl gnome-doc-utils cups-devel folks-devel libXtst-devel gnome-bluetooth-libs-devel readline-devel mpfr-devel neon-devel libchamplain-gtk-devel python-devel libjpeg-turbo-devel usbutils libgudev1-devel libXt-devel libusb1-devel libudisks2-devel udisks2 xorg-x11-drv-wacom-devel libtasn1-tools dbus-python libffi-devel libxml2-python js-devel libgudev1-devel libtasn1-tools systemd-devel cups-devel cmake opencc-devel tracker-devel gperf libicu-devel yelp-tools gettext-devel intltool gcc-c++ asciidoc
+    show_success 'Done.'
     development
     ;;
 # Install Android development dependencies
 4)
     # Install packages
     echo 'Installing Android development dependencies...'
-    echo 'Requires root privileges:'
-    sudo dnf install -y glibc.i686 libstdc++.i686 zlib.i686
-    echo 'Done.'
+    show_info 'Requires root privileges:'
+    sudo yum install -y glibc.i686 libstdc++.i686 zlib.i686
+    show_success 'Done.'
     development
     ;;
 # Return

@@ -21,7 +21,7 @@ echo 'Extracting Sublime Text 3 (build 3065)...'
 tar xf sublime*.tar.bz2
 # Move Sublime Text 3 to /opt
 echo 'Installing...'
-echo 'Requires root privileges:'
+show_info 'Requires root privileges:'
 if [ -d /opt/sublime_text_3 ]; then
     echo
     read -p "Found an existing installation. Replace it? (Y)es, (N)o : " INPUT
@@ -32,20 +32,20 @@ if [ -d /opt/sublime_text_3 ]; then
             ;;
         [Nn]* ) echo 'Okay, cancelling' && thirdparty;;
         * )
-        clear && echo 'Sorry, try again.'
+        clear && show_error '\aSorry, try again.'
         thirdparty
         ;;
     esac
 else
     sudo mv sublime_text_3 /opt/
 fi
-echo 'Done.'
+show_success 'Done.'
 # Create symbolic link
 echo 'Creating symbolic link...'
-echo 'Requires root privileges:'
+show_info 'Requires root privileges:'
 sudo ln -sf /opt/sublime_text_3/sublime_text /usr/bin/sublime
 sudo chmod +x /usr/bin/sublime
-echo 'Done.'
+show_success 'Done.'
 # Create .desktop file
 echo 'Setting up installation:'
 echo 'Creating .desktop file...'
@@ -69,7 +69,7 @@ Exec=sublime -n" >> sublime-text.desktop
 echo 'Moving .desktop file to /usr/share/applications'
 sudo mv -f sublime-text.desktop /usr/share/applications/
 # sudo chmod 755 /usr/share/applications/sublime-text.desktop
-echo 'Done.'
+show_success 'Done.'
 # Install icon
 echo 'Copying icons...'
 sudo cp -r /opt/sublime_text_3/Icon/16x16/* /usr/share/icons/hicolor/16x16/apps
@@ -78,7 +78,7 @@ sudo cp -r /opt/sublime_text_3/Icon/48x48/* /usr/share/icons/hicolor/48x48/apps
 sudo cp -r /opt/sublime_text_3/Icon/128x128/* /usr/share/icons/hicolor/128x128/apps
 sudo cp -r /opt/sublime_text_3/Icon/256x256/* /usr/share/icons/hicolor/256x256/apps
 sudo gtk-update-icon-cache /usr/share/icons/hicolor
-echo 'Done.'
+show_success 'Done.'
 # Cleanup & finish
 rm sublime*.tar.bz2
 cd

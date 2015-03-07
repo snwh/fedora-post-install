@@ -37,7 +37,6 @@ dir="$(dirname "$0")"
 . $dir/functions/cleanup
 . $dir/functions/codecs
 . $dir/functions/config
-. $dir/functions/customize
 . $dir/functions/design
 . $dir/functions/development
 . $dir/functions/drivers
@@ -48,20 +47,24 @@ dir="$(dirname "$0")"
 . $dir/functions/thirdparty
 . $dir/functions/upgrade
 
-#----- MAIN FUNCTIONS -----#
+#----- MESSAGE FUNCTIONS -----#
 
-# Quit
-function quit {
-read -p "Are you sure you want to quit? (Y)es, (N)o " REPLY
-case $REPLY in
-    [Yy]* ) exit 99;;
-    [Nn]* ) clear && main;;
-    * ) clear && echo 'Sorry, try again.' && quit;;
-esac
+show_info() {
+echo -e "\033[1;34m$@\033[0m"
+}
+
+show_success() {
+echo -e "\033[1;32m$@\033[0m"
+}
+
+show_error() {
+echo -e "\033[1;31m$@\033[m" 1>&2
 }
 
 #----- MAIN FUNCTION -----#
 function main {
+echo ''
+show_info 'What would you like to do? '
 echo ''
 echo '1. Perform system update & upgrade?'
 echo '2. Install favourite applications?'
@@ -77,7 +80,7 @@ echo '11. Configure system?'
 echo '12. Cleanup the system?'
 echo 'q. Quit?'
 echo ''
-read -p 'What would you like to do? (Enter your choice) : ' REPLY
+show_info 'Enter your choice :' && read REPLY
 case $REPLY in
     1) clear && upgrade;; # System Upgrade
     2) clear && favourites;; # Install Favourite Applications
@@ -92,7 +95,17 @@ case $REPLY in
     11) clear && config;; # Configure system
     12) clear && cleanup;; # Cleanup System
     [Qq]* ) echo '' && quit;; # Quit
-    * ) clear && echo 'Not an option, try again.' && main;;
+    * ) clear && show_error '\aNot an option, try again.' && main;;
+esac
+}
+
+# Quit
+function quit {
+read -p "Are you sure you want to quit? (Y)es, (N)o " REPLY
+case $REPLY in
+    [Yy]* ) exit 99;;
+    [Nn]* ) clear && main;;
+    * ) clear && show_error 'Sorry, try again.' && quit;;
 esac
 }
 

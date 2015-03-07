@@ -8,15 +8,17 @@ dir="$(dirname "$0")"
 function upgrade {
 # Perform system upgrade
 echo ''
-read -p 'Proceed with system upgrade? (Y)es, (N)o : ' REPLY
+show_info 'Proceed with system upgrade? (Y)es, (N)o : ' 
+read REPLY
 echo ''
 case $REPLY in
 # Positive action
 [Yy]* )
     # Upgrading system
     echo 'Performing system upgrade...'
-    sudo dnf update -y
-    echo 'Done.'
+    show_info 'Requires root privileges:'
+    sudo yum distro-sync -y
+    show_success 'Done.'
     main
     ;;
 # Negative action
@@ -25,7 +27,7 @@ case $REPLY in
     ;;
 # Error
 * )
-    clear && echo 'Sorry, try again.'
+    clear && show_error '\aSorry, try again.'
     upgrade
     ;;
 esac

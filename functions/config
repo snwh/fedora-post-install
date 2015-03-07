@@ -7,13 +7,15 @@ dir="$(dirname "$0")"
 # CONFIGURE SYSTEM
 function config {
 echo ''
+show_info 'What would you like to do?'
+echo ''
 echo '1. Set preferred application-specific settings?'
 echo '2. Show all startup applications?'
 echo '3. Enable middle button scrolling on Thinkpads.'
 echo '4. Set SELinux to be more permissive.'
 echo 'r. Return'
 echo ''
-read -p 'What would you like to do? (Enter your choice) : ' REPLY
+show_info 'Enter your choice:' && read REPLY
 case $REPLY in
 # GSettings
 1)  
@@ -47,10 +49,10 @@ case $REPLY in
 # Startup Applications
 2)
     echo 'Changing display of startup applications.'
-    echo 'Requires root privileges:'    
+    show_info 'Requires root privileges:'    
     cd /etc/xdg/autostart/ && sudo sed --in-place 's/NoDisplay=true/NoDisplay=false/g' *.desktop
     cd
-    echo 'Done.'
+    show_success 'Done.'
     config
     ;;    
 # Enable Thinkpad Scrolling
@@ -68,20 +70,20 @@ Option      "Emulate3Buttons"   "false"
 Option      "XAxisMapping"      "6 7"
 Option      "YAxisMapping"      "4 5"
 EndSection' >> 20-thinkpad-trackpoint.conf
-    echo 'Done.'
+    show_success 'Done.'
     # Install
     echo 'Installing configuration...'
-    echo 'Requires root privileges:'  
+    show_info 'Requires root privileges:'  
     sudo mv 20-thinkpad-trackpoint.conf /etc/X11/xorg.conf.d/
-    echo 'Done.'
+    show_success 'Done.'
     config
     ;;
 # SELinux
 4)
     echo 'Setting SELinux to permissive mode...'
-    echo 'Requires root privileges:'  
+    show_info 'Requires root privileges:'  
     sudo sed --in-place 's/SELINUX=.*$/SELINUX=permissive/g' /etc/selinux/config
-    echo 'Done.'
+    show_success 'Done.'
     config
     ;;
 # Return

@@ -1,8 +1,10 @@
 apache2
 dconf-editor
+ffmpeg
 gpg
 icedtea-web
 java
+mediainfo
 nano
 openssh-server
 symlinks

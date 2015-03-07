@@ -10,7 +10,8 @@ dir="$(dirname "$0")"
 
 # THIRD PARTY APPLICATIONS
 function thirdparty {
-echo 'What would you like to install? '
+echo ''
+show_info 'What would you like to install?'
 echo ''
 echo '1. Google Chrome?'
 echo '2. Google Talk Plugin?'
@@ -18,7 +19,7 @@ echo '3. Nautilus Dropbox?'
 echo '4. Sublime Text 3 (build 3065)?'
 echo 'r. Return'
 echo ''
-read -p 'Enter your choice: ' REPLY
+show_info 'Enter your choice:' && read REPLY
 case $REPLY in
 # Google Chrome
 1) 
@@ -32,12 +33,12 @@ case $REPLY in
     fi
     # Install package(s)
     echo 'Installing Google Chrome...'
-    echo 'Requires root privileges:'
-    sudo dnf --nogpgcheck localinstall -y google-chrome*.rpm
+    show_info 'Requires root privileges:'
+    sudo yum --nogpgcheck localinstall -y google-chrome*.rpm
     # Cleanup and finish
     rm google-chrome*.rpm
     cd
-    echo 'Done.'
+    show_success 'Done.'
     thirdparty
     ;;
 # Google Talk Plugin
@@ -52,12 +53,12 @@ case $REPLY in
     fi
     # Install package(s)
     echo 'Installing Google Talk Plugin...'
-    echo 'Requires root privileges:'
-    sudo dnf --nogpgcheck localinstall -y google-talkplugin_current*.rpm
+    show_info 'Requires root privileges:'
+    sudo yum --nogpgcheck localinstall -y google-talkplugin_current*.rpm
     # Cleanup and finish
     rm google-talkplugin_current*.rpm
     cd
-    echo 'Done.'
+    show_success 'Done.'
     thirdparty
     ;;
 # Dropbox
@@ -72,12 +73,12 @@ case $REPLY in
     fi
     # Install package(s)
     echo 'Installing Dropbox...'
-    echo 'Requires root privileges:'
-    sudo dnf --nogpgcheck localinstall -y nautilus-dropbox-*.rpm
+    show_info 'Requires root privileges:'
+    sudo yum --nogpgcheck localinstall -y nautilus-dropbox-*.rpm
     # Cleanup and finish
     rm nautilus-dropbox-*.rpm
     cd
-    echo 'Done.'
+    show_success 'Done.'
     thirdparty
     ;;
 # Sublime Text 3

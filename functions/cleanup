@@ -9,13 +9,15 @@ PURGED="$dir/data/purge.list"
 # CLEANUP SYSTEM
 function cleanup {
 echo ''
+show_info 'What would you like to do?'
+echo ''
 echo '1. Remove unused pre-installed packages?'
 echo '2. Remove old kernel(s)?'
 echo '3. Remove duplicate packages?'
 echo '4. Clean package cache?'
 echo 'r. Return?'
 echo ''
-read -p 'What would you like to do? (Enter your choice) : ' REPLY
+show_info 'Enter your choice:' && read REPLY
 case $REPLY in
 # Remove Unused Pre-installed Packages
 1)
@@ -33,9 +35,9 @@ case $REPLY in
     case $REPLY in
     # Positive action
     [Yy]* )
-        echo 'Requires root privileges:'
-        sudo dnf remove $(cat $PURGED)
-        echo 'Done.'
+        show_info 'Requires root privileges:'
+        sudo yum remove $(cat $PURGED)
+        show_success 'Done.'
         cleanup
         ;;
     # Negative action
@@ -44,7 +46,7 @@ case $REPLY in
         ;;
     # Error
     * )
-        clear && echo 'Sorry, try again.'
+        clear && show_error '\aSorry, try again.'
         cleanup
         ;;
     esac
@@ -52,26 +54,26 @@ case $REPLY in
 # Remove Old Kernel
 2)
     echo 'Removing old Kernel(s)...'
-    echo 'Requires root privileges:'
+    show_info 'Requires root privileges:'
     sudo package-cleanup -y --oldkernels --count=1
-    echo 'Done.'
+    show_success 'Done.'
     cleanup
     ;;
 # Remove Duplicate Packages
 3)
     echo 'Removing duplicate packages...'
-    echo 'Requires root privileges:'
+    show_info 'Requires root privileges:'
     sudo package-cleanup -y --cleandupes
-    echo 'Done.'
+    show_success 'Done.'
     cleanup
     ;;
 # Clean Package Cache
 4)
     echo 'Cleaning package cache...'
-    echo 'Requires root privileges:'
-    sudo dnf clean packages
-    sudo dnf clean headers
-    echo 'Done.'
+    show_info 'Requires root privileges:'
+    sudo yum clean packages
+    sudo yum clean headers
+    show_success 'Done.'
     cleanup
     ;;
 # Return

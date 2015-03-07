@@ -7,29 +7,29 @@ dir="$(dirname "$0")"
 # THIRD PARTY REPOS
 function repos {
 echo ''
-echo 'Which repositories would you like to enable? '
+show_info 'Which repositories would you like to enable? '
 echo ''
 echo '1. RPM Fusion?'
 echo 'r. Return'
 echo ''
-read -p 'Enter your choice: ' REPLY
+show_info 'Enter your choice:' && read REPLY
 case $REPLY in
 # RPM Fusion
 1)
     # Check
-    if [ -e /etc/dnf.repos.d/rpmfusion-free.repo ]; then
+    if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
         clear
         echo 'RPM Fusion is already in the repositories.'
         echo ''
     else
         # Add repository
         echo 'Adding RPM Fusion to repositories...'
-        echo 'Requires root privileges:'
+        show_info 'Requires root privileges:'
         su -c 'rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm'
-        echo 'Done.'
+        show_success 'Done.'
         # Update system
         echo 'Performing system update...'
-        sudo dnf -y update
+        sudo yum -y update
         echo 'Done'
     fi
     repos
