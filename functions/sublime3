@@ -8,16 +8,16 @@ dir="$(dirname "$0")"
 function sublime3 {
 # Downloading Sublime Text 3
 cd $HOME/Downloads
-echo 'Downloading Sublime Text 3 (build 3065)...'
+echo 'Downloading Sublime Text 3 (build 3083)...'
 # Download tarball that matches system architecture
 if [ $(uname -i) = 'i386' ]; then
-    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3065.tar.bz2
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3083.tar.bz2
 elif [ $(uname -i) = 'x86_64' ]; then
-    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3065_x64.tar.bz2
+    curl -O http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3083_x64.tar.bz2
 fi
 # Extract Tarball
 cd $HOME/Downloads
-echo 'Extracting Sublime Text 3 (build 3065)...'
+echo 'Extracting Sublime Text 3 (build 3083)...'
 tar xf sublime*.tar.bz2
 # Move Sublime Text 3 to /opt
 echo 'Installing...'

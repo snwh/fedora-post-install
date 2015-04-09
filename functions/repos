@@ -29,7 +29,7 @@ case $REPLY in
         show_success 'Done.'
         # Update system
         echo 'Performing system update...'
-        sudo yum -y update
+        sudo dnf -y update
         echo 'Done'
     fi
     repos

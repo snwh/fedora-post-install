@@ -1,11 +1,14 @@
-apache2
 dconf-editor
 ffmpeg
+firewall-config
 gpg
 icedtea-web
 java
 mediainfo
 nano
 openssh-server
+openvpn
+easy-rsa
+srm
 symlinks
 wget

@@ -17,7 +17,7 @@ case $REPLY in
     # Upgrading system
     echo 'Performing system upgrade...'
     show_info 'Requires root privileges:'
-    sudo yum distro-sync -y
+    sudo dnf distro-sync -y
     show_success 'Done.'
     main
     ;;

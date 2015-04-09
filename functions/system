@@ -25,7 +25,7 @@ case $REPLY in
 [Yy]* )
     show_info 'Requires root privileges:'
     # Feel free to change the contents of "utilities.list" to whatever suits your preferences.
-    sudo yum install -y  $(cat $UTILS)
+    sudo dnf install -y  $(cat $UTILS)
     show_success 'Done.'
     main
     ;;
