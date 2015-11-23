@@ -17,6 +17,7 @@ echo '1. Google Chrome?'
 echo '2. Google Talk Plugin?'
 echo '3. Nautilus Dropbox?'
 echo '4. Sublime Text?'
+echo '5. Adobe Flash Player?'
 echo 'r. Return'
 echo ''
 show_info 'Enter your choice:' && read REPLY
@@ -84,6 +85,24 @@ case $REPLY in
 # Sublime Text 3
 4)
     sublime3
+    thirdparty
+    ;;
+# Adobe Flash Player
+# See https://ask.fedoraproject.org/en/question/10217/sticky-how-do-i-install-adobe-flash-on-fedora/
+5)
+    echo 'Installing Adobe Repository and Adobe flash player...'
+    # Download RPM file that matches system architecture
+    if [ $(uname -m) = 'i386' ]; then
+        show_info 'Requires root privileges:'
+        su -c 'dnf -y install http://linuxdownload.adobe.com/adobe-release/adobe-release-i386-1.0-1.noarch.rpm && dnf -y install flash-plugin'
+    elif [ $(uname -m) = 'x86_64' ]; then
+        show_info 'Requires root privileges:'
+        su -c 'dnf -y install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm && dnf -y install flash-plugin'
+    else
+        echo 'Architecture not supported'
+    fi
+    show_success 'Done.'
+    thirdparty
     ;;
 # Return
 [Rr]*) 
