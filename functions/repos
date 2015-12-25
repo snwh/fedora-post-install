@@ -25,7 +25,7 @@ case $REPLY in
         # Add repository
         echo 'Adding RPM Fusion to repositories...'
         show_info 'Requires root privileges:'
-        su -c 'dnf install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+        su -c 'rpm -Uvh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
         show_success 'Done.'
         # Update system
         echo 'Performing system update...'
