@@ -31,11 +31,10 @@ dir="$(dirname "$0")"
 
 . $dir/functions/check
 . $dir/functions/cleanup
-. $dir/functions/codecs
 . $dir/functions/configure
 . $dir/functions/development
 . $dir/functions/favourites
-. $dir/functions/repositories`
+. $dir/functions/repositories
 . $dir/functions/thirdparty
 . $dir/functions/update
 . $dir/functions/utilities
@@ -76,7 +75,6 @@ function main {
         favourites      'Install favourite applications' \
         utilities       'Install favourite system utilities' \
         development     'Install favourite development tools' \
-        # codecs          'Install Fedora Restricted Extras' \
         thirdparty      'Install third-party applications' \
         repositories    'Add third-party repositories' \
         configure       'Configure system' \

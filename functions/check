@@ -36,4 +36,5 @@ function check {
         show_info "'$package' is installed. Proceeding"
     fi
     done
+    main
 }
