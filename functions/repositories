@@ -1,0 +1,27 @@
+#!/bin/bash
+
+dir="$(dirname "$0")"
+
+source $dir/functions/repos/rpmfusion
+
+# Install Third-Party Repositories
+function repositories {
+    eval `resize`
+    THIRDPARTY=$(whiptail \
+        --notags \
+        --title "Third-Party Repositories" \
+        --menu "\nWhich third-party repositories would you like to add?" \
+        --ok-button "Install" \
+        --cancel-button "Go Back" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        'rpmfusion'         'RPM Fusion' \
+        3>&1 1>&2 2>&3)
+     
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        clear && $THIRDPARTY
+    else
+        clear && main
+    fi
+}
+

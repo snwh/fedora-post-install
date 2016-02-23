@@ -1,0 +1,112 @@
+#!/bin/bash
+
+# Google Chrome
+function google-chrome {
+eval `resize` 
+exitstatus=$?
+if [ $exitstatus = 0 ]; then
+    status="0"
+    while [ "$status" -eq 0 ]  
+    do
+       
+        VERSION=$(whiptail \
+        --title "Google Chrome" --radiolist \
+        "Which version of Chrome would you like to install?" \
+        --ok-button "Install" \
+        --cancel-button "Go Back" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        "stable"    "Stable builds" ON \
+        "beta"      "Beta builds" OFF \
+        "unstable"  "Unstable builds" OFF \
+        3>&1 1>&2 2>&3) 
+         
+        # Change to lower case and remove spaces.
+        case "${VERSION}" in
+            stable) 
+                show_info 'Downloading Google Chrome...'
+                # Download Debian file that matches system architecture
+                case `uname -i` in
+                    i386|i486|i586|i686)
+                        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm
+                        ;;
+                    x86_64)
+                        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+                        ;;
+                    *)
+                        show_error "No packages available to download that matches your system." && thirdparty
+                        ;;
+                esac
+                # Install package(s)
+                echo 'Installing Google Chrome...'
+                show_warning 'Requires root privileges'
+                sudo dnf --nogpgcheck install -y google-chrome*.rpm
+                # Cleanup and finish
+                rm google-chrome*.rpm
+                # Done
+                show_success 'Done.'
+                whiptail --title "Finished" --msgbox "Installation complete." 8 78
+                status=1
+                thirdparty
+            ;;
+            beta) 
+                show_info 'Downloading Google Chrome (beta)...'
+                # Download Debian file that matches system architecture
+                case `uname -i` in
+                    i386|i486|i586|i686)
+                        curl -O https://dl.google.com/linux/direct/google-chrome-beta_current_i386.rpm
+                        ;;
+                    x86_64)
+                        curl -O https://dl.google.com/linux/direct/google-chrome-beta_current_x86_64.rpm
+                        ;;
+                    *)
+                        show_error "No packages available to download that matches your system." && thirdparty
+                        ;;
+                esac
+                # Install package(s)
+                echo 'Installing Google Chrome...'
+                show_warning 'Requires root privileges'
+                sudo dnf --nogpgcheck install -y google-chrome*.rpm
+                # Cleanup and finish
+                rm google-chrome*.rpm
+                # Done
+                show_success 'Done.'
+                whiptail --title "Finished" --msgbox "Installation complete." 8 78
+                status=1
+                thirdparty
+            ;;
+            unstable) 
+                show_info 'Downloading Google Chrome (unstable)...'
+                # Download Debian file that matches system architecture
+                case `uname -i` in
+                    i386|i486|i586|i686)
+                        curl -O https://dl.google.com/linux/direct/google-chrome-unstable_current_i386.rpm
+                        ;;
+                    x86_64)
+                        curl -O https://dl.google.com/linux/direct/google-chrome-unstable_current_x86_64.rpm
+                        ;;
+                    *)
+                        show_error "No packages available to download that matches your system." && thirdparty
+                        ;;
+                esac
+                # Install package(s)
+                echo 'Installing Google Chrome...'
+                show_warning 'Requires root privileges'
+                sudo dnf --nogpgcheck install -y google-chrome*.rpm
+                # Cleanup and finish
+                rm google-chrome*.rpm
+                # Done
+                show_success 'Done.'
+                whiptail --title "Finished" --msgbox "Installation complete." 8 78
+                status=1
+                thirdparty
+            ;;
+            *) status=1 
+                thirdparty
+            ;;
+        esac
+        exitstatus1=$status1
+    done
+else
+    clear && thirdparty
+fi
+}

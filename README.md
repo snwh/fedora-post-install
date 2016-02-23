@@ -1,26 +1,22 @@
 Fedora Post Install Script
 ==========================
 
-A simple set of bash scripts with a nice terminal-based UI, for simplifying the setup of a fresh system by installing your favourite applications, setting up system configurations, etc.
+This project provides a set of shell scripts to be run after a fresh install of an Fedora(-based) OS. It will install your favourite applications, set your preferred settings, etc.
 
-Original Author: Sam Hewitt
+Feel free to copy, improve and distribute.
 
-License: GPLv3
-
-You can download the latest version from [here](https://github.com/snwh/fedora-post-install/archive/master.zip), or by cloning it from the github repository:
+You can get the latest version from the original git repository:
 
     git clone https://github.com/snwh/fedora-post-install.git
 
 ##Usage:
 
-Tweak the list files in [data](./data) to your suit your preferences and run the main script:
+Run from source folder:
 
-    bash fedora-post-install-script.sh
+    ./fedora-post-install-script.sh
 
-Or if you like, put it somewhere and add it to your custom Bash paths to run on-demand.
+Or if you like, add the script's location to your custom shell paths to run on-demand.
 
-	export PATH=${PATH}:$HOME/whereever/post-install-script-fedora/
+	export PATH=${PATH}:$HOME/whereever/Fedora-post-install/
 
-##Fork me!
-
-Feel free to copy, improve and share.
+Note: The included [preferences](functions/configure) and [lists of packages](data) are those of the original author, you will have to change them to suit yourself.

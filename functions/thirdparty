@@ -1,95 +1,37 @@
 #!/bin/bash
 
-#----- DECLARATIONS -----#
-
 dir="$(dirname "$0")"
 
-#----- FUNCTIONS -----#
+source $dir/functions/third-party/dropbox
+source $dir/functions/third-party/google-chrome
+source $dir/functions/third-party/minecraft
+source $dir/functions/third-party/rvm
+source $dir/functions/third-party/slack
+source $dir/functions/third-party/sublime-text3
 
-. $dir/functions/sublime3
-
-# THIRD PARTY APPLICATIONS
+# Install Third-Party Applications
 function thirdparty {
-echo ''
-show_info 'What would you like to install?'
-echo ''
-echo '1. Google Chrome?'
-echo '2. Google Talk Plugin?'
-echo '3. Nautilus Dropbox?'
-echo '4. Sublime Text?'
-echo 'r. Return'
-echo ''
-show_info 'Enter your choice:' && read REPLY
-case $REPLY in
-# Google Chrome
-1) 
-    echo 'Downloading Google Chrome...'
-    cd $HOME/Downloads
-    # Download RPM file that matches system architecture
-    if [ $(uname -i) = 'i386' ]; then
-        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm
-    elif [ $(uname -i) = 'x86_64' ]; then
-        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+    eval `resize`
+    THIRDPARTY=$(whiptail \
+        --notags \
+        --title "Third-Party Installation" \
+        --menu "\nWhat third-party software would you like to install?" \
+        --ok-button "Install" \
+        --cancel-button "Go Back" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        'dropbox'           'Dropbox' \
+        'google-chrome'     'Google Chrome' \
+        'minecraft'         'Minecraft' \
+        'rvm'               'Ruby Version Manager (RVM)' \
+        'slack'             'Slack' \
+        'sublime-text3'     'Sublime Text 3' \
+        3>&1 1>&2 2>&3)
+     
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        clear && $THIRDPARTY
+    else
+        clear && main
     fi
-    # Install package(s)
-    echo 'Installing Google Chrome...'
-    show_info 'Requires root privileges:'
-    sudo dnf --nogpgcheck install -y google-chrome*.rpm
-    # Cleanup and finish
-    rm google-chrome*.rpm
-    cd
-    show_success 'Done.'
-    thirdparty
-    ;;
-# Google Talk Plugin
-2)
-    echo 'Downloading Google Talk Plugin...'
-    cd $HOME/Downloads
-    # Download RPM file that matches system architecture
-    if [ $(uname -i) = 'i386' ]; then
-        curl -O https://dl.google.com/linux/direct/google-talkplugin_current_i386.rpm
-    elif [ $(uname -i) = 'x86_64' ]; then
-        curl -O https://dl.google.com/linux/direct/google-talkplugin_current_x86_64.rpm
-    fi
-    # Install package(s)
-    echo 'Installing Google Talk Plugin...'
-    show_info 'Requires root privileges:'
-    sudo dnf --nogpgcheck install -y google-talkplugin_current*.rpm
-    # Cleanup and finish
-    rm google-talkplugin_current*.rpm
-    cd
-    show_success 'Done.'
-    thirdparty
-    ;;
-# Dropbox
-3)
-    echo 'Downloading Dropbox...'
-    cd $HOME/Downloads
-    # Download RPM file that matches system architecture
-    if [ $(uname -i) = 'i386' ]; then
-        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.i386.rpm
-    elif [ $(uname -i) = 'x86_64' ]; then
-        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-1.6.0-1.fedora.x86_64.rpm
-    fi
-    # Install package(s)
-    echo 'Installing Dropbox...'
-    show_info 'Requires root privileges:'
-    sudo dnf --nogpgcheck install -y nautilus-dropbox-*.rpm
-    # Cleanup and finish
-    rm nautilus-dropbox-*.rpm
-    cd
-    show_success 'Done.'
-    thirdparty
-    ;;
-# Sublime Text 3
-4)
-    sublime3
-    ;;
-# Return
-[Rr]*) 
-    clear && main;;
-# Invalid choice
-* ) 
-    clear && echo 'Not an option, try again.' && thirdparty;;
-esac
 }
+

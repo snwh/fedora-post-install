@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# Preferred settings
+function preferences {
+    # Font settings
+    echo 'Setting font preferences...'
+    gsettings set org.gnome.desktop.interface text-scaling-factor '1.0'
+    gsettings set org.gnome.desktop.interface document-font-name 'Cantarell 11'
+    gsettings set org.gnome.desktop.interface font-name 'Cantarell 11'
+    gsettings set org.gnome.nautilus.desktop font 'Cantarell 11'
+    gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 11'
+    gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing 'rgba'
+    gsettings set org.gnome.settings-daemon.plugins.xsettings hinting 'slight'
+    echo 'Done. '
+    # Nautilus Preferences
+    echo 'Setting Nautilus preferences...'
+    gsettings set org.gnome.nautilus.preferences sort-directories-first true
+    # Gedit Preferences
+    echo 'Setting Gedit preferences...'
+    gsettings set org.gnome.gedit.preferences.editor display-line-numbers true
+    gsettings set org.gnome.gedit.preferences.editor create-backup-copy false
+    gsettings set org.gnome.gedit.preferences.editor auto-save true
+    gsettings set org.gnome.gedit.preferences.editor insert-spaces true
+    gsettings set org.gnome.gedit.preferences.editor tabs-size 4
+    # Tap-To-Click
+    echo 'Enabling Tap-to-click on touchpads...'
+    gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
+    # GNOME Preferences
+    show_info 'Setting GNOME desktop preferences...'
+    gsettings set org.gnome.desktop.interface clock-format 12h
+    gsettings set org.gnome.desktop.interface clock-show-date true
+    # Done
+    show_success 'Done.'
+    whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
+    configure
+}
+
+# Show start-up applications
+function startup {
+    show_info 'Changing display of startup applications...'
+    show_warning 'Requires root privileges'
+    sudo sed -i "s/NoDisplay=true/NoDisplay=false/g" /etc/xdg/autostart/*.desktop
+    # Done
+    show_success 'Done.'
+    whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
+    configure
+}
+
+# Put SELinux in permissive mode
+function selinux {
+    echo 'Configuring SELinux to ryn in permissive mode...'
+    show_info 'Requires root privileges:'  
+    sudo sed --in-place 's/SELINUX=.*$/SELINUX=permissive/g' /etc/selinux/config
+    show_success 'Done.'
+    # Done
+    whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
+    configure
+}
+
+# Configure System
+function configure {
+    eval `resize`
+    CONF=$(whiptail \
+        --notags \
+        --title "Configure System" \
+        --menu "\nWhat would you like to do?" \
+        --cancel-button "Go Back" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        preferences 'Set preferred application-specific settings' \
+        startup     'Show all startup applications' \
+        selinux     'Put SELinux in permissive mode' \
+        3>&1 1>&2 2>&3)
+     
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        clear && $CONF
+    else
+        clear && main
+    fi
+}

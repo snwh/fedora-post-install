@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Dropbox
+function dropbox {
+	show_info 'Downloading Dropbox (2015.10.28)...'
+    # Download RPM file that matches system architecture
+    if [ $(uname -i) = 'i386' ]; then
+        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-2015.10.28-1.fedora.i386.rpm
+    elif [ $(uname -i) = 'x86_64' ]; then
+        curl -O https://linux.dropbox.com/packages/fedora/nautilus-dropbox-2015.10.28-1.fedora.x86_64.rpm
+    fi
+    # Install package(s)
+    echo 'Installing Dropbox...'
+    show_info 'Requires root privileges:'
+    sudo dnf --nogpgcheck install -y nautilus-dropbox-*.rpm
+    # Cleanup and finish
+    rm nautilus-dropbox-*.rpm
+    # Done
+    show_success 'Done.'
+    whiptail --title "Finished" --msgbox "Installation complete." 8 78
+	thirdparty
+}

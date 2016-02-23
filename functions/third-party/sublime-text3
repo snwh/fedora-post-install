@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Sublime Text 3
+function sublime-text3 {
+	show_info 'Downloading Sublime Text 3 (build 3103)...'
+	# Download Debian file that matches system architecture
+	case `uname -i` in
+	    i386|i486|i586|i686)
+	        curl -O https://download.sublimetext.com/sublime_text_3_build_3103_x32.tar.bz2
+	        ;;
+	    x86_64)
+	        curl -O https://download.sublimetext.com/sublime_text_3_build_3103_x64.tar.bz2
+	        ;;
+	    *)
+	        show_error "No packages available to download that matches your system." && thirdparty
+	        ;;
+	esac
+	# Extract Tarball
+	echo 'Extracting tarball...'
+	tar xf sublime*.tar.bz2
+	# Move to /opt (replaces existing installation)
+	echo 'Installing...'
+	show_info 'Requires root privileges:'
+	if [ -d /opt/sublime_text_3 ]; then
+        sudo rm -Rf /opt/sublime_text_3 2>/dev/null
+        sudo mv sublime_text_3 /opt/
+	else
+	    sudo mv sublime_text_3 /opt/
+	fi
+	show_success 'Done.'
+	# Create symbolic link
+	echo 'Creating symbolic link for binary...'
+	show_info 'Requires root privileges:'
+	sudo ln -sf /opt/sublime_text_3/sublime_text /usr/bin/sublime
+	sudo chmod +x /usr/bin/sublime
+	show_success 'Done.'
+	# Create .desktop file
+	echo 'Creating .desktop file...'
+echo "[Desktop Entry]
+Version=3
+Name=Sublime Text 3
+GenericName=Text Editor
+ 
+Exec=sublime
+Terminal=false
+Icon=sublime-text
+Type=Application
+Categories=TextEditor;IDE;Development
+
+X-GNOME-FullName=Sublime Text 3
+
+[NewWindow Shortcut Group]
+Name=New Window
+Exec=sublime -n" >> sublime-text.desktop
+	# Move .desktop file
+	echo 'Moving .desktop file to /usr/share/applications'
+	sudo mv -f sublime-text.desktop /usr/share/applications/
+	show_success 'Done.'
+	# Install icon
+	echo 'Copying icons...'
+	sudo cp -r /opt/sublime_text_3/Icon/16x16/* /usr/share/icons/hicolor/16x16/apps
+	sudo cp -r /opt/sublime_text_3/Icon/32x32/* /usr/share/icons/hicolor/32x32/apps
+	sudo cp -r /opt/sublime_text_3/Icon/48x48/* /usr/share/icons/hicolor/48x48/apps
+	sudo cp -r /opt/sublime_text_3/Icon/128x128/* /usr/share/icons/hicolor/128x128/apps
+	sudo cp -r /opt/sublime_text_3/Icon/256x256/* /usr/share/icons/hicolor/256x256/apps
+	sudo gtk-update-icon-cache /usr/share/icons/hicolor
+	show_success 'Done.'
+	# Cleanup & finish
+	rm sublime*.tar.bz2
+	show_success 'Done.'
+	# Finished
+    whiptail --title "Finished" --msgbox "Installation complete." 8 78
+	thirdparty
+}

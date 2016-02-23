@@ -3,6 +3,7 @@ devscripts
 dh-make
 fedora-packager
 git
+gnome-builder
 gnome-common
 gtk3-devel
 icon-naming-utils

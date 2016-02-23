@@ -1,89 +1,25 @@
 #!/bin/bash
 
-#----- DECLARATIONS -----#
-
 dir="$(dirname "$0")"
 
 DEVTOOLS="$dir/data/development.list"
 
-# INSTALL DEVELOPMENT TOOLS
+# Install Development Applications
 function development {
-echo ''
-show_info 'What would you like to do?'
-echo ''
-echo '1. Install development tools?'
-echo '2. Install GNOME development tools?'
-echo '3. Install JHBuild dependencies?'
-echo '4. Install Android development dependencies?'
-echo 'r. Return'
-echo ''
-show_info 'Enter your choice:' && read REPLY
-case $REPLY in
-# Install Development Tools
-1)
-    echo 'Installing development tools...'
-    echo ''
-    echo 'Current package list:'
-    echo ''
-    for package in $(cat $DEVTOOLS)
-    do 
-    echo $package
-    done
-    echo ''
-    read -p 'Proceed? (Y)es, (N)o : ' REPLY
-    echo ''
-    case $REPLY in
-    # Positive action
-    [Yy]* ) 
-        show_info 'Requires root privileges:'
-        # Feel free to change the contents of "dev-tools.list" in the data folder to whatever suits your preference.
+    if (eval `resize` && whiptail \
+        --title "Favourite Development Applications" \
+        --yesno "Current list of favourite development tools to install: \n\n$(cat $DEVTOOLS) \n\nProceed with installation?" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        --scrolltext) then
+        show_info 'Installing...'
+        show_warning 'Requires root privileges'
+        # Feel free to change the contents of 'development.list' in the data folder to whatever suits your preference.
         sudo dnf install -y $(cat $DEVTOOLS)
+        # Done
         show_success 'Done.'
-        development
-        ;;
-    # Negative action
-    [Nn]* )
-        clear && development
-        ;;
-    # Error
-    * )
-        clear && show_error '\aSorry, try again.'
-        development
-        ;;
-    esac
-    ;;
-# Install GNOME developer tools
-2)
-    # Install packages
-    echo 'Installing software for GNOME development...'
-    show_info 'Requires root privileges:'
-    sudo dnf groupinstall -y development-libs development-tools gnome-software-development
-    show_success 'Done.'
-    development
-    ;;
-# Install potential JHBuild dependencies
-3)
-    # Install packages
-    echo 'Installing potential JHBuild dependencies...'
-    show_info 'Requires root privileges:'
-    sudo dnf install -y libjpeg-devel pam-devel libdb-devel libcurl-devel libudev-devel libtasn1-tools libarchive-devel cyrus-sasl-devel perl-Text-CSV wget yajl-devel device-mapper-devel libnl-devel exiv2-devel libexif-devel mesa-libGLU-devel boost-devel soundtouch-devel perl-XML-Simple openssl-devel xcb-util-devel libtiff-devel pam-devel wireless-tools-devel libudev-devel gperf libacl-devel libuuid-devel ppp-devel cmake libicu-devel lcov valgrind-devel gdbm-devel libtool-ltdl-devel libvorbis-devel openldap-devel vala vala-devel perl-Parse-Yapp samba4-pidl gnome-doc-utils cups-devel folks-devel libXtst-devel gnome-bluetooth-libs-devel readline-devel mpfr-devel neon-devel libchamplain-gtk-devel python-devel libjpeg-turbo-devel usbutils libgudev1-devel libXt-devel libusb1-devel libudisks2-devel udisks2 xorg-x11-drv-wacom-devel libtasn1-tools dbus-python libffi-devel libxml2-python js-devel libgudev1-devel libtasn1-tools systemd-devel cups-devel cmake opencc-devel tracker-devel gperf libicu-devel yelp-tools gettext-devel intltool gcc-c++ asciidoc
-    show_success 'Done.'
-    development
-    ;;
-# Install Android development dependencies
-4)
-    # Install packages
-    echo 'Installing Android development dependencies...'
-    show_info 'Requires root privileges:'
-    sudo dnf install -y glibc.i686 libstdc++.i686 zlib.i686
-    show_success 'Done.'
-    development
-    ;;
-# Return
-[Rr]*) 
-    clear && main;;
-# Invalid choice
-* ) 
-    clear && echo 'Not an option, try again.' && development;;
-esac
+        whiptail --title "Finished" --msgbox "Installation complete." 8 78
+        main
+    else
+        clear && main
+    fi
 }

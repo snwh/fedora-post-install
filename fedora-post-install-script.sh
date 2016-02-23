@@ -7,7 +7,7 @@
 # Description:
 #   A post-installation bash script for Fedora
 #
-# Legal Stuff:
+# Legal Preamble:
 #
 # This script is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -21,95 +21,86 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, see <https://www.gnu.org/licenses/gpl-3.0.txt>
 
+# tab width
 tabs 4
 clear
-echo ''
-echo '#-------------------------------------#'
-echo '#     Fedora Post-Install Script      #'
-echo '#-------------------------------------#'
 
-#----- DECLARATIONS -----#
+#----- Import Functions -----#
 
 dir="$(dirname "$0")"
 
-#----- FUNCTIONS -----#
-
+. $dir/functions/check
 . $dir/functions/cleanup
 . $dir/functions/codecs
-. $dir/functions/config
-. $dir/functions/design
+. $dir/functions/configure
 . $dir/functions/development
-. $dir/functions/drivers
 . $dir/functions/favourites
-. $dir/functions/gnome
-. $dir/functions/repos
-. $dir/functions/system
+. $dir/functions/repositories`
 . $dir/functions/thirdparty
-. $dir/functions/upgrade
+. $dir/functions/update
+. $dir/functions/utilities
 
-#----- MESSAGE FUNCTIONS -----#
-
-show_info() {
-echo -e "\033[1;34m$@\033[0m"
-}
-
-show_success() {
-echo -e "\033[1;32m$@\033[0m"
-}
-
-show_error() {
+#----- Fancy Messages -----#
+show_error(){
 echo -e "\033[1;31m$@\033[m" 1>&2
 }
+show_info(){
+echo -e "\033[1;32m$@\033[0m"
+}
+show_warning(){
+echo -e "\033[1;33m$@\033[0m"
+}
+show_question(){
+echo -e "\033[1;34m$@\033[0m"
+}
+show_success(){
+echo -e "\033[1;35m$@\033[0m"
+}
+show_header(){
+echo -e "\033[1;36m$@\033[0m"
+}
+show_listitem(){
+echo -e "\033[0;37m$@\033[0m"
+}
 
-#----- MAIN FUNCTION -----#
+# Main
 function main {
-echo ''
-show_info 'What would you like to do? '
-echo ''
-echo '1. Perform system update & upgrade?'
-echo '2. Install favourite applications?'
-echo '3. Install favourite system utilities?'
-echo '4. Install development tools?'
-echo '5. Install design tools?'
-echo '6. Install third-party applications?'
-echo '7. Install extra GNOME applications?'
-echo '8. Install media playback codecs?'
-echo '9. Install drivers?'
-echo '10. Configure repositories?'
-echo '11. Configure system?'
-echo '12. Cleanup the system?'
-echo 'q. Quit?'
-echo ''
-show_info 'Enter your choice :' && read REPLY
-case $REPLY in
-    1) clear && upgrade;; # System Upgrade
-    2) clear && favourites;; # Install Favourite Applications
-    3) clear && utilities;; # Install Favourite Tools
-    4) clear && development;; # Install Dev Tools
-    5) clear && design;; # Install Design Tools
-    6) clear && thirdparty;; # Install Third-Party Applications
-    7) clear && gnome;; # Install Extra GNOME Applications
-    8) clear && codecs;; # Install Third-Party Applications
-    9) clear && drivers;; # Install Drivers
-    10) clear && repos;; # Configure Repositories
-    11) clear && config;; # Configure system
-    12) clear && cleanup;; # Cleanup System
-    [Qq]* ) echo '' && quit;; # Quit
-    * ) clear && show_error '\aNot an option, try again.' && main;;
-esac
+    eval `resize`
+    MAIN=$(whiptail \
+        --notags \
+        --title "Fedora Post-Install Script" \
+        --menu "\nWhat would you like to do?" \
+        --cancel-button "Quit" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        update          'Perform system update' \
+        favourites      'Install favourite applications' \
+        utilities       'Install favourite system utilities' \
+        development     'Install favourite development tools' \
+        # codecs          'Install Fedora Restricted Extras' \
+        thirdparty      'Install third-party applications' \
+        repositories    'Add third-party repositories' \
+        configure       'Configure system' \
+        cleanup         'Cleanup the system' \
+        3>&1 1>&2 2>&3)
+     
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        clear && $MAIN
+    else
+        clear && quit
+    fi
 }
 
 # Quit
 function quit {
-read -p "Are you sure you want to quit? (Y)es, (N)o " REPLY
-case $REPLY in
-    [Yy]* ) exit 99;;
-    [Nn]* ) clear && main;;
-    * ) clear && show_error 'Sorry, try again.' && quit;;
-esac
+    if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 10 60) then
+        exit 99
+    else
+        clear && main
+    fi
 }
 
-#----- RUN MAIN FUNCTION -----#
-main
+#RUN
+check && main
 
 #END OF SCRIPT

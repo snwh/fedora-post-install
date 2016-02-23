@@ -1,11 +1,5 @@
 dconf-editor
 firewall-config
-gpg
-java
-mediainfo
 nano
 openssh-server
-openvpn
-easy-rsa
 symlinks
-wget

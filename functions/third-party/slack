@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Slack
+function slack {
+	show_info 'Downloading Slack (v1.2.6)...'
+	# Download Debian file that matches system architecture
+	case `uname -i` in
+	    i386|i486|i586|i686)
+	        show_error "No packages available to download that matches your system (32-bit)." && thirdparty
+	        ;;
+	    x86_64)
+	        https://slack-ssb-updates.global.ssl.fastly.net/linux_releases/slack-1.2.6-0.1.fc21.x86_64.rpm
+	        ;;
+	    *)
+	        show_error "No packages available to download that matches your system." && thirdparty
+	        ;;
+	esac
+	# Install package(s)
+	show_info 'Installing Slack...'
+	show_warning 'Requires root privileges'
+    sudo dnf --nogpgcheck install -y slack*.rpm
+	# Cleanup and finish
+	rm slack-desktop-*.deb
+    # Done
+    show_success 'Done.'
+    whiptail --title "Finished" --msgbox "Installation complete." 8 78
+	thirdparty
+}

@@ -1,86 +1,93 @@
 #!/bin/bash
 
-#----- DECLARATIONS -----#
-
 dir="$(dirname "$0")"
 
 PURGED="$dir/data/purge.list"
 
-# CLEANUP SYSTEM
-function cleanup {
-echo ''
-show_info 'What would you like to do?'
-echo ''
-echo '1. Remove unused pre-installed packages?'
-echo '2. Remove old kernel(s)?'
-echo '3. Remove duplicate packages?'
-echo '4. Clean package cache?'
-echo 'r. Return?'
-echo ''
-show_info 'Enter your choice:' && read REPLY
-case $REPLY in
-# Remove Unused Pre-installed Packages
-1)
-    echo 'Removing unused pre-installed applications...'
-    echo ''
-    echo 'Current package list:'
-    echo ''
-    for package in $(cat $PURGED)
-    do 
-    echo $package
-    done
-    echo ''
-    read -p 'Proceed? (Y)es, (N)o : ' REPLY
-    echo ''
-    case $REPLY in
-    # Positive action
-    [Yy]* )
-        show_info 'Requires root privileges:'
-        sudo dnf remove $(cat $PURGED)
+function unused {
+    if (eval `resize` && whiptail \
+        --title "Remove Pre-installed Applications" \
+        --yesno "Current list of pre-installed applications to remove: \n\n$(cat $PURGED) \n\nAre you sure you want proceed?" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        --scrolltext ) then
+        show_info 'Removing pre-installed applications...'
+        show_warning 'Requires root privileges'
+        # Feel free to change the contents of 'utilities.list' in the data folder to whatever suits your preference.
+        sudo dnf remove -y $(cat $PURGED)
+        # Done
         show_success 'Done.'
+        whiptail --title "Finished" --msgbox "Installation complete." 8 78
         cleanup
-        ;;
-    # Negative action
-    [Nn]* )
+    else
         clear && cleanup
-        ;;
-    # Error
-    * )
-        clear && show_error '\aSorry, try again.'
+    fi
+}
+
+# Remove old kernels
+function kernels {
+    if (whiptail --title "Remove Outdated Kernels" --yesno "If you're not currently using the newest kernel installed on your system, the following may break it. \n\nAre you sure you want proceed?" 10 60) then
+        show_info 'Removing outdated kernel(s)...'
+        show_warning 'Requires root privileges'
+        sudo dnf remove $(dnf repoquery --installonly --latest-limit -3 -q)
+        show_success 'Done.'
+        whiptail --title "Finished" --msgbox "Outdated kernels have been successfully removed." 8 78
         cleanup
-        ;;
-    esac
-    ;;
-# Remove Old Kernel
-2)
-    echo 'Removing old Kernel(s)...'
-    show_info 'Requires root privileges:'
-    sudo package-cleanup -y --oldkernels --count=1
+    else
+        clear && cleanup
+    fi
+}
+
+# Remove Orphaned Packages
+function orphaned {
+    show_info 'Removing orphaned packages...'
+    show_warning 'Requires root privileges'
+    sudo dnf autoremove -y
     show_success 'Done.'
+    whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 78
     cleanup
-    ;;
+}
+
 # Remove Duplicate Packages
-3)
-    echo 'Removing duplicate packages...'
-    show_info 'Requires root privileges:'
-    sudo package-cleanup -y --cleandupes
+function duplicates {
+    show_info 'Removing duplicate packages...'
+    show_warning 'Requires root privileges'
+    sudo dnf remove $(dnf repoquery --duplicated --latest-limit -1 -q)
     show_success 'Done.'
+    whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 78
     cleanup
-    ;;
-# Clean Package Cache
-4)
-    echo 'Cleaning package cache...'
-    show_info 'Requires root privileges:'
-    sudo dnf clean packages
-    sudo dnf clean headers
+}
+
+
+# Clean Cache
+function clean-cache {
+    show_info 'Cleaning cached package data...'
+    show_warning 'Requires root privileges'
+    sudo dnf clean all
     show_success 'Done.'
+    whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 78
     cleanup
-    ;;
-# Return
-[Rr]*) 
-    clear && main;;
-# Invalid choice
-* ) 
-    clear && echo 'Not an option, try again.' && cleanup;;
-esac
+}
+
+# Cleanup System
+function cleanup {
+    eval `resize` 
+    CLEANUP=$(whiptail \
+        --notags \
+        --title "System Cleanup" \
+        --menu "\nWhat would you like to do?" \
+        --cancel-button "Go Back" \
+        $LINES $COLUMNS $(( $LINES - 12 )) \
+        clean-cache 'Clean cached package data' \
+        orphaned    'Remove orphaned packages' \
+        duplicates  'Remove duplicate packages' \
+        unused      'Remove unused pre-installed packages' \
+        kernels     'Remove old kernel(s)' \
+        3>&1 1>&2 2>&3)
+     
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        clear && $CLEANUP
+    else
+        clear && main
+    fi
 }

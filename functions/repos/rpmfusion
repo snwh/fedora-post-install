@@ -1,21 +1,8 @@
 #!/bin/bash
 
-#----- DECLARATIONS -----#
-
-dir="$(dirname "$0")"
-
-# THIRD PARTY REPOS
-function repos {
-echo ''
-show_info 'Which repositories would you like to enable? '
-echo ''
-echo '1. RPM Fusion?'
-echo 'r. Return'
-echo ''
-show_info 'Enter your choice:' && read REPLY
-case $REPLY in
-# RPM Fusion
-1)
+# Install Fedora Restricted Extras
+function rpmfusion {
+if (whiptail --title "RPM Fusion" --yesno "Add RPM Fusion repository to software soruces?" 10 60) then
     # Check
     if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
         clear
@@ -32,13 +19,9 @@ case $REPLY in
         sudo dnf -y update
         echo 'Done'
     fi
-    repos
-    ;;
-# Return
-[Rr]*) 
-    clear && main;;
-# Invalid choice
-* ) 
-    clear && echo 'Not an option, try again.' && repos;;
-esac
+    whiptail --title "Finished" --msgbox "RPM Fusion added." 8 78
+    main
+else
+    clear && main
+fi
 }
