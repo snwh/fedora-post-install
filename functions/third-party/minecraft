@@ -4,7 +4,7 @@
 function minecraft {
 	# Add repository
 	show_info 'Downloading Minecraft...'
-	curl -0 https://s3.amazonaws.com/Minecraft.Download/launcher/Minecraft.jar
+	curl -O https://s3.amazonaws.com/Minecraft.Download/launcher/Minecraft.jar
 	# Move to /opt
 	echo 'Installing...'
 	show_info 'Requires root privileges:'
