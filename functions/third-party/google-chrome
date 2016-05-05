@@ -23,23 +23,19 @@ if [ $exitstatus = 0 ]; then
         # Change to lower case and remove spaces.
         case "${VERSION}" in
             stable) 
-                show_info 'Downloading Google Chrome...'
+                show_info 'Downloading & Installing Google Chrome...'
                 # Download Debian file that matches system architecture
                 case `uname -i` in
                     i386|i486|i586|i686)
-                        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm
+                        su -c 'rpm -ivh https://dl.google.com/linux/direct/google-chrome-stable_current_i386.rpm'
                         ;;
                     x86_64)
-                        curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+                        su -c 'rpm -ivh https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm'
                         ;;
                     *)
                         show_error "No packages available to download that matches your system." && thirdparty
                         ;;
                 esac
-                # Install package(s)
-                echo 'Installing Google Chrome...'
-                show_warning 'Requires root privileges'
-                sudo dnf --nogpgcheck install -y google-chrome*.rpm
                 # Cleanup and finish
                 rm google-chrome*.rpm
                 # Done
@@ -49,23 +45,19 @@ if [ $exitstatus = 0 ]; then
                 thirdparty
             ;;
             beta) 
-                show_info 'Downloading Google Chrome (beta)...'
+                show_info 'Downloading & Installing Google Chrome (beta)...'
                 # Download Debian file that matches system architecture
                 case `uname -i` in
                     i386|i486|i586|i686)
-                        curl -O https://dl.google.com/linux/direct/google-chrome-beta_current_i386.rpm
+                        su -c 'rpm -ivh https://dl.google.com/linux/direct/google-chrome-beta_current_i386.rpm'
                         ;;
                     x86_64)
-                        curl -O https://dl.google.com/linux/direct/google-chrome-beta_current_x86_64.rpm
+                        su -c 'rpm -ivh https://dl.google.com/linux/direct/google-chrome-beta_current_x86_64.rpm'
                         ;;
                     *)
                         show_error "No packages available to download that matches your system." && thirdparty
                         ;;
                 esac
-                # Install package(s)
-                echo 'Installing Google Chrome...'
-                show_warning 'Requires root privileges'
-                sudo dnf --nogpgcheck install -y google-chrome*.rpm
                 # Cleanup and finish
                 rm google-chrome*.rpm
                 # Done
@@ -75,23 +67,19 @@ if [ $exitstatus = 0 ]; then
                 thirdparty
             ;;
             unstable) 
-                show_info 'Downloading Google Chrome (unstable)...'
+                show_info 'Downloading & Installing Google Chrome (unstable)...'
                 # Download Debian file that matches system architecture
                 case `uname -i` in
                     i386|i486|i586|i686)
-                        curl -O https://dl.google.com/linux/direct/google-chrome-unstable_current_i386.rpm
+                        su -c 'rpm -ivh https://dl.google.com/linux/direct/google-chrome-unstable_current_i386.rpm'
                         ;;
                     x86_64)
-                        curl -O https://dl.google.com/linux/direct/google-chrome-unstable_current_x86_64.rpm
+                        su -c 'rpm -ivh https://dl.google.com/linux/direct/google-chrome-unstable_current_x86_64.rpm'
                         ;;
                     *)
                         show_error "No packages available to download that matches your system." && thirdparty
                         ;;
                 esac
-                # Install package(s)
-                echo 'Installing Google Chrome...'
-                show_warning 'Requires root privileges'
-                sudo dnf --nogpgcheck install -y google-chrome*.rpm
                 # Cleanup and finish
                 rm google-chrome*.rpm
                 # Done

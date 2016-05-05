@@ -3,7 +3,7 @@
 # Sublime Text 3
 function sublime-text3 {
 	show_info 'Downloading Sublime Text 3 (build 3103)...'
-	# Download Debian file that matches system architecture
+	# Download archive that matches system architecture
 	case `uname -i` in
 	    i386|i486|i586|i686)
 	        curl -O https://download.sublimetext.com/sublime_text_3_build_3103_x32.tar.bz2
