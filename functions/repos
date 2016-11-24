@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Install Fedora Restricted Extras
+function rpmfusion {
+if (whiptail --title "RPM Fusion" --yesno "Add RPM Fusion repository to software soruces?" 10 60) then
+	# Check
+	if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
+		echo 'RPM Fusion is already in the repositories.'
+		whiptail --msgbox "RPM Fusion is already in the repositories." 8 78
+	else
+		# Add repository
+		echo 'Adding RPM Fusion to repositories...'
+		show_info 'Requires root privileges:'
+		su -c 'rpm --quiet --query rpmfusion-free-release || dnf -y --nogpgcheck install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm'
+		su -c 'rpm --quiet --query rpmfusion-nonfree-release || dnf -y --nogpgcheck install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+		show_success 'Done.'
+		# Update system
+		echo 'Performing system update...'
+		sudo dnf -y update
+		echo 'Done'
+		whiptail --title "Finished" --msgbox "RPM Fusion repository added." 8 78
+	fi
+	main
+else
+	main
+fi
+}
+
+# Install Third-Party Repositories
+function repositories {
+	eval `resize`
+	THIRDPARTY=$(whiptail \
+		--notags \
+		--title "Third-Party Repositories" \
+		--menu "\nWhich third-party repositories would you like to add?" \
+		--ok-button "Install" \
+		--cancel-button "Go Back" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		'rpmfusion'		 'RPM Fusion' \
+		3>&1 1>&2 2>&3)
+	 
+	exitstatus=$?
+	if [ $exitstatus = 0 ]; then
+		$THIRDPARTY
+	else
+		main
+	fi
+}
+

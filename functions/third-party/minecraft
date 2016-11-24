@@ -10,7 +10,7 @@ function minecraft {
 	show_info 'Requires root privileges:'
 	sudo mkdir -p /opt/minecraft
 	sudo mv Minecraft.jar /opt/minecraft	
-    show_success 'Done.'
+	show_success 'Done.'
 	# Create .desktop file
 	echo 'Creating .desktop file...'
 echo "[Desktop Entry]
@@ -32,17 +32,23 @@ Exec=xdg-open .minecraft/screenshots/
 [Desktop Action Resources]
 Name=_Resource Packs
 Exec=xdg-open .minecraft/resourcepacks/" >> minecraft.desktop
-    show_success 'Done.'
+	show_success 'Done.'
 	# Move .desktop file
 	echo 'Moving .desktop file to /usr/share/applications'
 	sudo mv -f minecraft.desktop /usr/share/applications/
+	show_success 'Done.'
+	# Download icon
+	echo 'Downloading icon...'
+	curl -O https://snwh.org/images/icons/minecraft.png
+	sudo mv -f minecraft.png /usr/share/icons/hicolor/512x512/apps
+	sudo gtk-update-icon-cache /usr/share/icons/hicolor
 	show_success 'Done.'
 	# Install Java
 	echo 'Installing Java...'
 	show_info 'Requires root privileges:'
 	sudo dnf install -y java
-    show_success 'Done.'
-    # Done
-    whiptail --title "Finished" --msgbox "Installation complete." 8 78
+	show_success 'Done.'
+	# Done
+	whiptail --title "Finished" --msgbox "Installation complete." 8 78
 	thirdparty
 }

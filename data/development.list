@@ -1,3 +1,5 @@
+autoconf
+automake
 bzr
 devscripts
 dh-make
@@ -8,3 +10,4 @@ gnome-common
 gtk3-devel
 icon-naming-utils
 nodejs
+php

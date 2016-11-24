@@ -1,19 +1,21 @@
 #!/bin/bash
 
+BUILD=3126
+
 # Sublime Text 3
-function sublime-text3 {
-	show_info 'Downloading Sublime Text 3 (build 3103)...'
+function sublime-text {
+	show_info 'Downloading Sublime Text 3...'
 	# Download archive that matches system architecture
 	case `uname -i` in
-	    i386|i486|i586|i686)
-	        curl -O https://download.sublimetext.com/sublime_text_3_build_3103_x32.tar.bz2
-	        ;;
-	    x86_64)
-	        curl -O https://download.sublimetext.com/sublime_text_3_build_3103_x64.tar.bz2
-	        ;;
-	    *)
-	        show_error "No packages available to download that matches your system." && thirdparty
-	        ;;
+		i386|i486|i586|i686)
+			curl -O https://download.sublimetext.com/sublime_text_3_build_${BUILD}_x32.tar.bz2
+			;;
+		x86_64)
+			curl -O https://download.sublimetext.com/sublime_text_3_build_${BUILD}_x64.tar.bz2
+			;;
+		*)
+			show_error "No packages available to download that matches your system." && thirdparty
+			;;
 	esac
 	# Extract Tarball
 	echo 'Extracting tarball...'
@@ -22,10 +24,10 @@ function sublime-text3 {
 	echo 'Installing...'
 	show_info 'Requires root privileges:'
 	if [ -d /opt/sublime_text_3 ]; then
-        sudo rm -Rf /opt/sublime_text_3 2>/dev/null
-        sudo mv sublime_text_3 /opt/
+		sudo rm -Rf /opt/sublime_text_3 2>/dev/null
+		sudo mv sublime_text_3 /opt/
 	else
-	    sudo mv sublime_text_3 /opt/
+		sudo mv sublime_text_3 /opt/
 	fi
 	show_success 'Done.'
 	# Create symbolic link
@@ -69,6 +71,6 @@ Exec=sublime -n" >> sublime-text.desktop
 	rm sublime*.tar.bz2
 	show_success 'Done.'
 	# Finished
-    whiptail --title "Finished" --msgbox "Installation complete." 8 78
+	whiptail --title "Finished" --msgbox "Installation complete." 8 78
 	thirdparty
 }

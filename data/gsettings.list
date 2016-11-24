@@ -1,0 +1,12 @@
+gsettings set org.gnome.desktop.interface clock-format 12h
+gsettings set org.gnome.desktop.interface clock-show-date true
+gsettings set org.gnome.gedit.preferences.editor auto-save true
+gsettings set org.gnome.gedit.preferences.editor create-backup-copy false
+gsettings set org.gnome.gedit.preferences.editor display-line-numbers true
+gsettings set org.gnome.gedit.preferences.editor insert-spaces true
+gsettings set org.gnome.gedit.preferences.editor tabs-size 4
+gsettings set org.gnome.nautilus.preferences sort-directories-first true
+gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
+gsettings set org.gnome.settings-daemon.plugins.xsettings antialiasing "rgba"
+gsettings set org.gnome.settings-daemon.plugins.xsettings hinting "slight"
+gsettings set org.gtk.Settings.Debug enable-inspector-keybinding true

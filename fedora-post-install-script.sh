@@ -2,7 +2,7 @@
 # -*- Mode: sh; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
 # Authors:
-#   Sam Hewitt <hewittsamuel@gmail.com>
+#   Sam Hewitt <sam@snwh.org>
 #
 # Description:
 #   A post-installation bash script for Fedora
@@ -33,8 +33,8 @@ dir="$(dirname "$0")"
 . $dir/functions/cleanup
 . $dir/functions/configure
 . $dir/functions/development
-. $dir/functions/favourites
-. $dir/functions/repositories
+. $dir/functions/favs
+. $dir/functions/repos
 . $dir/functions/thirdparty
 . $dir/functions/update
 . $dir/functions/utilities
@@ -64,41 +64,47 @@ echo -e "\033[0;37m$@\033[0m"
 
 # Main
 function main {
-    eval `resize`
-    MAIN=$(whiptail \
-        --notags \
-        --title "Fedora Post-Install Script" \
-        --menu "\nWhat would you like to do?" \
-        --cancel-button "Quit" \
-        $LINES $COLUMNS $(( $LINES - 12 )) \
-        update          'Perform system update' \
-        favourites      'Install favourite applications' \
-        utilities       'Install favourite system utilities' \
-        development     'Install favourite development tools' \
-        thirdparty      'Install third-party applications' \
-        repositories    'Add third-party repositories' \
-        configure       'Configure system' \
-        cleanup         'Cleanup the system' \
-        3>&1 1>&2 2>&3)
-     
-    exitstatus=$?
-    if [ $exitstatus = 0 ]; then
-        clear && $MAIN
-    else
-        clear && quit
-    fi
+	eval `resize`
+	MAIN=$(whiptail \
+		--notags \
+		--title "Fedora Post-Install Script" \
+		--menu "\nWhat would you like to do?" \
+		--cancel-button "Quit" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		update			'Perform system update' \
+		favs			'Install favourite applications' \
+		utilities		'Install favourite system utilities' \
+		development		'Install favourite development tools' \
+		thirdparty		'Install third-party applications' \
+		repositories	'Add third-party repositories' \
+		configure		'Configure system' \
+		cleanup			'Cleanup the system' \
+		3>&1 1>&2 2>&3)
+	 
+	exitstatus=$?
+	if [ $exitstatus = 0 ]; then
+		$MAIN
+	else
+		quit
+	fi
 }
 
 # Quit
 function quit {
-    if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 10 60) then
-        exit 99
-    else
-        clear && main
-    fi
+	if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 10 60) then
+		echo "Exiting..."
+		show_info 'Thanks for using!'
+		exit 99
+	else
+		main
+	fi
 }
 
 #RUN
-check && main
+check_dependencies
+while :
+do
+  main
+done
 
 #END OF SCRIPT

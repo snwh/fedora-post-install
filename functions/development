@@ -4,22 +4,33 @@ dir="$(dirname "$0")"
 
 DEVTOOLS="$dir/data/development.list"
 
-# Install Development Applications
+# Install preferred development applications using the list of packages 'data/development.list'
 function development {
-    if (eval `resize` && whiptail \
-        --title "Favourite Development Applications" \
-        --yesno "Current list of favourite development tools to install: \n\n$(cat $DEVTOOLS) \n\nProceed with installation?" \
-        $LINES $COLUMNS $(( $LINES - 12 )) \
-        --scrolltext) then
-        show_info 'Installing...'
-        show_warning 'Requires root privileges'
-        # Feel free to change the contents of 'development.list' in the data folder to whatever suits your preference.
-        sudo dnf install -y $(cat $DEVTOOLS)
-        # Done
-        show_success 'Done.'
-        whiptail --title "Finished" --msgbox "Installation complete." 8 78
-        main
-    else
-        clear && main
-    fi
+	if (eval `resize` && whiptail \
+		--title "Preferred Development Applications" \
+		--yesno "Current list of preferred development tools to install: \n\n$(cat $DEVTOOLS) \n\nProceed with installation?" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		--scrolltext) then
+		show_info 'Installing...'
+		show_warning 'Requires root privileges'
+		# For loop for installing
+		for PACKAGE in $(cat $DEVTOOLS)
+		do
+			# Check if package is installed
+			PKGCHECK=$(sudo dnf list installed | grep "$PACKAGE")
+			if [ "" == "$PKGCHECK" ]; then
+				show_info "Package '$PACKAGE' is not installed. Installing..."
+				# Install package
+				sudo dnf install -y $PACKAGE
+				show_success 'Done.'
+			else
+				show_success "Package '$PACKAGE' is installed."
+			fi
+		done
+		show_success 'Done.'
+		whiptail --title "Finished" --msgbox "Installation of your preferred development tools is complete." 8 78
+		main
+	else
+		main
+	fi
 }

@@ -2,19 +2,19 @@
 
 dir="$(dirname "$0")"
 
-UTILS="$dir/data/utilities.list"
+FAVS="$dir/data/favs.list"
 
-# Install preferred utilities using the list of packages 'data/utilities.list'
-function utilities {
+# Install preferred applications using the list of packages 'data/favs.list'
+function favs {
 	if (eval `resize` && whiptail \
-		--title "Preferred System Utilities" \
-		--yesno "Current list of preferred system utilities: \n\n$(cat $UTILS) \n\nProceed with installation?" \
+		--title "Preferred Applications" \
+		--yesno "Current list of preferred applications to install: \n\n$(cat $FAVS) \n\nProceed with installation?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext) then
 		show_info 'Installing...'
 		show_warning 'Requires root privileges'
 		# For loop for installing
-		for PACKAGE in $(cat $UTILS)
+		for PACKAGE in $(cat $FAVS)
 		do
 			# Check if package is installed
 			PKGCHECK=$(sudo dnf list installed | grep "$PACKAGE")
@@ -28,7 +28,7 @@ function utilities {
 			fi
 		done
 		show_success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation of your preferred system utilities is complete." 8 78
+		whiptail --title "Finished" --msgbox "Installation of your preferred applications is complete." 8 78
 		main
 	else
 		main

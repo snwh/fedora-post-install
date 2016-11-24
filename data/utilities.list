@@ -1,5 +1,7 @@
 dconf-editor
 firewall-config
+powertop
 nano
 openssh-server
 symlinks
+tlp

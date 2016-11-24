@@ -7,13 +7,13 @@ Feel free to copy, improve and distribute.
 
 You can get the latest version from the original git repository:
 
-    git clone https://github.com/snwh/fedora-post-install.git
+	git clone https://github.com/snwh/fedora-post-install.git
 
 ##Usage:
 
 Run from source folder:
 
-    ./fedora-post-install-script.sh
+	./fedora-post-install-script.sh
 
 Or if you like, add the script's location to your custom shell paths to run on-demand.
 
