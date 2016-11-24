@@ -17,7 +17,7 @@ function development {
 		for PACKAGE in $(cat $DEVTOOLS)
 		do
 			# Check if package is installed
-			PKGCHECK=$(sudo dnf list installed | grep "$PACKAGE")
+			PKGCHECK=$(dnf list installed | grep "$PACKAGE")
 			if [ "" == "$PKGCHECK" ]; then
 				show_info "Package '$PACKAGE' is not installed. Installing..."
 				# Install package

@@ -8,7 +8,7 @@ function slack {
 	show_header 'Begin '$NAME' installation'
 	# Check if already installed
 	echo 'Checking if '$NAME' is already installed...'
-	PKGCHECK=$(sudo dnf list installed | grep "$PACKAGE")
+	PKGCHECK=$(dnf list installed | grep "$PACKAGE")
 	show_warning 'Requires root privileges'
 	if [ "" == "$PKGCHECK" ]; then
 		echo $NAME 'is not installed. Proceeding'

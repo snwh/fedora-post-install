@@ -28,7 +28,7 @@ if [ $exitstatus = 0 ]; then
 				NAME="Google Chrome (Stable)"
 				# Check if already installed
 				echo 'Checking if '$NAME' is already installed...'
-				PKGCHECK=$(sudo dnf list installed | grep "$PACKAGE")
+				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
 				show_warning 'Requires root privileges'
 				if [ "" == "$PKGCHECK" ]; then
 					echo $NAME 'is not installed. Proceeding'
@@ -69,7 +69,7 @@ if [ $exitstatus = 0 ]; then
 				NAME="Google Chrome (Beta)"
 				# Check if already installed
 				echo 'Checking if '$NAME' is already installed...'
-				PKGCHECK=$(sudo dnf list installed | grep "$PACKAGE")
+				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
 				show_warning 'Requires root privileges'
 				if [ "" == "$PKGCHECK" ]; then
 					echo $NAME 'is not installed. Proceeding'
@@ -110,7 +110,7 @@ if [ $exitstatus = 0 ]; then
 				NAME="Google Chrome (Unstable)"
 				# Check if already installed
 				echo 'Checking if '$NAME' is already installed...'
-				PKGCHECK=$(sudo dnf list installed | grep "$PACKAGE")
+				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
 				show_warning 'Requires root privileges'
 				if [ "" == "$PKGCHECK" ]; then
 					echo $NAME 'is not installed. Proceeding'
