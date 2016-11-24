@@ -3,8 +3,8 @@
 # Slack
 function slack {
 	# Variables
-	PACKAGE=slack-desktop
-	NAME="Slack Desktop"	
+	PACKAGE=slack
+	NAME="Slack"	
 	show_header 'Begin '$NAME' installation'
 	# Check if already installed
 	echo 'Checking if '$NAME' is already installed...'
