@@ -29,7 +29,6 @@ if [ $exitstatus = 0 ]; then
 				# Check if already installed
 				echo 'Checking if '$NAME' is already installed...'
 				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
-				show_warning 'Requires root privileges'
 				if [ "" == "$PKGCHECK" ]; then
 					echo $NAME 'is not installed. Proceeding'
 					show_info 'Downloading '$NAME'...'
@@ -70,7 +69,6 @@ if [ $exitstatus = 0 ]; then
 				# Check if already installed
 				echo 'Checking if '$NAME' is already installed...'
 				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
-				show_warning 'Requires root privileges'
 				if [ "" == "$PKGCHECK" ]; then
 					echo $NAME 'is not installed. Proceeding'
 					show_info 'Downloading '$NAME'...'
@@ -111,7 +109,6 @@ if [ $exitstatus = 0 ]; then
 				# Check if already installed
 				echo 'Checking if '$NAME' is already installed...'
 				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
-				show_warning 'Requires root privileges'
 				if [ "" == "$PKGCHECK" ]; then
 					echo $NAME 'is not installed. Proceeding'
 					show_info 'Downloading '$NAME'...'

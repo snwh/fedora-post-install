@@ -39,27 +39,28 @@ dir="$(dirname "$0")"
 . $dir/functions/update
 . $dir/functions/utilities
 
+
 #----- Fancy Messages -----#
 show_error(){
-echo -e "\033[1;31m$@\033[m" 1>&2
+echo -e "\033[1;31m *** $@ ***\033[m" 1>&2
 }
 show_info(){
-echo -e "\033[1;32m$@\033[0m"
+echo -e "\033[1;32m *** $@ ***\033[0m"
 }
 show_warning(){
-echo -e "\033[1;33m$@\033[0m"
+echo -e "\033[1;33m *** $@ ***\033[0m"
 }
 show_question(){
-echo -e "\033[1;34m$@\033[0m"
+echo -e "\033[1;34m *** $@ ***\033[0m"
 }
 show_success(){
-echo -e "\033[1;35m$@\033[0m"
+echo -e "\033[1;35m *** $@ ***\033[0m"
 }
 show_header(){
-echo -e "\033[1;36m$@\033[0m"
+echo -e "\033[1;36m *** $@ ***\033[0m"
 }
 show_listitem(){
-echo -e "\033[0;37m$@\033[0m"
+echo -e "\033[0;37m *** $@ ***\033[0m"
 }
 
 # Main

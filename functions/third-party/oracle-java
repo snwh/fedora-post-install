@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Slack
-function slack {
+# Java
+function oracle-java {
 	# Variables
-	PACKAGE=slack
-	NAME="Slack"	
+	PACKAGE=jre
+	NAME="Oracle Java 7"
+	VERSION="7u80"
+	BUILD="b15"
 	show_header 'Begin '$NAME' installation'
 	# Check if already installed
 	echo 'Checking if '$NAME' is already installed...'
@@ -15,11 +17,10 @@ function slack {
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
-				whiptail --title  "No packages available to download that matches your system (32-bit)." --msgbox "Error." 8 78
-				thirdparty
+				curl -jkLH "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/${VERSION}-${BUILD}/jre-${VERSION}-linux-i586.rpm > jre-${VERSION}-linux-i586.rpm
 				;;
 			x86_64)
-				curl -O https://downloads.slack-edge.com/linux_releases/slack-2.3.2-0.1.fc21.x86_64.rpm
+				curl -jkLH "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/${VERSION}-${BUILD}/jre-${VERSION}-linux-x64.rpm > jre-${VERSION}-linux-x64.rpm
 				;;
 			*)
 				whiptail --title "No remote packages available to download." --msgbox "Error." 8 78
