@@ -26,7 +26,7 @@ function oracle-java {
 				whiptail --title "No remote packages available to download." --msgbox "Error." 8 78
 				thirdparty
 				;;
-	    esac
+		esac
 		# Install package(s)
 		show_info 'Installing '$NAME'...'
 		show_warning 'Requires root privileges'
