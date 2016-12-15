@@ -30,7 +30,7 @@ if [ $exitstatus = 0 ]; then
 				echo 'Adding RPM Fusion to repositories...'
 				show_info 'Requires root privileges:'
 				# Free
-				su -c 'dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm'
+				sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 				show_success 'Done.'
 				# Update system
 				echo 'Performing system update...'
@@ -51,13 +51,13 @@ if [ $exitstatus = 0 ]; then
 				echo 'Adding RPM Fusion to repositories...'
 				show_info 'Requires root privileges:'
 				# Non-free
-				su -c 'dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
+				sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 				show_success 'Done.'
 				# Update system
 				echo 'Performing system update...'
 				sudo dnf -y update
 				echo 'Done'
-				whiptail --title "Finished" --msgbox "RPM Fusion (Free) repository  has been added." 8 78
+				whiptail --title "Finished" --msgbox "RPM Fusion (Non-free) repository  has been added." 8 78
 				rpmfusion
 			fi
 		;;
