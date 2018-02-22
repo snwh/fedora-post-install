@@ -1,36 +1,26 @@
 #!/bin/bash
+#
+# Update the list of packages in 'data/purge.list' to suit your preferences
+# Listed packages that are are not any system-crucial software to avoid breakage
 
 dir="$(dirname "$0")"
 
-PURGE="$dir/data/purge.list"
-
-function unused {
+function purge_unused {
+	echo_message title "Starting 'purge_unused' function"
+	# Check list
+	PURGED=$(dirname "$0")'/data/purge.list'
+	# Draw window
 	if (eval `resize` && whiptail \
 		--title "Remove Pre-installed Applications" \
 		--yesno "Current list of pre-installed applications to remove: \n\n$(cat $PURGE) \n\nAre you sure you want proceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext ) then
-		show_info 'Removing pre-installed applications...'
-		show_warning 'Requires root privileges'
-		# Feel free to change the contents of 'utilities.list' in the data folder to whatever suits your preference.
-		sudo dnf remove -y $(cat $PURGE)
+		echo_message info 'Removing pre-installed applications...'
+		# Admin privileges
+		elevate_privilege "dnf remove -y $(cat $PURGED)"
 		# Done
-		show_success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation complete." 8 78
-		cleanup
-	else
-		cleanup
-	fi
-}
-
-# Remove old kernels
-function kernels {
-	if (whiptail --title "Remove Outdated Kernels" --yesno "If you're not currently using the newest kernel installed on your system, the following may break it. \n\nAre you sure you want proceed?" 10 60) then
-		show_info 'Removing outdated kernel(s)...'
-		show_warning 'Requires root privileges'
-		sudo dnf remove $(dnf repoquery --installonly --latest-limit -3 -q)
-		show_success 'Done.'
-		whiptail --title "Finished" --msgbox "Outdated kernels have been successfully removed." 8 78
+		echo_message success 'Done.'
+		whiptail --title "Finished" --msgbox "Removal of pre-installed packages complete." 8 78
 		cleanup
 	else
 		cleanup
@@ -38,32 +28,37 @@ function kernels {
 }
 
 # Remove Orphaned Packages
-function orphaned {
-	show_info 'Removing orphaned packages...'
-	show_warning 'Requires root privileges'
-	sudo dnf autoremove -y
-	show_success 'Done.'
+function remove_orphans {
+	echo_message title "Starting 'remove_orphans' function"
+	echo_message info 'Removing orphaned packages...'
+	# Admin privileges
+	elevate_privilege "dnf autoremove -y"
+	# Done
+	echo_message success 'Done.'
 	whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 78
 	cleanup
 }
 
 # Remove Duplicate Packages
-function duplicates {
-	show_info 'Removing duplicate packages...'
-	show_warning 'Requires root privileges'
-	sudo dnf remove $(dnf repoquery --duplicated --latest-limit -1 -q)
-	show_success 'Done.'
-	whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 78
+function remove_duplicates {
+	echo_message title "Starting 'remove_duplicates' function"
+	echo_message info 'Removing duplicate packages...'
+	# Admin privileges
+	elevate_privilege "dnf remove $(dnf repoquery --duplicated --latest-limit -1 -q)"
+	# Done
+	echo_message success 'Done.'
+	whiptail --title "Finished" --msgbox "Duplicate packages have been successfully removed." 8 78
 	cleanup
 }
 
-
 # Clean Cache
-function cache {
-	show_info 'Cleaning cached package data...'
-	show_warning 'Requires root privileges'
-	sudo dnf clean all
-	show_success 'Done.'
+function clean_cache {
+	echo_message title "Starting 'clean_cache' function"
+	echo_message info 'Cleaning package cache...'
+	# Admin privileges
+	elevate_privilege "dnf clean packages"
+	# Done
+	echo_message success 'Done.'
 	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 78
 	cleanup
 }
@@ -77,13 +72,12 @@ function cleanup {
 		--menu "\nWhat would you like to do?" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		cache		'Clean cached package data' \
-		orphaned	'Remove orphaned packages' \
-		duplicates	'Remove duplicate packages' \
-		unused		'Remove unused pre-installed packages' \
-		kernels		'Remove old kernel(s)' \
+		clean_cache			'Clean package cache' \
+		remove_orphans		'Remove orphaned packages' \
+		remove_duplicates	'Remove duplicate packages' \
+		purge_unused		'Remove unused pre-installed packages' \
 		3>&1 1>&2 2>&3)
-	 
+
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		$CLEANUP

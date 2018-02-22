@@ -1,25 +1,18 @@
 #!/bin/bash
 
-# Perform system upgrade via apt-get
+# Perform system update
 function update {
-if (whiptail --title "System Update" --yesno "Proceed with system update?" 10 60) then
-	# Distro-Sync
-	show_info 'Performing system update...'
-	sudo dnf distro-sync -y
-	# Done
-	show_success 'Done.'
-	# Check
-	EXITSTATUS=$1
-	if [[ $EXITSTATUS != 0 ]]; then
-		# Already up-to-date
-		show_success 'Already up-to-date.'
-		whiptail --title "Finished" --msgbox "System is already up-to-date." 8 78
-		main
+	echo_message title "Starting 'update' function"
+	# Draw window
+	if (whiptail --title "System Update" --yesno "Proceed with system update?" 10 60) then
+		# Update
+		echo_message info 'Performing system update...'
+		# Admin privileges
+		elevate_privilege "dnf update -y"
+		# Done
+		echo_message success 'System update complete.'
+		whiptail --title "Finished" --msgbox "System update complete." 8 64
 	else
-		whiptail --title "Finished" --msgbox "System update complete" 8 78
 		main
 	fi
-else
-	main
-fi
 }

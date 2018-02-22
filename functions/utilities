@@ -1,34 +1,42 @@
 #!/bin/bash
+#
+# Update the list of packages in 'data/utilities.list' to suit your preferences
 
-dir="$(dirname "$0")"
-
-UTILS="$dir/data/utilities.list"
-
-# Install preferred utilities using the list of packages 'data/utilities.list'
+# Install preferred apps
 function utilities {
+	echo_message title "Starting 'utilities' function"
+	# Variables
+	DESC="preferred utilities"
+	TITLE="Preferred System Utilities"
+	LIST=$(dirname "$0")'/data/utilities.list'
+	# Draw window
 	if (eval `resize` && whiptail \
-		--title "Preferred System Utilities" \
-		--yesno "Current list of preferred system utilities: \n\n$(cat $UTILS) \n\nProceed with installation?" \
+		--title "$TITLE" \
+		--yesno "Current list of $DESC to install: \n\n$(cat $LIST) \n\nProceed with installation?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext) then
-		show_info 'Installing...'
-		show_warning 'Requires root privileges'
-		# For loop for installing
-		for PACKAGE in $(cat $UTILS)
-		do
+		echo_message info 'Starting installation...'
+		# Install loop
+		for PACKAGE in $(cat $LIST); do
 			# Check if package is installed
-			PKGCHECK=$(dnf list installed | grep "$PACKAGE")
-			if [ "" == "$PKGCHECK" ]; then
-				show_info "Package '$PACKAGE' is not installed. Installing..."
+			check_packages $PACKAGE
+			EXITSTATUS=$?
+			# If package is not installed
+			if [ $EXITSTATUS = 1 ]; then
 				# Install package
-				sudo dnf install -y $PACKAGE
-				show_success 'Done.'
+				echo_message info "Package '$PACKAGE' is not installed. Installing..."
+				# Admin privileges
+				elevate_privilege "dnf install -y $PACKAGE"
+				# Done
+				echo_message success 'Done.'
 			else
-				show_success "Package '$PACKAGE' is installed."
+				# Show already installed message
+				echo_message success "Package '$PACKAGE' is installed."
 			fi
 		done
-		show_success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation of your preferred system utilities is complete." 8 78
+		# Finished
+		echo_message success 'Done.'
+		whiptail --title "Finished" --msgbox "Installation of $DESC is complete." 8 78
 		main
 	else
 		main

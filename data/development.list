@@ -6,10 +6,5 @@ gnome-common
 gtk3-devel
 icon-naming-utils
 nodejs
-ruby
-ruby-devel
-rubygems
-rubygem-jekyll
-rubygem-sass
 optipng
 php

@@ -6,23 +6,23 @@ GSETTINGS="$dir/data/gsettings.list"
 
 # Automatically set preferred gsettings keys as outlined in the 'gsettings.list' file
 function preferences {
-	show_info 'Setting preferred application-specific & desktop settings...'
+	echo_message info 'Setting preferred application-specific & desktop settings...'
 	while IFS= read line
 	do
 		gsettings set $line
 	done < "$GSETTINGS"
 	# Done
-	show_success 'Done.'
+	echo_message success 'Done.'
 	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
 	configure
 }
 
 # Put SELinux in permissive mode
 function selinux {
-	show_info 'Configuring SELinux to ryn in permissive mode...'
-	show_warning 'Requires root privileges:'  
-	sudo sed --in-place 's/SELINUX=.*$/SELINUX=permissive/g' /etc/selinux/config
-	show_success 'Done.'
+	echo_message info 'Configuring SELinux to ryn in permissive mode...'
+	echo_message warning 'Requires root privileges:'  
+	elevate_privilege "sed --in-place 's/SELINUX=.*$/SELINUX=permissive/g' /etc/selinux/config"
+	echo_message success 'Done.'
 	# Done
 	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
 	configure

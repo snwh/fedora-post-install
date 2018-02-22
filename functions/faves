@@ -1,14 +1,14 @@
 #!/bin/bash
 #
-# Update the list of packages in 'data/development.list' to suit your preferences
+# Update the list of packages in 'data/faves.list' to suit your preferences
 
-# Install preferred development apps
-function development {
-	echo_message title "Starting 'development' function"
+# Install preferred apps
+function faves {
+	echo_message title "Starting 'faves' function"
 	# Variables
-	DESC="preferred development tools"
-	TITLE="Preferred Development Applications"
-	LIST=$(dirname "$0")'/data/development.list'
+	DESC="preferred applications"
+	TITLE="Preferred Applications"
+	LIST=$(dirname "$0")'/data/faves.list'
 	# Draw window
 	if (eval `resize` && whiptail \
 		--title "$TITLE" \

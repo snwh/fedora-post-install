@@ -1,14 +1,14 @@
 #!/bin/bash
 #
-# Update the list of packages in 'data/development.list' to suit your preferences
+# Update the list of packages in 'data/codecs.list' to suit your preferences
 
-# Install preferred development apps
-function development {
-	echo_message title "Starting 'development' function"
+# Install multimedia codecs
+function codecs {
+	echo_message title "Starting 'codecs' function"
 	# Variables
-	DESC="preferred development tools"
-	TITLE="Preferred Development Applications"
-	LIST=$(dirname "$0")'/data/development.list'
+	DESC="multimedia codecs"
+	TITLE="Multimedia Codecs"
+	LIST=$(dirname "$0")'/data/codecs.list'
 	# Draw window
 	if (eval `resize` && whiptail \
 		--title "$TITLE" \

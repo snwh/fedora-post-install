@@ -20,48 +20,49 @@ if [ $exitstatus = 0 ]; then
 		# Change to lower case and remove spaces.
 		case "${VERSION}" in
 		free) 
+			# Variables
+			NAME="RPM Fusion (Free)"
 			# Check
 			if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
-				echo 'RPM Fusion (Free) is already in the repositories.'
-				whiptail --msgbox "RPM Fusion (Free) is already in the repositories." 8 78
+				echo_message info '$NAME is already in the repositories.'
+				whiptail --msgbox "$NAME is already in the repositories." 8 78
 				rpmfusion
 			else
 				# Add repository
-				echo 'Adding RPM Fusion to repositories...'
-				show_info 'Requires root privileges:'
-				# Free
-				sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-				show_success 'Done.'
+				echo_message info 'Adding $NAME to repositories...'
+				elevate_privilege "dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+				echo_message success 'Done.'
 				# Update system
-				echo 'Performing system update...'
-				sudo dnf -y update
-				echo 'Done'
-				whiptail --title "Finished" --msgbox "RPM Fusion (Free) repository  has been added." 8 78
+				echo_message info 'Performing system update...'
+				elevate_privilege "dnf -y update"
+				echo_message success 'Done.'
+				whiptail --title "Finished" --msgbox "$NAME repository  has been added." 8 78
 				rpmfusion
 			fi
 		;;
-		nonfree) 
+		nonfree)
+			# Variables
+			NAME="RPM Fusion (Non-free)"
 			# Check
 			if [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
-				echo 'RPM Fusion (Non-free) is already in the repositories.'
-				whiptail --msgbox "RPM Fusion (Non-free) is already in the repositories." 8 78
+				echo_message info '$NAME is already in the repositories.'
+				whiptail --msgbox "$NAME is already in the repositories." 8 78
 				rpmfusion
 			else
 				# Add repository
-				echo 'Adding RPM Fusion to repositories...'
-				show_info 'Requires root privileges:'
-				# Non-free
-				sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-				show_success 'Done.'
+				echo_message info 'Adding $NAME to repositories...'
+				elevate_privilege "dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+				echo_message success 'Done.'
 				# Update system
-				echo 'Performing system update...'
-				sudo dnf -y update
-				echo 'Done'
-				whiptail --title "Finished" --msgbox "RPM Fusion (Non-free) repository  has been added." 8 78
+				echo_message info 'Performing system update...'
+				elevate_privilege "dnf -y update"
+				echo_message success 'Done.'
+				whiptail --title "Finished" --msgbox "$NAME repository  has been added." 8 78
 				rpmfusion
 			fi
 		;;
-		*)status=1 
+		*)
+			status=1 
 			repositories
 		;;
 		esac
