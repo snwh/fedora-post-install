@@ -47,21 +47,8 @@ function gstreamer_nonfree {
 		--title "Add RPM Fusion (Non-free) Repository?" \
 		--yesno "The RPM Fusion (Non-free) repository is required for these codecs.\n\nProceed with installation?" \
 		10 60) then
-		# Check
-		if [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
-			echo_message info 'Repository already added.'
-			whiptail --msgbox "RPM Fusion (Non-free) repository is already added." 8 78
-		else
-			# Add repository
-			echo_message info 'Adding repository...'
-			elevate_privilege "dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
-			echo_message success 'Done.'
-			# Update system
-			echo_message info 'Performing system update...'
-			elevate_privilege "dnf -y update"
-			echo_message success 'Done.'
-			whiptail --title "Finished" --msgbox "RPM Fusion (Non-free) repository has been added." 8 78
-		fi
+		# Add RPM Fusion Non-free
+		add_rpmfusion nonfree
 	else
 		codecs
 	fi
@@ -141,21 +128,8 @@ function ffpmeg_codecs {
 		--title "Add RPM Fusion (Free) Repository?" \
 		--yesno "The RPM Fusion (Free) repository is required for these codecs.\n\nProceed with installation?" \
 		10 60) then
-		# Check
-		if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
-			echo_message info 'Repository already added.'
-			whiptail --msgbox "RPM Fusion (Free) repository is already added." 8 78
-		else
-			# Add repository
-			echo_message info 'Adding repository...'
-			elevate_privilege "dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
-			echo_message success 'Done.'
-			# Update system
-			echo_message info 'Performing system update...'
-			elevate_privilege "dnf -y update"
-			echo_message success 'Done.'
-			whiptail --title "Finished" --msgbox "RPM Fusion (Free) repository has been added." 8 78
-		fi
+		# Add RPM Fusion Free
+		add_rpmfusion free
 	else
 		codecs
 	fi

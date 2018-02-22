@@ -1,6 +1,30 @@
 #!/bin/bash
 
-# Install RPM Fusion
+# Add RPM Fusion
+function add_rpmfusion() {
+	# Variables
+	REPONAME="RPM Fusion ($@)"
+	VERSION="$@"
+	if [[ "$VERSION" = "free" ]] || [[ "$VERSION" = "nonfree" ]] ; then
+		# Check
+		if [ -e /etc/yum.repos.d/rpmfusion-$VERSION.repo ]; then
+			echo_message info 'Repository already added.'
+			whiptail --msgbox "The $REPONAME repository is already added. Proceeding." 8 78
+		else
+			# Add repository
+			echo_message info 'Adding repository...'
+			elevate_privilege "dnf install https://download1.rpmfusion.org/$VERSION/fedora/rpmfusion-$VERSION-release-$(rpm -E %fedora).noarch.rpm"
+			echo_message success 'Done.'
+			whiptail --title "Finished" --msgbox "$REPONAME repository has been added." 8 78
+		fi
+	else
+		echo_message error "Not a correct RPM Fusion repository. Aborting..."
+		# Draw window
+		whiptail --msgbox "Not a correct RPM Fusion repository. Sorry, try again." --title "Oops" 8 64
+	fi
+}
+
+# Add Repositories
 function repositories {
 	eval `resize` 
 	EXITSTATUS=$?
@@ -21,35 +45,13 @@ function repositories {
 			case "${REPOS}" in
 			# RPM Fusion Free
 			rpmfusion_free)
-				# Check
-				if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
-					echo_message info 'Repository already added.'
-					whiptail --msgbox "RPM Fusion (Free) repository is already added." 8 78
-					repositories
-				else
-					# Add repository
-					echo_message info 'Adding repository...'
-					elevate_privilege "dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
-					echo_message success 'Done.'
-					whiptail --title "Finished" --msgbox "RPM Fusion (Free) repository has been added." 8 78
-					repositories
-				fi
+				add_rpmfusion free
+				repositories
 			;;
 			# RPM Fusion Non-free
 			rpmfusion_nonfree)
-				# Check
-				if [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
-					echo_message info 'Repository already added.'
-					whiptail --msgbox "RPM Fusion (Non-free) repository is already added." 8 78
-					repositories
-				else
-					# Add repository
-					echo_message info 'Adding repository...'
-					elevate_privilege "dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
-					echo_message success 'Done.'
-					whiptail --title "Finished" --msgbox "RPM Fusion (Non-free) repository has been added." 8 78
-					repositories
-				fi
+				add_rpmfusion nonfree
+				repositories
 			;;
 			# Go Back
 			*) status=1

@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Install VLC
+function vlc {
+	# Variables
+	PACKAGE=vlc
+	NAME="VLC Media Player"
+	# Check if package is installed
+	check_packages $PACKAGE
+	EXITSTATUS=$?
+	# If package is not installed
+	if [ $EXITSTATUS = 1 ]; then
+		# Start installation
+		echo_message title 'Begin '$NAME' installation'
+		# Add RPM Fusion
+		REPOVERSION="free"
+		if (eval `resize` && whiptail \
+			--title "Add RPM Fusion ($REPOVERSION) Repository?" \
+			--yesno "The RPM Fusion ($REPOVERSION) repository is required to install $NAME.\n\nProceed with installation?" \
+			10 60) then
+			# Add repository
+			echo_message info 'Adding repository...'
+			add_rpmfusion $REPOVERSION
+		else
+			thirdparty
+		fi
+		echo_message info $NAME 'is not installed.'
+		echo 'Proceeding'
+		# Install package(s)
+		echo_message info 'Installing '$NAME'...'
+		echo_message warning 'Requires root privileges'
+		# Admin privileges
+		elevate_privilege "dnf install -y $PACKAGE"
+		# Done
+		echo_message success 'Done.'
+	else
+		# Already installed
+		echo_message success $NAME' already installed.'
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
+		thirdparty
+	fi
+	# Finished
+	echo_message success 'Done.'
+	whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 78
+	thirdparty
+}
