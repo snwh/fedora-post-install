@@ -34,9 +34,10 @@ dir="$(dirname "$0")"
 . $dir/functions/codecs
 . $dir/functions/configure
 . $dir/functions/development
-. $dir/functions/faves
-. $dir/functions/password
+. $dir/functions/favs
+. $dir/functions/gnome_apps
 . $dir/functions/node_apps
+. $dir/functions/password
 . $dir/functions/repos
 . $dir/functions/thirdparty
 . $dir/functions/update
@@ -68,7 +69,7 @@ function echo_message(){
 	fi
 	tput bold;
 	tput setaf $color;
-	echo -e "-- " $message;
+	echo '-- ' $message;
 	tput sgr0;
 }
 
@@ -83,11 +84,12 @@ function main {
 		--cancel-button "Quit" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		update			'Perform system update' \
-		faves			'Install preferred applications' \
+		favs			'Install preferred applications' \
 		utilities		'Install preferred system utilities' \
 		development		'Install preferred development tools' \
 		codecs			'Install multimedia codecs' \
 		node_apps		'Install NodeJS-based tools' \
+		gnome_apps		'Install GNOME Core applications' \
 		thirdparty		'Install third-party applications' \
 		repositories	'Add third-party repositories' \
 		configure		'Configure system' \

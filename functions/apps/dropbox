@@ -3,7 +3,8 @@
 # Dropbox
 function dropbox {
 	# Variables
-	PACKAGE=nautilus-dropbox-2015.10.28-1.fedora
+	PACKAGE=nautilus-dropbox
+	VERSION="2015.10.28-1.fedora"
 	REPO="https://linux.dropbox.com/packages/fedora"
 	NAME="Dropbox"
 	# Install
@@ -18,10 +19,10 @@ function dropbox {
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
-				curl -O ${REPO}/${PACKAGE}.i386.rpm
+				curl -O ${REPO}/${PACKAGE}-${VERSION}.i386.rpm
 				;;
 			x86_64)
-				curl -O ${REPO}/${PACKAGE}.x86_64.rpm
+				curl -O ${REPO}/${PACKAGE}-${VERSION}.x86_64.rpm
 				;;
 			*)
 				whiptail --title "No remote packages available to download." --msgbox "Error." 8 78
@@ -39,7 +40,7 @@ function dropbox {
 		thirdparty
 	else
 		# Already installed
-		echo_message success $NAME 'already installed.'
+		echo_message success $NAME' already installed.'
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
 		thirdparty
 	fi

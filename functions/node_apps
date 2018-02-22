@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Update the list of packages in 'data/node.list' to suit your preferences
+# Update the list of packages in 'data/node-apps.list' to suit your preferences
 
 # Install preferred node apps
 function node_apps {
@@ -9,7 +9,7 @@ function node_apps {
 	# Start
 	echo_message title "Starting 'node_apps' function"
 	# Check list
-	NODE=$(dirname "$0")'/data/node.list'
+	NODE=$(dirname "$0")'/data/node-apps.list'
 	# Draw window
 	if (eval `resize` && whiptail --title \
 		"Preferred System Utilities"  --yesno \
