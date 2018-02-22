@@ -2,6 +2,7 @@
 
 # Add RPM Fusion
 function add_rpmfusion() {
+	echo_message title "Starting 'add_rpmfusion' function"
 	# Variables
 	REPONAME="RPM Fusion ($@)"
 	VERSION="$@"
@@ -24,22 +25,43 @@ function add_rpmfusion() {
 	fi
 }
 
+# Add Flatpak Repo
+function add_flatpak_repo() {
+	echo_message title "Starting 'add_flatpak_repo' function"
+	# Check
+	check_flatpak_repo $1
+	EXITSTATUS=$?
+	# If repo is added
+	if [ $EXITSTATUS = 0 ]; then
+		echo_message info 'Repository already added.'
+		whiptail --msgbox "The $1 repository is already added. Proceeding." 8 78
+	else
+		# Add repository
+		echo_message info 'Adding flatpak repository...'
+		flatpak remote-add --if-not-exists $1 $2
+		echo_message success 'Done.'
+		whiptail --title "Finished" --msgbox "The '$1' repository has been added." 8 78
+	fi
+}
+
 # Add Repositories
 function repositories {
+	echo_message title "Starting 'repositories' function"
 	eval `resize` 
 	EXITSTATUS=$?
 	if [ $EXITSTATUS = 0 ]; then
 		status="0"
 		while [ "$status" -eq 0 ]; do
 			REPOS=$(whiptail \
+				--notags \
 				--title "Third-Party Repositories" \
-				--radiolist \
-				"Which third-party repositories would you like to add?"\
-				--ok-button "Add" \
+				--menu "\nWhat third-party repositories would you like to add?" \
+				--ok-button "Install" \
 				--cancel-button "Go Back" \
 				$LINES $COLUMNS $(( $LINES - 12 )) \
-				"rpmfusion_free"		"RPM Fusion (Free)" ON \
-				"rpmfusion_nonfree"		"RPM Fusion (Non-free)" OFF \
+				"rpmfusion_free"		"RPM Fusion (Free)" \
+				"rpmfusion_nonfree"		"RPM Fusion (Non-free)" \
+				"flathub"				"FlatHub" \
 				3>&1 1>&2 2>&3)
 
 			case "${REPOS}" in
@@ -51,6 +73,13 @@ function repositories {
 			# RPM Fusion Non-free
 			rpmfusion_nonfree)
 				add_rpmfusion nonfree
+				repositories
+			;;
+			# FlatHub
+			flathub)
+				REPONAME="flathub"
+				REPO="https://dl.flathub.org/repo/flathub.flatpakrepo"
+				add_flatpak_repo $REPONAME $REPO
 				repositories
 			;;
 			# Go Back

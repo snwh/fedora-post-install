@@ -29,7 +29,7 @@ clear
 
 dir="$(dirname "$0")"
 
-. $dir/functions/check
+. $dir/functions/checks
 . $dir/functions/cleanup
 . $dir/functions/codecs
 . $dir/functions/configure

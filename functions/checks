@@ -14,6 +14,16 @@ function check_packages() {
 	dnf list installed | grep $@ &> /dev/null
 }
 
+# Check if flatpak package is installed
+function check_flatpak() {
+	flatpak list | grep $@ &> /dev/null
+}
+
+# Check if flatpak repo is added
+function check_flatpak_repo() {
+	flatpak remotes | grep $@ &> /dev/null
+}
+
 # Check for and install required packages for this script set.
 function check_dependencies {
 	# echo_message title "Starting 'check_dependencies' function"
