@@ -54,6 +54,7 @@ if [ $EXITSTATUS = 0 ]; then
 		case "${VERSION}" in
 			stable)
 				install_sublime_text stable
+			;;
 			dev)
 				install_sublime_text dev
 			;;
