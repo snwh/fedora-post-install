@@ -84,7 +84,7 @@ function main {
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		update			'Perform system update' \
 		faves			'Install preferred applications' \
-		utilities		'Install preferred CLI utilities' \
+		utilities		'Install preferred system utilities' \
 		development		'Install preferred development tools' \
 		codecs			'Install multimedia codecs' \
 		node_apps		'Install NodeJS-based tools' \
