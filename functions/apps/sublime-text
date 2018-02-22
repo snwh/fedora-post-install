@@ -1,14 +1,46 @@
 #!/bin/bash
 
+# Install Sublime Text
+function install_sublime_text { 
+	# Variables
+	NAME="Sublime Text ($@)"
+	PACKAGE=sublime-text
+	KEY="https://download.sublimetext.com/sublimehq-rpm-pub.gpg"
+	REPO="https://download.sublimetext.com/rpm/$@/x86_64/sublime-text.repo"
+	# Check if package is installed
+	check_packages $PACKAGE
+	EXITSTATUS=$?
+	# If package is not installed
+	if [ $EXITSTATUS = 1 ]; then
+		# Install the GPG key:
+		echo_message info 'Importing '$NAME' signing key...'
+		elevate_privilege "rpm -v --import $KEY"
+		# Add repository
+		echo_message info 'Adding '$NAME' repository...'
+		elevate_privilege "dnf config-manager --add-repo $REPO"
+		# Install package(s)
+		echo_message info 'Installing '$NAME'...'
+		elevate_privilege "dnf install $PACKAGE"
+		# Done
+		echo_message success 'Done.'
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
+		status=1
+		thirdparty
+	else
+		# Already installed
+		echo_message success $NAME 'already installed.'
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
+		thirdparty
+	fi
+}
+
 # Sublime Text
-function sublime-text {
+function sublime_text {
 eval `resize` 
-exitstatus=$?
-if [ $exitstatus = 0 ]; then
+EXITSTATUS=$?
+if [ $EXITSTATUS = 0 ]; then
 	status="0"
-	while [ "$status" -eq 0 ]  
-	do
-	   
+	while [ "$status" -eq 0 ]; do
 		VERSION=$(whiptail \
 		--title "Sublime Text" --radiolist \
 		"Which version of Sublime Text would you like to install?" \
@@ -18,81 +50,18 @@ if [ $exitstatus = 0 ]; then
 		"stable"	"Stable build" ON \
 		"dev"		"Beta build" OFF \
 		3>&1 1>&2 2>&3) 
-		 
 		# Change to lower case and remove spaces.
 		case "${VERSION}" in
-			stable) 
-				# Variables
-				NAME="Sublime Text (Stable)"
-				PACKAGE=sublime-text
-				KEY="https://download.sublimetext.com/sublimehq-rpm-pub.gpg"
-				REPO="https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo"
-				# Check if already installed
-				echo 'Checking if '$NAME' is already installed...'
-				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
-				if [ "" == "$PKGCHECK" ]; then
-					echo $NAME 'is not installed. Proceeding'
-					echo_message info 'Downloading '$NAME'...'
-					# Install the GPG key:
-					echo_message info 'Importing '$NAME' signing key...'
-					elevate_privilege "rpm -v --import $KEY"
-					# Add repository
-					echo_message info 'Adding '$NAME' repository...'
-					elevate_privilege "dnf config-manager --add-repo $REPO"
-					# Install package(s)
-					echo_message info 'Installing '$NAME'...'
-					elevate_privilege "dnf install $PACKAGE"
-					# Done
-					echo_message success 'Done.'
-					whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
-					status=1
-					thirdparty
-				else
-					# Already installed
-					echo_message success $NAME 'already installed.'
-					whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-					thirdparty
-				fi
-			;;
+			stable)
+				install_sublime_text stable
 			dev)
-				# Variables
-				NAME="Sublime Text (Dev)"
-				PACKAGE=sublime-text
-				KEY="https://download.sublimetext.com/sublimehq-rpm-pub.gpg"
-				REPO="https://download.sublimetext.com/rpm/dev/x86_64/sublime-text.repo"
-				# Check if already installed
-				echo 'Checking if '$NAME' is already installed...'
-				PKGCHECK=$(dnf list installed | grep "$PACKAGE")
-				if [ "" == "$PKGCHECK" ]; then
-					echo $NAME 'is not installed. Proceeding'
-					echo_message info 'Downloading '$NAME'...'
-					# Install the GPG key:
-					echo_message info 'Importing '$NAME' signing key...'
-					elevate_privilege "rpm -v --import $KEY"
-					# Add repository
-					echo_message info 'Adding '$NAME' repository...'
-					elevate_privilege "dnf config-manager --add-repo $REPO"
-					# Install package(s)
-					echo_message info 'Installing '$NAME'...'
-					elevate_privilege "dnf install $PACKAGE"
-					# Done
-					echo_message success 'Done.'
-					whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
-					status=1
-					thirdparty
-				else
-					# Already installed
-					echo_message success $NAME 'already installed.'
-					whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-					thirdparty
-				fi
+				install_sublime_text dev
 			;;
 			*)
 				status=1 
 				thirdparty
 			;;
 		esac
-		exitstatus1=$status1
 	done
 else
 	thirdparty
