@@ -35,7 +35,7 @@ function vlc {
 		echo_message success 'Done.'
 	else
 		# Already installed
-		echo_message success $NAME' already installed.'
+		echo_message success "$NAME already installed."
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
 		thirdparty
 	fi

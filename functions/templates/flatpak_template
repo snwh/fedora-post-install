@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# Flatpak Function Template
+#
+# most of this template is complete, you'll just need to change the three variables and the function name
+#
+#	package_name = the name of the flatpak package you'll be installing, usually in the form "com.example.Name"
+#	flatpak_url = the url of the flatpak repository, e.g.: "https://flathub.org/repo/appstream"
+#	app_name = a human readable name of the app you're installing
+#
+# next set the 'function_name' and reference it in the 'thirdparty' function in the 'thirdparty' function file 
+# and be sure to 'source' it in the list at the top of that file as well
+
+# Function
+function function_name { 
+	# Variables
+	NAME="app_name"
+	PACKAGE="package_name"
+	REPO="flatpak_url"
+	# Check if package is installed
+	check_flatpak $PACKAGE
+	EXITSTATUS=$?
+	# If package is not installed
+	if [ $EXITSTATUS = 1 ]; then
+		# Install package(s)
+		echo_message info 'Installing '$NAME'...'
+		flatpak install --from $REPO/$PACKAGE.flatpakref
+		# Done
+		echo_message success 'Done.'
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
+		status=1
+		thirdparty
+	else
+		# Already installed
+		echo_message success "$NAME already installed."
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
+		thirdparty
+	fi
+}

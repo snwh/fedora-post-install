@@ -28,7 +28,7 @@ function install_sublime_text {
 		thirdparty
 	else
 		# Already installed
-		echo_message success $NAME 'already installed.'
+		echo_message success "$NAME already installed."
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
 		thirdparty
 	fi
