@@ -85,17 +85,17 @@ function main {
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		update			'Perform system update' \
 		favs			'Install preferred applications' \
-		utilities		'Install preferred system utilities' \
+		utilities		'Install preferred utilities' \
 		development		'Install preferred development tools' \
-		codecs			'Install multimedia codecs' \
-		node_apps		'Install NodeJS-based tools' \
 		gnome_apps		'Install GNOME Core applications' \
 		thirdparty		'Install third-party applications' \
+		codecs			'Install multimedia codecs' \
+		node_apps		'Install NodeJS-based tools' \
 		repositories	'Add third-party repositories' \
 		configure		'Configure system' \
 		cleanup			'Cleanup the system' \
 		3>&1 1>&2 2>&3)
-	 
+
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
 		$MAIN
