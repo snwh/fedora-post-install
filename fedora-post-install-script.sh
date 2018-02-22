@@ -68,7 +68,7 @@ function echo_message(){
 	fi
 	tput bold;
 	tput setaf $color;
-	echo "-- $message";
+	echo -e "-- " $message;
 	tput sgr0;
 }
 

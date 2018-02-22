@@ -24,19 +24,19 @@ if [ $exitstatus = 0 ]; then
 			NAME="RPM Fusion (Free)"
 			# Check
 			if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
-				echo_message info '$NAME is already in the repositories.'
-				whiptail --msgbox "$NAME is already in the repositories." 8 78
+				echo_message info 'Repository already added.'
+				whiptail --msgbox "$NAME repository is already added." 8 78
 				rpmfusion
 			else
 				# Add repository
-				echo_message info 'Adding $NAME to repositories...'
+				echo_message info 'Adding repository...'
 				elevate_privilege "dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
 				echo_message success 'Done.'
 				# Update system
 				echo_message info 'Performing system update...'
 				elevate_privilege "dnf -y update"
 				echo_message success 'Done.'
-				whiptail --title "Finished" --msgbox "$NAME repository  has been added." 8 78
+				whiptail --title "Finished" --msgbox "$NAME repository has been added." 8 78
 				rpmfusion
 			fi
 		;;
@@ -45,19 +45,19 @@ if [ $exitstatus = 0 ]; then
 			NAME="RPM Fusion (Non-free)"
 			# Check
 			if [ -e /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
-				echo_message info '$NAME is already in the repositories.'
-				whiptail --msgbox "$NAME is already in the repositories." 8 78
+				echo_message info 'Repository already added.'
+				whiptail --msgbox "$NAME repository is already added." 8 78
 				rpmfusion
 			else
 				# Add repository
-				echo_message info 'Adding $NAME to repositories...'
+				echo_message info 'Adding repository...'
 				elevate_privilege "dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 				echo_message success 'Done.'
 				# Update system
 				echo_message info 'Performing system update...'
 				elevate_privilege "dnf -y update"
 				echo_message success 'Done.'
-				whiptail --title "Finished" --msgbox "$NAME repository  has been added." 8 78
+				whiptail --title "Finished" --msgbox "$NAME repository has been added." 8 78
 				rpmfusion
 			fi
 		;;
