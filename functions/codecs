@@ -126,62 +126,74 @@ function openh264 {
 		codecs
 	else
 		# Already installed
-		echo_message success $NAME 'already installed.'
+		echo_message success '$NAME already installed.'
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
 		codecs
 	fi
 }
 
-# Install FFmpeg
-function ffmpeg {
-	# Variables
-	NAME="FFmpeg"
-	PACKAGE=ffmpeg
-	# Check if package is installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
-		echo $NAME 'is not installed. Proceeding'
-		# Add RPM Fusion
-		if (eval `resize` && whiptail \
-			--title "Add RPM Fusion (Free) Repository?" \
-			--yesno "The RPM Fusion (Free) repository is required for these codecs.\n\nProceed with installation?" \
-			10 60) then
-			# Check
-			if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
-				echo_message info 'Repository already added.'
-				whiptail --msgbox "RPM Fusion (Free) repository is already added." 8 78
-			else
-				# Add repository
-				echo_message info 'Adding repository...'
-				elevate_privilege "dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
-				echo_message success 'Done.'
-				# Update system
-				echo_message info 'Performing system update...'
-				elevate_privilege "dnf -y update"
-				echo_message success 'Done.'
-				whiptail --title "Finished" --msgbox "RPM Fusion (Free) repository has been added." 8 78
-			fi
+
+# Install FFmpeg Codecs
+function ffpmeg_codecs {
+	echo_message title "Starting 'ffpmeg_codecs' function"
+	# Add RPM Fusion
+	if (eval `resize` && whiptail \
+		--title "Add RPM Fusion (Free) Repository?" \
+		--yesno "The RPM Fusion (Free) repository is required for these codecs.\n\nProceed with installation?" \
+		10 60) then
+		# Check
+		if [ -e /etc/yum.repos.d/rpmfusion-free.repo ]; then
+			echo_message info 'Repository already added.'
+			whiptail --msgbox "RPM Fusion (Free) repository is already added." 8 78
 		else
-			codecs
+			# Add repository
+			echo_message info 'Adding repository...'
+			elevate_privilege "dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+			echo_message success 'Done.'
+			# Update system
+			echo_message info 'Performing system update...'
+			elevate_privilege "dnf -y update"
+			echo_message success 'Done.'
+			whiptail --title "Finished" --msgbox "RPM Fusion (Free) repository has been added." 8 78
 		fi
-		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
-		elevate_privilege "dnf install $PACKAGE"
-		# Done
+	else
+		codecs
+	fi
+	# Update the list of packages in 'data/codecs-ffmpeg.list' to suit your preferences
+	LIST=$(dirname "$0")'/data/codecs-ffmpeg.list'
+	# Draw Window
+	if (eval `resize` && whiptail \
+		--title "FFmpeg Codecs" \
+		--yesno "Current list of FFmpeg codecs to install: \n\n$(cat $LIST) \n\nProceed with installation?" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		--scrolltext) then
+		echo_message info 'Starting installation...'
+		# Install loop
+		for PACKAGE in $(cat $LIST); do
+			# Check if package is installed
+			check_packages $PACKAGE
+			EXITSTATUS=$?
+			# If package is not installed
+			if [ $EXITSTATUS = 1 ]; then
+				# Install package
+				echo_message info "Package '$PACKAGE' is not installed. Installing..."
+				# Admin privileges
+				elevate_privilege "dnf install -y $PACKAGE"
+				# Done
+				echo_message success 'Done.'
+			else
+				# Show already installed message
+				echo_message success "Package '$PACKAGE' is installed."
+			fi
+		done
+		# Finished
 		echo_message success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
-		status=1
+		whiptail --title "Finished" --msgbox "Installation of FFmpeg codecs is complete." 8 78
 		codecs
 	else
-		# Already installed
-		echo_message success $NAME 'already installed.'
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
 		codecs
 	fi
 }
-
 
 # Install Codecs
 function codecs {
@@ -197,7 +209,7 @@ function codecs {
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		'gstreamer_free'	'GStreamer (Free) Codecs' \
 		'gstreamer_nonfree'	'GStreamer (Non-free) Codecs' \
-		'ffmpeg'			'FFmpeg' \
+		'ffpmeg_codecs'		'FFmpeg Codecs' \
 		'openh264'			'OpenH264' \
 		3>&1 1>&2 2>&3)
 
