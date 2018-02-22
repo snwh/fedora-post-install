@@ -1,12 +1,10 @@
 #!/bin/bash
 
-dir="$(dirname "$0")"
-
-GSETTINGS="$dir/data/gsettings.list"
-
 # Automatically set preferred gsettings keys as outlined in the 'gsettings.list' file
 function preferences {
 	echo_message info 'Setting preferred application-specific & desktop settings...'
+	# Variables
+	LIST=$(dirname "$0")'/data/gsettings.list'
 	while IFS= read line
 	do
 		gsettings set $line
@@ -21,7 +19,7 @@ function preferences {
 function selinux {
 	echo_message info 'Configuring SELinux to ryn in permissive mode...'
 	echo_message warning 'Requires root privileges:'  
-	elevate_privilege "sed --in-place 's/SELINUX=.*$/SELINUX=permissive/g' /etc/selinux/config"
+	elevate_privilege 'sed --in-place "s/SELINUX=.*$/SELINUX=permissive/g" /etc/selinux/config'
 	echo_message success 'Done.'
 	# Done
 	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
