@@ -11,7 +11,7 @@ function check_fail {
 }
 
 # Check if package is installed
-function check_packages() {	
+function check_packages() {
 	dnf list installed | grep $@ &> /dev/null
 }
 
@@ -34,10 +34,7 @@ function check_dependencies {
 	# Check dependencies
 	for PACKAGE in $(cat $LIST); do 
 		# Check if package is installed
-		check_packages $PACKAGE
-		EXITSTATUS=$?
-		# If package is not installed
-		if [ $EXITSTATUS = 1 ]; then
+		if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 			echo_message info "This script requires '$PACKAGE' and it is not present on your system."
 			echo_message question 'Would you like to install it to continue? (Y)es, (N)o : ' && read REPLY
 			case $REPLY in

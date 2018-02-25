@@ -26,7 +26,7 @@ function function_name {
 		echo_message info "Installing $NAME..."
 		flatpak install --from $REPO/$PACKAGE.flatpakref
 		# Done
-		echo_message success 'Done.'
+		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
 		status=1
 		thirdparty

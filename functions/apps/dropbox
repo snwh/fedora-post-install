@@ -9,13 +9,10 @@ function dropbox {
 	NAME="Dropbox"
 	# Install
 	echo_message header "Begin $NAME installation"
-	# Check if already installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
+	# Check if package is installed
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		# Install package(s)
-		echo_message info "Installing $NAME..."
+		echo_message info "$NAME is not installed. Downloading remote package..."
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
@@ -35,7 +32,7 @@ function dropbox {
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
 		# Done
-		echo_message success 'Done.'
+		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
 		thirdparty
 	else

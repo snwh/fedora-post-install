@@ -8,13 +8,10 @@ function oracle-java {
 	VERSION="7u80"
 	BUILD="b15"
 	echo_message header "Begin $NAME installation"
-	# Check if already installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
-		echo_message info "$NAME is not installed."
-		echo_message info "Downloading $NAME..."
+	# Check if package is installed
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
+		# Install package(s)
+		echo_message info "$NAME is not installed. Downloading remote package..."
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
@@ -35,8 +32,8 @@ function oracle-java {
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
 		# Done
-		echo_message success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
+		echo_message success "Installation of '$PACKAGE' complete."
+		whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 78
 		thirdparty
 	else
 		# Already installed

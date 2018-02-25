@@ -8,23 +8,22 @@ function install_sublime_text {
 	KEY="https://download.sublimetext.com/sublimehq-rpm-pub.gpg"
 	REPO="https://download.sublimetext.com/rpm/$@/x86_64/sublime-text.repo"
 	# Check if package is installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
+		echo_message info "$NAME is not installed."
 		# Import signing key
 		echo_message info "Importing $NAME signing key..."
 		elevate_privilege "rpm -v --import $KEY"
+		echo_message success "Key imported."
 		# Add repository
 		echo_message info "Adding $NAME repository..."
 		elevate_privilege "dnf config-manager --add-repo $REPO"
+		echo_message success "Repository added."
 		# Install package(s)
 		echo_message info "Installing $NAME..."
 		elevate_privilege "dnf install $PACKAGE"
 		# Done
-		echo_message success 'Done.'
+		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
-		status=1
 		thirdparty
 	else
 		# Already installed
@@ -36,11 +35,9 @@ function install_sublime_text {
 
 # Sublime Text
 function sublime_text {
-eval `resize` 
-EXITSTATUS=$?
-if [ $EXITSTATUS = 0 ]; then
-	status="0"
-	while [ "$status" -eq 0 ]; do
+	EXITSTATUS="0"
+	while [ "$EXITSTATUS" -eq 0 ]; do
+		eval `resize`
 		VERSION=$(whiptail \
 		--title "Sublime Text" --radiolist \
 		"Which version of Sublime Text would you like to install?" \
@@ -54,17 +51,16 @@ if [ $EXITSTATUS = 0 ]; then
 		case "${VERSION}" in
 			stable)
 				install_sublime_text stable
+				EXITSTATUS=1
 			;;
 			dev)
 				install_sublime_text dev
+				EXITSTATUS=1
 			;;
 			*)
-				status=1 
+				EXITSTATUS=1 
 				thirdparty
 			;;
 		esac
 	done
-else
-	thirdparty
-fi
 }

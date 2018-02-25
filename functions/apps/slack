@@ -10,10 +10,7 @@ function slack {
 	# Install
 	echo_message header "Begin $NAME installation"
 	# Check if package is installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		# Install package(s)
 		echo_message info "Installing $NAME..."
 		# Install RPM file that matches system architecture
@@ -34,7 +31,7 @@ function slack {
 				;;
 		esac
 		# Done
-		echo_message success 'Done.'
+		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
 		thirdparty
 	else

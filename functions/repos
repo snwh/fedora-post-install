@@ -47,48 +47,44 @@ function add_flatpak_repo() {
 # Add Repositories
 function repositories {
 	echo_message title "Starting 'repositories' function"
-	eval `resize` 
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
-		status="0"
-		while [ "$status" -eq 0 ]; do
-			REPOS=$(whiptail \
-				--notags \
-				--title "Third-Party Repositories" \
-				--menu "\nWhat third-party repositories would you like to add?" \
-				--ok-button "Install" \
-				--cancel-button "Go Back" \
-				$LINES $COLUMNS $(( $LINES - 12 )) \
-				"rpmfusion_free"		"RPM Fusion (Free)" \
-				"rpmfusion_nonfree"		"RPM Fusion (Non-free)" \
-				"flathub"				"FlatHub" \
-				3>&1 1>&2 2>&3)
+	# check exit status
+	EXITSTATUS="0"
+	while [ "$EXITSTATUS" -eq 0 ]; do
+		# Draw window
+		REPOS=$(eval `resize` && whiptail \
+			--notags \
+			--title "Third-Party Repositories" \
+			--menu "\nWhat third-party repositories would you like to add?" \
+			--ok-button "Install" \
+			--cancel-button "Go Back" \
+			$LINES $COLUMNS $(( $LINES - 12 )) \
+			"rpmfusion_free"		"RPM Fusion (Free)" \
+			"rpmfusion_nonfree"		"RPM Fusion (Non-free)" \
+			"flathub"				"FlatHub" \
+			3>&1 1>&2 2>&3)
 
-			case "${REPOS}" in
-			# RPM Fusion Free
-			rpmfusion_free)
-				add_rpmfusion free
-				repositories
-			;;
-			# RPM Fusion Non-free
-			rpmfusion_nonfree)
-				add_rpmfusion nonfree
-				repositories
-			;;
-			# FlatHub
-			flathub)
-				REPONAME="flathub"
-				REPO="https://dl.flathub.org/repo/flathub.flatpakrepo"
-				add_flatpak_repo $REPONAME $REPO
-				repositories
-			;;
-			# Go Back
-			*) status=1
-				main
-			;;
-			esac
-		done
-	else
-		main
-	fi
+		case "${REPOS}" in
+		# RPM Fusion Free
+		rpmfusion_free)
+			add_rpmfusion free
+			repositories
+		;;
+		# RPM Fusion Non-free
+		rpmfusion_nonfree)
+			add_rpmfusion nonfree
+			repositories
+		;;
+		# FlatHub
+		flathub)
+			REPONAME="flathub"
+			REPO="https://dl.flathub.org/repo/flathub.flatpakrepo"
+			add_flatpak_repo $REPONAME $REPO
+			repositories
+		;;
+		# Go Back
+		*) status=1
+			main
+		;;
+		esac
+	done
 }

@@ -1,7 +1,11 @@
-#!/bin/bash
+#!/bin/bash#
+#
+# When adding (or removing) any functions remember to update the
+# source list and function below to reflect any changes you make
 
-dir="$(dirname "$0")"
+dir=$(dirname "$0")
 
+# Import apps functions; commented-out imports are omitted from the function below.
 source $dir/functions/apps/chrome
 source $dir/functions/apps/dropbox
 source $dir/functions/apps/oracle-java
@@ -13,9 +17,12 @@ source $dir/functions/apps/vlc
 
 # Install Third-Party Applications
 function thirdparty {
-	echo_message title "Starting 'thirdparty' function"
-	eval `resize`
-	THIRDPARTY=$(whiptail \
+	echo_message title "Starting 'thirdparty' function..."
+	# check exit status
+	EXITSTATUS=$?
+	if [ $EXITSTATUS = 0 ]; then
+		# Draw window
+		$(eval `resize` && whiptail \
 		--notags \
 		--title "Third-Party Installation" \
 		--menu "\nWhat third-party software would you like to install?" \
@@ -31,13 +38,7 @@ function thirdparty {
 		'sublime_text'	'Sublime Text 3' \
 		'vlc'			'VLC Media Player' \
 		3>&1 1>&2 2>&3)
-
-	exitstatus=$?
-	if [ $exitstatus = 0 ]; then
-		echo_message title "Starting '$THIRDPARTY' function..."
-		$THIRDPARTY
 	else
 		main
 	fi
 }
-

@@ -5,13 +5,11 @@ function vlc {
 	# Variables
 	PACKAGE=vlc
 	NAME="VLC Media Player"
+	# Install
+	echo_message header "Begin $NAME installation"
 	# Check if package is installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
-		# Start installation
-		echo_message header "Begin $NAME installation"
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
+		echo_message info "$NAME is not installed."
 		# Add RPM Fusion
 		REPOVERSION="free"
 		if (eval `resize` && whiptail \
@@ -24,23 +22,16 @@ function vlc {
 		else
 			thirdparty
 		fi
-		echo_message info "$NAME is not installed."
-		echo 'Proceeding'
-		# Install package(s)
-		echo_message info "Installing $NAME..."
-		echo_message warning "Requires root privileges"
 		# Admin privileges
 		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
-		echo_message success 'Done.'
+		echo_message success "Installation of '$PACKAGE' complete."
+		whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 78
+		thirdparty
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
 		thirdparty
 	fi
-	# Finished
-	echo_message success 'Done.'
-	whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 78
-	thirdparty
 }

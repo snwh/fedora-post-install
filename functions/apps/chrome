@@ -7,12 +7,9 @@ function install_chrome {
 	PACKAGE=google-chrome-$@
 	NAME="Google Chrome ($@)"
 	# Check if package is installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		# Install package(s)
-		echo_message info "Installing $NAME..."
+		echo_message info "$NAME is not installed. Downloading remote package..."
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
@@ -43,12 +40,9 @@ function install_chrome {
 
 # Google Chrome
 function chrome {
-eval `resize` 
-EXITSTATUS=$?
-if [ $EXITSTATUS = 0 ]; then
-	status="0"
-	while [ "$status" -eq 0 ]; do
-		VERSION=$(whiptail \
+	EXITSTATUS="0"
+	while [ "$EXITSTATUS" -eq 0 ]; do
+		VERSION=$(eval `resize` && whiptail \
 		--title "Google Chrome" \
 		--radiolist "Which version of Chrome would you like to install?" \
 		--ok-button "Install" \
@@ -61,20 +55,21 @@ if [ $EXITSTATUS = 0 ]; then
 		# Change to lower case and remove spaces.
 		case "${VERSION}" in
 			stable)
-				install_chrome stable;
+				install_chrome stable
+				EXITSTATUS=1
 			;;
 			beta)
-				install_chrome beta;
+				install_chrome beta
+				EXITSTATUS=1
 			;;
 			unstable)
-				install_chrome unstable;
+				install_chrome unstable
+				EXITSTATUS=1
 			;;
-			*) status=1 
+			*)
+				EXITSTATUS=1
 				thirdparty
 			;;
 		esac
 	done
-else
-	thirdparty
-fi
 }

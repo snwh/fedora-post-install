@@ -42,12 +42,9 @@ function install_from_list() {
 		# Install loop
 		for PACKAGE in $(cat $LIST); do
 			# Check if package is installed
-			check_packages $PACKAGE
-			EXITSTATUS=$?
-			# If package is not installed
-			if [ $EXITSTATUS = 1 ]; then
+			if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 				# Install package
-				echo_message info "Package '$PACKAGE' is not installed. Installing..."
+				echo_message warning "Package '$PACKAGE' is not installed. Installing..."
 				# Admin privileges
 				elevate_privilege "dnf install -y $PACKAGE"
 				# Done

@@ -7,10 +7,7 @@ function openh264_codec {
 	NAME="OpenH264 Codec"
 	PACKAGE=gstreamer1-plugin-openh264
 	# Check if package is installed
-	check_packages $PACKAGE
-	EXITSTATUS=$?
-	# If package is not installed
-	if [ $EXITSTATUS = 1 ]; then
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		echo_message info "$NAME is not installed. Proceeding"
 		# Add repository
 		echo_message info "Enabling $NAME repository..."
@@ -19,9 +16,8 @@ function openh264_codec {
 		echo_message info "Installing $NAME..."
 		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
-		echo_message success 'Done.'
+		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
-		status=1
 		install_codecs
 	else
 		# Already installed
@@ -75,9 +71,11 @@ function gstreamer_nonfree {
 # Install Codecs
 function install_codecs {
 	echo_message title "Starting 'install_codecs' function"
-	# Variables
-	eval `resize`
-	CODECS=$(whiptail \
+	# check exit status
+	EXITSTATUS=$?
+	if [ $EXITSTATUS = 0 ]; then
+		# Draw window
+		$(eval `resize` && whiptail \
 		--notags \
 		--title "Multimedia Codecs" \
 		--menu "\nWhich multimedia codecs would you like to install?" \
@@ -89,10 +87,6 @@ function install_codecs {
 		'ffpmeg_codecs'		'FFmpeg Codecs' \
 		'openh264_codec'	'OpenH264 Codec' \
 		3>&1 1>&2 2>&3)
-
-	exitstatus=$?
-	if [ $exitstatus = 0 ]; then
-		$CODECS
 	else
 		main
 	fi
