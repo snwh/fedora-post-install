@@ -4,7 +4,7 @@
 function install_favs {
 	echo_message title "Starting 'install_favs' function..."
 	# Update the list of packages in 'data/favs-apps.list' to suit your preferences
-	install_from_list favs-apps "preferred apps" main
+	install_from_list favs-apps "preferred applications" main
 }
 
 # Install preferred development tools
@@ -47,8 +47,10 @@ function install_from_list() {
 				echo_message warning "Package '$PACKAGE' is not installed. Installing..."
 				# Admin privileges
 				elevate_privilege "dnf install -y $PACKAGE"
-				# Done
-				echo_message success 'Done.'
+				# Check if failed
+				if [[ $? != 0 ]]; then
+					echo_message error "Error installing '$PACKAGE'."
+				fi
 			else
 				# Show already installed message
 				echo_message info "Package '$PACKAGE' is installed."

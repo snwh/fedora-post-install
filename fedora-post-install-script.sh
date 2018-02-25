@@ -34,6 +34,7 @@ dir="$(dirname "$0")"
 . $dir/functions/codecs
 . $dir/functions/configure
 . $dir/functions/installation
+. $dir/functions/gnome
 . $dir/functions/password
 . $dir/functions/repos
 . $dir/functions/thirdparty
@@ -80,12 +81,12 @@ function main {
 		--cancel-button "Quit" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		update			'Perform system update' \
-		install_favs	'Install preferred apps' \
+		install_favs	'Install preferred applications' \
 		install_utils	'Install preferred utilities' \
 		install_dev		'Install preferred development tools' \
-		install_gnome	'Install GNOME Core apps' \
+		install_gnome	'Install additional GNOME software' \
 		install_codecs	'Install multimedia codecs' \
-		thirdparty		'Install third-party apps' \
+		thirdparty		'Install third-party applications' \
 		repositories	'Add third-party repositories' \
 		configure		'Configure system' \
 		cleanup			'Cleanup the system' \

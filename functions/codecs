@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Install OpenH264 install_codecs
+# Install OpenH264 Codecs
 function openh264_codec {
 	echo_message title "Starting 'openh264_codec' function"
 	# Variables
@@ -44,7 +44,7 @@ function ffpmeg_codecs {
 	install_from_list codecs-ffmpeg "FFmpeg multimedia codecs" install_codecs
 }
 
-# Install GStreamer (free) install_codecs
+# Install GStreamer (free) Codecs
 function gstreamer_free {
 	echo_message title "Starting 'gstreamer_free' function"
 	# Update the list of packages in 'data/codecs-gstreamer-free.list' to suit your preferences

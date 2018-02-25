@@ -51,18 +51,6 @@ function remove_orphans {
 	cleanup
 }
 
-# Remove Duplicate Packages
-function remove_duplicates {
-	echo_message title "Starting 'remove_duplicates' function"
-	echo_message header 'Removing duplicate packages...'
-	# Admin privileges
-	elevate_privilege "dnf remove $(dnf repoquery --duplicated --latest-limit -1 -q)"
-	# Done
-	echo_message success 'Done.'
-	whiptail --title "Finished" --msgbox "Duplicate packages have been successfully removed." 8 78
-	cleanup
-}
-
 # Clean Cache
 function clean_cache {
 	echo_message title "Starting 'clean_cache' function"
@@ -90,7 +78,6 @@ function cleanup {
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		clean_cache			'Clean package cache' \
 		remove_orphans		'Remove orphaned packages' \
-		remove_duplicates	'Remove duplicate packages' \
 		purge_unused		'Remove unused pre-installed packages' \
 		3>&1 1>&2 2>&3)
 	else

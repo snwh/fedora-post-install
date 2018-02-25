@@ -19,8 +19,7 @@ source $dir/functions/apps/vlc
 function thirdparty {
 	echo_message title "Starting 'thirdparty' function..."
 	# check exit status
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
+	if [ $? = 0 ]; then
 		# Draw window
 		$(eval `resize` && whiptail \
 		--notags \
