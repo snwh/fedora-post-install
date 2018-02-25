@@ -8,7 +8,7 @@ function openh264_codec {
 	PACKAGE=gstreamer1-plugin-openh264
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
-		echo_message info "$NAME is not installed. Proceeding"
+		echo_message info "$NAME is not installed."
 		# Add repository
 		echo_message info "Enabling $NAME repository..."
 		elevate_privilege "dnf config-manager --set-enabled fedora-cisco-openh264"
@@ -72,8 +72,7 @@ function gstreamer_nonfree {
 function install_codecs {
 	echo_message title "Starting 'install_codecs' function"
 	# check exit status
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
+	if [ $? = 0 ]; then
 		# Draw window
 		$(eval `resize` && whiptail \
 		--notags \

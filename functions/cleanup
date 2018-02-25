@@ -46,7 +46,7 @@ function remove_orphans {
 	# Admin privileges
 	elevate_privilege "dnf autoremove -y"
 	# Done
-	echo_message success 'Done.'
+	echo_message success 'Orphaned packages have been successfully removed.'
 	whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 78
 	cleanup
 }
@@ -58,7 +58,7 @@ function clean_cache {
 	# Admin privileges
 	elevate_privilege "dnf clean packages"
 	# Done
-	echo_message success 'Done.'
+	echo_message success 'Package cache has been cleaned..'
 	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 78
 	cleanup
 }

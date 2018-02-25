@@ -73,8 +73,7 @@ function echo_message(){
 # Main
 function main {
 	echo_message title "Starting 'main' function"
-	eval `resize`
-	MAIN=$(whiptail \
+	MAIN=$(eval `resize` && whiptail \
 		--notags \
 		--title "Fedora Post-Install Script" \
 		--menu "\nWhat would you like to do?" \
@@ -92,8 +91,8 @@ function main {
 		cleanup			'Cleanup the system' \
 		3>&1 1>&2 2>&3)
 
-	exitstatus=$?
-	if [ $exitstatus = 0 ]; then
+	# Check if fails
+	if [ $? = 0 ]; then
 		$MAIN
 	else
 		quit

@@ -42,7 +42,7 @@ function check_dependencies {
 			[Yy]* ) 
 				echo_message warning "Requires root privileges"
 				sudo dnf -y install $PACKAGE
-				echo_message success "Package '$PACKAGE' installed. Proceeding."
+				echo_message success "Package '$PACKAGE' installed."
 				;;
 			# Negative action
 			[Nn]* )
@@ -58,7 +58,6 @@ function check_dependencies {
 			echo_message info "Dependency '$PACKAGE' is installed."
 		fi
 	done
-	echo_message info "Proceeding."
 }
 
 # Check if current user is in the sudo group
@@ -75,12 +74,9 @@ function check_privileges {
 		fi
 		# Current user can use 'sudo'
 		echo_message success "Current user has sudo privileges. :)"
-		echo_message info "Proceeding."
 	else
-		# Display warning about being root user
-		echo_message warning "You are logged in as the root user. This is not recommended. :/"
 		if (whiptail --title "Root User" --yesno "You are logged in as the root user. This is mostly fine, but not recommended.\n\nAre you sure you want to proceed?" 8 64) then
-			echo_message info "Proceeding."
+			echo_message warning "You are logged in as the root user. This is not recommended. :/"
 		else
 			echo_message info "Exiting..."
 			exit 99

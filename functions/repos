@@ -10,7 +10,7 @@ function add_rpmfusion() {
 		# Check
 		if [ -e /etc/yum.repos.d/rpmfusion-$VERSION.repo ]; then
 			echo_message info 'Repository already added.'
-			whiptail --msgbox "The $REPONAME repository is already added. Proceeding." 8 78
+			whiptail --msgbox "The $REPONAME repository is already added." 8 78
 		else
 			# Add repository
 			echo_message info 'Adding repository...'
@@ -34,7 +34,7 @@ function add_flatpak_repo() {
 	# If repo is added
 	if [ $EXITSTATUS = 0 ]; then
 		echo_message info 'Repository already added.'
-		whiptail --msgbox "The $1 repository is already added. Proceeding." 8 78
+		whiptail --msgbox "The $1 repository is already added." 8 78
 	else
 		# Add repository
 		echo_message info 'Adding flatpak repository...'

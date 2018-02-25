@@ -22,8 +22,8 @@ function install_gnome {
 		# Draw window
 		$(eval `resize` && whiptail \
 		--notags \
-		--title "Multimedia Codecs" \
-		--menu "\nWhich multimedia codecs would you like to install?" \
+		--title "Install GNOME Software" \
+		--menu "\nWhich GNOME Software would you like to install?" \
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \

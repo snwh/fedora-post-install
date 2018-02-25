@@ -25,11 +25,13 @@ function install_utils {
 function install_gnome {
 	echo_message title "Starting 'install_gnome' function..."
 	# Update the list of packages in 'data/favs-gnome.list' to suit your preferences
-	install_from_list favs-gnome "GNOME core apps" main
+	install_from_list favs-gnome "additional GNOME software" main
 }
 
 # Install from list
 function install_from_list() {
+	echo_message title "Starting 'install_from_list' function..."
+	echo_message header "Starting installation of ${2}..."
 	# Variables
 	LIST=$(dirname "$0")'/data/'${1}'.list'
 	# Draw window
@@ -38,7 +40,6 @@ function install_from_list() {
 		--yesno "Current list of packages that will be installed: \n\n$(cat $LIST) \n\nWould you like to proceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext) then
-		echo_message header "Starting installation of ${2}..."
 		# Install loop
 		for PACKAGE in $(cat $LIST); do
 			# Check if package is installed
