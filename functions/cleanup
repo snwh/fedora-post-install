@@ -8,16 +8,16 @@ dir="$(dirname "$0")"
 function purge_unused {
 	echo_message title "Starting 'purge_unused' function"
 	# Check list
-	PURGED=$(dirname "$0")'/data/purge.list'
+	LIST=$(dirname "$0")'/data/purge.list'
 	# Draw window
 	if (eval `resize` && whiptail \
 		--title "Remove Pre-installed Applications" \
-		--yesno "Current list of pre-installed applications to remove: \n\n$(cat $PURGE) \n\nAre you sure you want proceed?" \
+		--yesno "Current list of pre-installed apps to remove: \n\n$(cat $LIST) \n\nAre you sure you want proceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext ) then
-		echo_message info 'Removing pre-installed applications...'
+		echo_message info 'Removing pre-installed apps...'
 		# Admin privileges
-		elevate_privilege "dnf remove -y $(cat $PURGED)"
+		elevate_privilege "dnf remove -y $(cat $LIST)"
 		# Done
 		echo_message success 'Done.'
 		whiptail --title "Finished" --msgbox "Removal of pre-installed packages complete." 8 78

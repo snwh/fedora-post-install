@@ -10,7 +10,7 @@ function set_preferences {
 	while IFS= read line
 	do
 		gsettings set $line
-	done < "$GSETTINGS"
+	done < "$LIST"
 	# Done
 	echo_message success 'Done.'
 	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
@@ -19,6 +19,7 @@ function set_preferences {
 
 # Set preferred bash aliased by copying the 'aliases.list' file to ~/.bash_aliases
 function set_bash_aliases {
+	echo_message title "Starting 'set_bash_aliases' function..."
 	# Check list
 	ALIASES=$(dirname "$0")'/data/aliases.list'
 	# Draw window
@@ -41,28 +42,46 @@ function set_bash_aliases {
 # Put SELinux in permissive mode
 function selinux {
 	echo_message title "Starting 'selinux' function..."
-	echo_message info 'Configuring SELinux to run in permissive mode...'
-	elevate_privilege "sed --in-place s/SELINUX=.*$/SELINUX=permissive/g /etc/selinux/config"
-	echo_message success 'Done.'
-	# Done
-	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
-	configure
+	# Check if SELinux is aleady in permissive mode.
+	if [[ $(cat '/etc/selinux/config' | grep -q 'SELINUX=permissive'; echo $?) != 0 ]]; then
+		echo_message info 'Configuring SELinux to run in permissive mode...'
+		elevate_privilege "sed --in-place s/SELINUX=.*$/SELINUX=permissive/g /etc/selinux/config"
+		echo_message success 'Done.'
+		# Done
+		whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
+		configure
+	else
+		# Already configured
+		echo_message info "SELinux is aleady in permissive mode."
+		whiptail --title "Finished" --msgbox "SELinux is aleady in permissive mode." 8 78
+		configure
+	fi
 }
 
 # Add current user to sudo group (wheel)
 function add_to_sudo {
+	echo_message title "Starting 'add_to_sudo' function..."
 	# Check if user is already in wheel
-	EXITSTATUS=$(groups $USER | grep -q 'wheel'; echo $?)
-	if [[ $EXITSTATUS != 0 ]]; then
+	if [[ $(groups $USER | grep -q 'wheel'; echo $?) != 0 ]]; then
 		echo_message warning "This user account isn't in the wheel user group."
 		if (whiptail --title "Change User Group" --yesno "Are you sure you want to proceed with modifying current user?" 10 60) then
+			# Adding user to 'wheel' group.
+			echo_message info "Adding user to 'wheel' group."
 			elevate_privilege "usermod -a -G wheel $USER"
+			echo_message success "Done."
 			# Done
-			echo_message success 'User added to wheel group.'
 			whiptail --title "Finished" --msgbox "User modification complete." 8 64
 		else
+			echo_message error "User cancelled action. Aborting..."
+			# Draw window
+			whiptail --msgbox "Current user not modified at this time." --title "Abort" 8 64
 			configure
 		fi
+	else
+		# Already configured
+		echo_message info "User aleady in sudo group."
+		whiptail --title "Finished" --msgbox "Current user aleady has sudo privileges." 8 78
+		configure
 	fi
 }
 
@@ -79,6 +98,7 @@ function test_updates {
 
 # limit number of concurrently installed packages 
 function limit_packages {
+	echo_message title "Starting 'limit_packages' function..."
 	# maximum number of packages
 	MAX="5"
 	LIMIT=$(whiptail \
@@ -122,12 +142,12 @@ function configure {
 		--menu "\nWhat would you like to do?" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		set_preferences		'Set preferred application-specific & desktop settings' \
-		set_bash_aliases	'Set preferred bash aliases' \
-		limit_packages		'Limit the number of concurrently installed packages' \
-		selinux				'Put SELinux in permissive mode' \
-		add_to_sudo			'Add current user to sudoers group' \
-		test_updates		'Enable Fedora Test Updates repository' \
+		set_preferences			'Set preferred application-specific & desktop settings' \
+		set_bash_aliases		'Set preferred bash aliases' \
+		limit_packages			'Limit the number of concurrently installed packages' \
+		selinux					'Put SELinux in permissive mode' \
+		add_to_sudo				'Add current user to sudoers group' \
+		test_updates			'Enable Fedora Test Updates repository' \
 		3>&1 1>&2 2>&3)
 	else
 		main

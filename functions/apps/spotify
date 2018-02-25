@@ -4,16 +4,16 @@
 function spotify { 
 	# Variables
 	NAME="Spotify"
-	PAKREF="com.spotify.Client"
+	PACKAGE="com.spotify.Client"
 	REPO="https://flathub.org/repo/appstream"
 	# Check if package is installed
-	check_flatpak $PAKREF
+	check_flatpak $PACKAGE
 	EXITSTATUS=$?
 	# If package is not installed
 	if [ $EXITSTATUS = 1 ]; then
 		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
-		flatpak install --from $REPO/$PAKREF.flatpakref
+		echo_message info "Installing $NAME..."
+		flatpak install --from $REPO/$PACKAGE.flatpakref
 		# Done
 		echo_message success 'Done.'
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78

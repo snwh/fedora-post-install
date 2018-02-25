@@ -11,24 +11,21 @@ function install_chrome {
 	EXITSTATUS=$?
 	# If package is not installed
 	if [ $EXITSTATUS = 1 ]; then
-		echo_message info $NAME 'is not installed.'
-		echo 'Proceeding'
-		echo_message info 'Downloading '$NAME'...'
-		# Download Debian file that matches system architecture
+		# Install package(s)
+		echo_message info "Installing $NAME..."
+		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
-				curl -O ${REPO}/${PACKAGE}_current_i386.rpm
+				whiptail --title  "No 32-bit packages are available to download." --msgbox "Error." 8 78
+				thirdparty
 				;;
 			x86_64)
-				curl -O ${REPO}/${PACKAGE}_current_amd64.rpm
+				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}_current_x86_64.rpm"
 				;;
 			*)
-				whiptail --title "Error." --msgbox "No remote packages available to download." 8 64
+				whiptail --title "Error." --msgbox "No packages available to download." 8 64
 				;;
 		esac
-		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
-		elevate_privilege "dnf --nogpgcheck install -y $PACKAGE*.rpm"
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
 		# Done
@@ -38,7 +35,7 @@ function install_chrome {
 		thirdparty
 	else
 		# Already installed
-		echo_message info $NAME 'already installed.'
+		echo_message info "$NAME already installed."
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 64
 		thirdparty
 	fi

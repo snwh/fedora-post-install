@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Install preferred apps
+function install_favs {
+	echo_message title "Starting 'install_favs' function..."
+	# Update the list of packages in 'data/favs-apps.list' to suit your preferences
+	install_from_list favs-apps "preferred apps" main
+}
+
+# Install preferred development tools
+function install_dev {
+	echo_message title "Starting 'install_dev' function..."
+	# Update the list of packages in 'data/favs-dev.list' to suit your preferences
+	install_from_list favs-dev "preferred development tools" main
+}
+
+# Install preferred utilities
+function install_utils {
+	echo_message title "Starting 'install_utils' function..."
+	# Update the list of packages in 'data/favs-utils.list' to suit your preferences
+	install_from_list favs-utils "preferred utilities" main
+}
+
+# Install preferred gnome apps
+function install_gnome {
+	echo_message title "Starting 'install_gnome' function..."
+	# Update the list of packages in 'data/favs-gnome.list' to suit your preferences
+	install_from_list favs-gnome "GNOME core apps" main
+}
+
+# Install from list
+function install_from_list() {
+	# Variables
+	LIST=$(dirname "$0")'/data/'${1}'.list'
+	# Draw window
+	if (eval `resize` && whiptail \
+		--title "Install ${2^}" \
+		--yesno "Current list of packages that will be installed: \n\n$(cat $LIST) \n\nWould you like to proceed?" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		--scrolltext) then
+		echo_message header "Starting installation of ${2}..."
+		# Install loop
+		for PACKAGE in $(cat $LIST); do
+			# Check if package is installed
+			check_packages $PACKAGE
+			EXITSTATUS=$?
+			# If package is not installed
+			if [ $EXITSTATUS = 1 ]; then
+				# Install package
+				echo_message info "Package '$PACKAGE' is not installed. Installing..."
+				# Admin privileges
+				elevate_privilege "dnf install -y $PACKAGE"
+				# Done
+				echo_message success 'Done.'
+			else
+				# Show already installed message
+				echo_message info "Package '$PACKAGE' is installed."
+			fi
+		done
+		# Finished
+		echo_message success 'Installation complete.'
+		whiptail --title "Finished" --msgbox "Installation of ${2} is complete." 8 78
+		$3
+	else
+		$3
+	fi
+}

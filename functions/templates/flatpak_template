@@ -23,7 +23,7 @@ function function_name {
 	# If package is not installed
 	if [ $EXITSTATUS = 1 ]; then
 		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
+		echo_message info "Installing $NAME..."
 		flatpak install --from $REPO/$PACKAGE.flatpakref
 		# Done
 		echo_message success 'Done.'

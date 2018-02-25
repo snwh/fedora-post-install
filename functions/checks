@@ -2,6 +2,7 @@
 
 # Check if command failed, if true abort
 function check_fail {
+	echo_message title "Starting 'check_fail' function"
 	EXITSTATUS=$1
 	if [[ $EXITSTATUS != 0 ]]; then
 		echo_message error "Something may have went wrong during the last command. Returning."
@@ -26,28 +27,25 @@ function check_flatpak_repo() {
 
 # Check for and install required packages for this script set.
 function check_dependencies {
-	# echo_message title "Starting 'check_dependencies' function"
+	echo_message title "Starting 'check_dependencies' function"
+	echo_message header "Checking if necessary dependencies are installed..."
 	# Variables
 	LIST=$(dirname "$0")'/data/dependencies.list'
 	# Check dependencies
-	for package in $(cat $LIST); do 
+	for PACKAGE in $(cat $LIST); do 
 		# Check if package is installed
 		check_packages $PACKAGE
 		EXITSTATUS=$?
 		# If package is not installed
 		if [ $EXITSTATUS = 1 ]; then
-			echo_message info $NAME 'is not installed. Proceeding'
-			echo_message info "This script requires '$package' and it is not present on your system."
+			echo_message info "This script requires '$PACKAGE' and it is not present on your system."
 			echo_message question 'Would you like to install it to continue? (Y)es, (N)o : ' && read REPLY
-			echo ''
 			case $REPLY in
 			# Positive action
 			[Yy]* ) 
-				echo_message warning 'Requires root privileges'
-				sudo dnf -y install $package
-				# Failure check
-				check_fail
-				echo_message success "Package '$package' installed. Proceeding."
+				echo_message warning "Requires root privileges"
+				sudo dnf -y install $PACKAGE
+				echo_message success "Package '$PACKAGE' installed. Proceeding."
 				;;
 			# Negative action
 			[Nn]* )
@@ -60,14 +58,16 @@ function check_dependencies {
 				;;
 			esac
 		else
-			echo_message success "Dependency '$package' is installed."
+			echo_message success "Dependency '$PACKAGE' is installed."
 		fi
 	done
-	echo "Proceeding."
+	echo_message info "Proceeding."
 }
 
 # Check if current user is in the sudo group
 function check_privileges {
+	echo_message title "Starting 'check_privileges' function"
+	echo_message header "Checking administrative privileges of current user..."
 	# Check if user is root
 	if [[ $EUID != 0 ]]; then
 		EXITSTATUS=$(groups $USER | grep -q 'wheel'; echo $?)
@@ -78,29 +78,25 @@ function check_privileges {
 		fi
 		# Current user can use 'sudo'
 		echo_message success "Current user has sudo privileges. :)"
-		echo "Proceeding."
+		echo_message info "Proceeding."
 		SUDOCMD="sudo"
 	else
 		# Display warning about being root user
 		echo_message warning "You are logged in as the root user. This is not recommended. :/"
 		if (whiptail --title "Root User" --yesno "You are logged in as the root user. This is mostly fine, but not recommended.\n\nAre you sure you want to proceed?" 8 64) then
-			echo "Proceeding."
+			echo_message info "Proceeding."
 			SUDOCMD=
 		else
-			echo "Exiting..."
+			echo_message info "Exiting..."
 			exit 99
 		fi
 	fi
 }
 
 function check {
-	# Check
-	echo_message title "Starting 'check' function"
 	# Check sudo
-	echo_message info "Checking administrative privileges of current user..."
 	check_privileges
 	# Check dependencies
-	echo_message info "Checking if necessary dependencies are installed..."
 	check_dependencies
 	# Done
 	echo_message success "Check complete."

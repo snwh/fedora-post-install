@@ -34,7 +34,7 @@ function thirdparty {
 
 	exitstatus=$?
 	if [ $exitstatus = 0 ]; then
-		echo_message title "Starting '$THIRDPARTY' function"
+		echo_message title "Starting '$THIRDPARTY' function..."
 		$THIRDPARTY
 	else
 		main

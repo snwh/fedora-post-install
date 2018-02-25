@@ -33,15 +33,11 @@ dir="$(dirname "$0")"
 . $dir/functions/cleanup
 . $dir/functions/codecs
 . $dir/functions/configure
-. $dir/functions/development
-. $dir/functions/favs
-. $dir/functions/gnome_apps
-. $dir/functions/node_apps
+. $dir/functions/installation
 . $dir/functions/password
 . $dir/functions/repos
 . $dir/functions/thirdparty
 . $dir/functions/update
-. $dir/functions/utilities
 
 # Fancy colorful echo messages
 function echo_message(){
@@ -49,21 +45,21 @@ function echo_message(){
 	local message=$2;
 	if ! [[ $color =~ '^[0-9]$' ]] ; then
 		case $(echo -e $color | tr '[:upper:]' '[:lower:]') in
-			# 0 = black
+			# black
 			title) color=0 ;;
-			# 1 = red
+			# red
 			error) color=1 ;;
-			# 2 = green
-			info) color=2 ;;
-			# 3 = yellow
+			# green
+			success) color=2 ;;
+			# yellow
 			warning) color=3 ;;
-			# 4 = blue
-			question) color=4 ;;
-			# 5 = magenta
-			success) color=5 ;;
-			# 6 = cyan
-			header) color=6 ;;
-			# 7 = white
+			# blue
+			header) color=4 ;;
+			# magenta
+			info) color=5 ;;
+			# cyan
+			question) color=6 ;;
+			# white
 			*) color=7 ;;
 		esac
 	fi
@@ -84,13 +80,12 @@ function main {
 		--cancel-button "Quit" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		update			'Perform system update' \
-		favs			'Install preferred applications' \
-		utilities		'Install preferred utilities' \
-		development		'Install preferred development tools' \
-		gnome_apps		'Install GNOME Core applications' \
-		thirdparty		'Install third-party applications' \
-		codecs			'Install multimedia codecs' \
-		node_apps		'Install NodeJS-based tools' \
+		install_favs	'Install preferred apps' \
+		install_utils	'Install preferred utilities' \
+		install_dev		'Install preferred development tools' \
+		install_gnome	'Install GNOME Core apps' \
+		install_codecs	'Install multimedia codecs' \
+		thirdparty		'Install third-party apps' \
 		repositories	'Add third-party repositories' \
 		configure		'Configure system' \
 		cleanup			'Cleanup the system' \
@@ -100,17 +95,17 @@ function main {
 	if [ $exitstatus = 0 ]; then
 		$MAIN
 	else
-		echo_message info 'Quitting...'
 		quit
 	fi
 }
+
 
 # Quit
 function quit {
 	echo_message title "Starting 'quit' function"
 	# Draw window
 	if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 10 60) then
-		echo "Exiting..."
+		echo_message info "Exiting..."
 		echo_message header 'Thanks for using!'
 		exit 99
 	else

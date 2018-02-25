@@ -1,96 +1,8 @@
 #!/bin/bash
 
-# Install GStreamer (Free) codecs
-function gstreamer_free {
-	echo_message title "Starting 'gstreamer_free' function"
-	# Update the list of packages in 'data/gstreamer-free.list' to suit your preferences
-	LIST=$(dirname "$0")'/data/gstreamer-free.list'
-	# Draw window
-	if (eval `resize` && whiptail \
-		--title "GStreamer (Free) Codecs" \
-		--yesno "Current list of GStreamer (Free) codecs to install: \n\n$(cat $LIST) \n\nProceed with installation?" \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		--scrolltext) then
-		echo_message info 'Starting installation...'
-		# Install loop
-		for PACKAGE in $(cat $LIST); do
-			# Check if package is installed
-			check_packages $PACKAGE
-			EXITSTATUS=$?
-			# If package is not installed
-			if [ $EXITSTATUS = 1 ]; then
-				# Install package
-				echo_message info "Package '$PACKAGE' is not installed. Installing..."
-				# Admin privileges
-				elevate_privilege "dnf install -y $PACKAGE"
-				# Done
-				echo_message success 'Done.'
-			else
-				# Show already installed message
-				echo_message success "Package '$PACKAGE' is installed."
-			fi
-		done
-		# Finished
-		echo_message success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation of GStreamer (Free) codecs is complete." 8 78
-		codecs
-	else
-		codecs
-	fi
-}
-
-# Install GStreamer (Non-free) Codecs
-function gstreamer_nonfree {
-	echo_message title "Starting 'gstreamer_nonfree' function"
-	# Add RPM Fusion 
-	if (eval `resize` && whiptail \
-		--title "Add RPM Fusion (Non-free) Repository?" \
-		--yesno "The RPM Fusion (Non-free) repository is required for these codecs.\n\nProceed with installation?" \
-		10 60) then
-		# Add RPM Fusion Non-free
-		add_rpmfusion nonfree
-	else
-		codecs
-	fi
-	# Update the list of packages in 'data/gstreamer-nonfree.list' to suit your preferences
-	LIST=$(dirname "$0")'/data/gstreamer-nonfree.list'
-	# Draw Window
-	if (eval `resize` && whiptail \
-		--title "GStreamer (Non-free) Codecs" \
-		--yesno "Current list of GStreamer multimedia codecs to install: \n\n$(cat $LIST) \n\nProceed with installation?" \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		--scrolltext) then
-		echo_message info 'Starting installation...'
-		# Install loop
-		for PACKAGE in $(cat $LIST); do
-			# Check if package is installed
-			check_packages $PACKAGE
-			EXITSTATUS=$?
-			# If package is not installed
-			if [ $EXITSTATUS = 1 ]; then
-				# Install package
-				echo_message info "Package '$PACKAGE' is not installed. Installing..."
-				# Admin privileges
-				elevate_privilege "dnf install -y $PACKAGE"
-				# Done
-				echo_message success 'Done.'
-			else
-				# Show already installed message
-				echo_message success "Package '$PACKAGE' is installed."
-			fi
-		done
-		# Finished
-		echo_message success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation of GStreamer (Non-free) codecs is complete." 8 78
-		codecs
-	else
-		codecs
-	fi
-}
-
-# Install OpenH264 codecs
-function openh264 {
-	echo_message title "Starting 'openh264' function"
+# Install OpenH264 install_codecs
+function openh264_codec {
+	echo_message title "Starting 'openh264_codec' function"
 	# Variables
 	NAME="OpenH264 Codec"
 	PACKAGE=gstreamer1-plugin-openh264
@@ -99,79 +11,70 @@ function openh264 {
 	EXITSTATUS=$?
 	# If package is not installed
 	if [ $EXITSTATUS = 1 ]; then
-		echo $NAME 'is not installed. Proceeding'
+		echo_message info "$NAME is not installed. Proceeding"
 		# Add repository
-		echo_message info 'Enabling '$NAME' repository...'
+		echo_message info "Enabling $NAME repository..."
 		elevate_privilege "dnf config-manager --set-enabled fedora-cisco-openh264"
 		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
-		elevate_privilege "dnf install $PACKAGE"
+		echo_message info "Installing $NAME..."
+		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
 		echo_message success 'Done.'
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
 		status=1
-		codecs
+		install_codecs
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-		codecs
+		install_codecs
 	fi
 }
-
 
 # Install FFmpeg Codecs
 function ffpmeg_codecs {
 	echo_message title "Starting 'ffpmeg_codecs' function"
 	# Add RPM Fusion
 	if (eval `resize` && whiptail \
-		--title "Add RPM Fusion (Free) Repository?" \
-		--yesno "The RPM Fusion (Free) repository is required for these codecs.\n\nProceed with installation?" \
+		--title "Add RPM Fusion (free) Repository?" \
+		--yesno "The RPM Fusion (free) repository is required for these codecs.\n\nProceed with installation?" \
 		10 60) then
 		# Add RPM Fusion Free
 		add_rpmfusion free
 	else
-		codecs
+		install_codecs
 	fi
 	# Update the list of packages in 'data/codecs-ffmpeg.list' to suit your preferences
-	LIST=$(dirname "$0")'/data/codecs-ffmpeg.list'
-	# Draw Window
+	install_from_list codecs-ffmpeg "FFmpeg multimedia codecs" install_codecs
+}
+
+# Install GStreamer (free) install_codecs
+function gstreamer_free {
+	echo_message title "Starting 'gstreamer_free' function"
+	# Update the list of packages in 'data/codecs-gstreamer-free.list' to suit your preferences
+	install_from_list codecs-gstreamer-free "GStreamer (free) multimedia codecs" install_codecs
+}
+
+# Install GStreamer (non-free) Codecs
+function gstreamer_nonfree {
+	echo_message title "Starting 'gstreamer_nonfree' function"
+	# Add RPM Fusion 
 	if (eval `resize` && whiptail \
-		--title "FFmpeg Codecs" \
-		--yesno "Current list of FFmpeg codecs to install: \n\n$(cat $LIST) \n\nProceed with installation?" \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		--scrolltext) then
-		echo_message info 'Starting installation...'
-		# Install loop
-		for PACKAGE in $(cat $LIST); do
-			# Check if package is installed
-			check_packages $PACKAGE
-			EXITSTATUS=$?
-			# If package is not installed
-			if [ $EXITSTATUS = 1 ]; then
-				# Install package
-				echo_message info "Package '$PACKAGE' is not installed. Installing..."
-				# Admin privileges
-				elevate_privilege "dnf install -y $PACKAGE"
-				# Done
-				echo_message success 'Done.'
-			else
-				# Show already installed message
-				echo_message success "Package '$PACKAGE' is installed."
-			fi
-		done
-		# Finished
-		echo_message success 'Done.'
-		whiptail --title "Finished" --msgbox "Installation of FFmpeg codecs is complete." 8 78
-		codecs
+		--title "Add RPM Fusion (non-free) Repository?" \
+		--yesno "The RPM Fusion (non-free) repository is required for these codecs.\n\nProceed with installation?" \
+		10 60) then
+		# Add RPM Fusion Non-free
+		add_rpmfusion nonfree
 	else
-		codecs
+		install_codecs
 	fi
+	# Update the list of packages in 'data/codecs-gstreamer-nonfree.list' to suit your preferences
+	install_from_list codecs-gstreamer-nonfree "GStreamer (non-free) multimedia codecs" install_codecs
 }
 
 # Install Codecs
-function codecs {
-	echo_message title "Starting 'codecs' function"
+function install_codecs {
+	echo_message title "Starting 'install_codecs' function"
 	# Variables
 	eval `resize`
 	CODECS=$(whiptail \
@@ -181,10 +84,10 @@ function codecs {
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		'gstreamer_free'	'GStreamer (Free) Codecs' \
-		'gstreamer_nonfree'	'GStreamer (Non-free) Codecs' \
+		'gstreamer_free'	'GStreamer (free) Codecs' \
+		'gstreamer_nonfree'	'GStreamer (non-free) Codecs' \
 		'ffpmeg_codecs'		'FFmpeg Codecs' \
-		'openh264'			'OpenH264' \
+		'openh264_codec'	'OpenH264 Codec' \
 		3>&1 1>&2 2>&3)
 
 	exitstatus=$?

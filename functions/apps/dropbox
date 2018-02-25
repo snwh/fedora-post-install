@@ -8,30 +8,30 @@ function dropbox {
 	REPO="https://linux.dropbox.com/packages/fedora"
 	NAME="Dropbox"
 	# Install
-	echo_message title 'Begin '$NAME' installation'
+	echo_message header "Begin $NAME installation"
 	# Check if already installed
 	check_packages $PACKAGE
 	EXITSTATUS=$?
 	# If package is not installed
 	if [ $EXITSTATUS = 1 ]; then
-		echo $NAME 'is not installed. Proceeding'
-		echo_message info 'Downloading '$NAME'...'
+		# Install package(s)
+		echo_message info "Installing $NAME..."
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
-				curl -O ${REPO}/${PACKAGE}-${VERSION}.i386.rpm
+				# Install remote package
+				echo_message warning "Requires root privileges"
+				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}-${VERSION}.i386.rpm"
 				;;
 			x86_64)
-				curl -O ${REPO}/${PACKAGE}-${VERSION}.x86_64.rpm
+				# Install remote package
+				echo_message warning "Requires root privileges"
+				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}-${VERSION}.x86_64.rpm"
 				;;
 			*)
-				whiptail --title "No remote packages available to download." --msgbox "Error." 8 78
+				whiptail --title "No packages available to download." --msgbox "Error." 8 78
 				;;
 		esac
-		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
-		echo_message warning 'Requires root privileges'
-		elevate_privilege "dnf --nogpgcheck install -y $PACKAGE*.rpm"
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
 		# Done

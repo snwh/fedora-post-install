@@ -11,7 +11,7 @@ function vlc {
 	# If package is not installed
 	if [ $EXITSTATUS = 1 ]; then
 		# Start installation
-		echo_message title 'Begin '$NAME' installation'
+		echo_message header "Begin $NAME installation"
 		# Add RPM Fusion
 		REPOVERSION="free"
 		if (eval `resize` && whiptail \
@@ -24,11 +24,11 @@ function vlc {
 		else
 			thirdparty
 		fi
-		echo_message info $NAME 'is not installed.'
+		echo_message info "$NAME is not installed."
 		echo 'Proceeding'
 		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
-		echo_message warning 'Requires root privileges'
+		echo_message info "Installing $NAME..."
+		echo_message warning "Requires root privileges"
 		# Admin privileges
 		elevate_privilege "dnf install -y $PACKAGE"
 		# Done

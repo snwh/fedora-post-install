@@ -1,16 +1,50 @@
 #!/bin/bash
 
-# RVM
+# Ruby Version Manager
 function rvm {
-	# Add key(s)
-	echo_message info 'Adding key to keyring...'
-	gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-	# Install
-	echo_message info 'Installing RVM...'
-	\curl -sSL https://get.rvm.io | bash -s stable --ruby
-	# \curl -sSL https://get.rvm.io | bash # Uncomment for development version
-	# Done
-	echo_message success 'Done.'
-	whiptail --title "Finished" --msgbox "Installation complete." 8 78
-	thirdparty
+	# Variables
+	NAME="Ruby Version Manager"
+	KEY="409B6B1796C275462A1703113804BB82D39DC0E3"
+	# Draw window
+	eval `resize` 
+	EXITSTATUS=$?
+	if [ $EXITSTATUS = 0 ]; then
+		status="0"
+		while [ "$status" -eq 0 ]; do
+			VERSION=$(whiptail \
+			--title "$NAME" --radiolist \
+			"Which version of $NAME would you like to install?" \
+			--ok-button "Install" \
+			--cancel-button "Go Back" \
+			$LINES $COLUMNS $(( $LINES - 12 )) \
+			"stable"	"Stable version" ON \
+			"dev"		"Development version" OFF \
+			3>&1 1>&2 2>&3) 
+			# Change to lower case and remove spaces.
+			case "${VERSION}" in
+				stable)
+					# Import signing key
+					echo_message info "Importing $NAME signing key..."
+					gpg --keyserver hkp://keys.gnupg.net --recv-keys $KEY
+					# Install
+					echo_message info 'Installing $NAME...'
+					\curl -sSL https://get.rvm.io | bash -s stable --ruby
+				;;
+				dev)
+					# Import signing key
+					echo_message info "Importing $NAME signing key..."
+					gpg --keyserver hkp://keys.gnupg.net --recv-keys $KEY
+					# Install
+					echo_message info 'Installing $NAME...'
+					\curl -sSL https://get.rvm.io | bash
+				;;
+				*)
+					status=1 
+					thirdparty
+				;;
+			esac
+		done
+	else
+		thirdparty
+	fi
 }

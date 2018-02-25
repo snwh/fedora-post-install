@@ -7,13 +7,14 @@ function oracle-java {
 	NAME="Oracle Java 7"
 	VERSION="7u80"
 	BUILD="b15"
-	echo_message title 'Begin '$NAME' installation'
+	echo_message header "Begin $NAME installation"
 	# Check if already installed
-	echo 'Checking if '$NAME' is already installed...'
-	PKGCHECK=$(dnf list installed | grep "$PACKAGE")
-	if [ "" == "$PKGCHECK" ]; then
-		echo $NAME 'is not installed. Proceeding'
-		echo_message info 'Downloading '$NAME'...'
+	check_packages $PACKAGE
+	EXITSTATUS=$?
+	# If package is not installed
+	if [ $EXITSTATUS = 1 ]; then
+		echo_message info "$NAME is not installed."
+		echo_message info "Downloading $NAME..."
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
@@ -23,13 +24,13 @@ function oracle-java {
 				curl -jkLH "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/${VERSION}-${BUILD}/jre-${VERSION}-linux-x64.rpm > jre-${VERSION}-linux-x64.rpm
 				;;
 			*)
-				whiptail --title "No remote packages available to download." --msgbox "Error." 8 78
+				whiptail --title "No packages available to download." --msgbox "Error." 8 78
 				thirdparty
 				;;
 		esac
 		# Install package(s)
-		echo_message info 'Installing '$NAME'...'
-		echo_message warning 'Requires root privileges'
+		echo_message info "Installing $NAME..."
+		echo_message warning "Requires root privileges"
 		elevate_privilege "dnf --nogpgcheck install -y $PACKAGE*.rpm"
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
