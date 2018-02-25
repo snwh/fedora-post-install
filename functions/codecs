@@ -5,13 +5,14 @@ function openh264_codec {
 	echo_message title "Starting 'openh264_codec' function"
 	# Variables
 	NAME="OpenH264 Codec"
+	REPO="fedora-cisco-openh264"
 	PACKAGE=gstreamer1-plugin-openh264
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		echo_message info "$NAME is not installed."
 		# Add repository
-		echo_message info "Enabling $NAME repository..."
-		elevate_privilege "dnf config-manager --set-enabled fedora-cisco-openh264"
+		echo_message info "Enabling '$REPO' repository..."
+		elevate_privilege "dnf config-manager --set-enabled $REPO"
 		# Install package(s)
 		echo_message info "Installing $NAME..."
 		elevate_privilege "dnf install -y $PACKAGE"
