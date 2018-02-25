@@ -4,7 +4,7 @@
 function rvm {
 	# Variables
 	NAME="Ruby Version Manager"
-	KEY="409B6B1796C275462A1703113804BB82D39DC0E3"
+	KEY="https://rvm.io/mpapis.asc "
 	# Draw window
 	eval `resize` 
 	EXITSTATUS=$?
@@ -25,7 +25,7 @@ function rvm {
 				stable)
 					# Import signing key
 					echo_message info "Importing $NAME signing key..."
-					gpg --keyserver hkp://keys.gnupg.net --recv-keys $KEY
+					command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 					# Install
 					echo_message info 'Installing $NAME...'
 					\curl -sSL https://get.rvm.io | bash -s stable --ruby
@@ -33,7 +33,7 @@ function rvm {
 				dev)
 					# Import signing key
 					echo_message info "Importing $NAME signing key..."
-					gpg --keyserver hkp://keys.gnupg.net --recv-keys $KEY
+					command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 					# Install
 					echo_message info 'Installing $NAME...'
 					\curl -sSL https://get.rvm.io | bash
