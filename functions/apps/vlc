@@ -9,23 +9,24 @@ function install_vlc {
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		echo_message info "$NAME is not installed."
-		# Add RPM Fusion
-		REPOVERSION="free"
+		# Add repository in this case RPM Fusion
+		REPONAME="RPM Fusion (Free)"
 		if (eval `resize` && whiptail \
-			--title "Add RPM Fusion ($REPOVERSION) Repository?" \
-			--yesno "The RPM Fusion ($REPOVERSION) repository is required to install $NAME.\n\nProceed with installation?" \
+			--title "Add $REPONAME Repository?" \
+			--yesno "The $REPONAME repository is required to install $NAME.\n\nProceed with installation?" \
 			10 60) then
-			# Add repository
-			echo_message info 'Adding repository...'
-			add_rpmfusion $REPOVERSION
+			add_rpmfusion "free"
 		else
+			# Cancelled
+			echo_message error "$REPONAME is required for $NAME installation. Aborting..."
 			install_thirdparty
 		fi
-		# Admin privileges
+		# Install package(s)
+		echo_message info "Installing '$PACKAGE'..."
 		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 56
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		install_thirdparty
 	else
 		# Already installed

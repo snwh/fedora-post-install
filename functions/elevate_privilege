@@ -36,7 +36,7 @@ function elevate_privilege() {
 						# Error message if too many attempts
 						if [[ "$COUNT" -eq "$MAXCOUNT" ]]; then
 							echo_message error "Too many failed password attempts. Aborting..."
-							whiptail --msgbox "Too many failed password attempts. Please try again." --title "Oops" 8 64
+							whiptail --msgbox "Too many failed password attempts. Please try again." --title "Oops" 8 56
 							main
 						fi
 					else
@@ -48,7 +48,7 @@ function elevate_privilege() {
 			else
 				# Error message if user cancels
 				echo_message error "Password prompt cancelled. Aborting..."
-				whiptail --msgbox "Password is required to proceed. Please try again." --title "Oops" 8 64
+				whiptail --msgbox "Password is required to proceed. Please try again." --title "Oops" 8 56
 				main
 			fi
 		else

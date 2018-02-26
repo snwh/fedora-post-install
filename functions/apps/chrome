@@ -20,20 +20,20 @@ function download_chrome {
 				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}_current_x86_64.rpm"
 				;;
 			*)
-				whiptail --title "Error." --msgbox "No packages available to download." 8 64
+				whiptail --title "Error." --msgbox "No packages available to download." 8 56
 				;;
 		esac
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 64
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		status=1
 		install_thirdparty
 	else
 		# Already installed
 		echo_message info "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 64
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
 		install_thirdparty
 	fi
 }
@@ -71,7 +71,7 @@ function install_chrome {
 		esac
 	else
 		# Cancelled
-		echo_message info 'Installation of $NAME cancelled.'
+		echo_message info "Installation of $NAME cancelled."
 		install_thirdparty
 	fi
 }

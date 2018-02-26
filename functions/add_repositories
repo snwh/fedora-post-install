@@ -3,25 +3,27 @@
 # Add RPM Fusion
 function add_rpmfusion() {
 	echo_message header "Starting 'add_rpmfusion' function"
-	# Variables
-	REPONAME="RPM Fusion ($@)"
-	VERSION="$@"
-	if [[ "$VERSION" = "free" ]] || [[ "$VERSION" = "nonfree" ]] ; then
-		# Check
-		if [ -e /etc/yum.repos.d/rpmfusion-$VERSION.repo ]; then
-			echo_message info '$REPONAME repository already added.'
-			whiptail --msgbox "The $REPONAME repository is already added." 8 56
+	# Check if valid RPM Fusion repository
+	if [[ "$1" = "free" ]] || [[ "$1" = "nonfree" ]] ; then
+		# Check if already present
+		if [ -e /etc/yum.repos.d/rpmfusion-$1.repo ]; then
+			echo_message info "RPM Fusion (${1^}) repository already added."
+			whiptail --msgbox "The RPM Fusion (${1^}) repository is already added." 8 56
+			$2
 		else
 			# Add repository
-			echo_message info 'Adding repository...'
-			elevate_privilege "dnf install https://download1.rpmfusion.org/$VERSION/fedora/rpmfusion-$VERSION-release-$(rpm -E %fedora).noarch.rpm"
-			echo_message success 'Done.'
-			whiptail --title "Finished" --msgbox "$REPONAME repository has been added." 8 56
+			echo_message info "Downloading RPM Fusion repository package..."
+			elevate_privilege "dnf install -y https://download1.rpmfusion.org/$1/fedora/rpmfusion-$1-release-$(rpm -E %fedora).noarch.rpm"
+			# Done
+			echo_message success "RPM Fusion (${1^}) repository has been added."
+			whiptail --title "Finished" --msgbox "RPM Fusion (${1^}) repository has been added." 8 56
+			$2
 		fi
 	else
-		echo_message error "Not a correct RPM Fusion repository. Aborting..."
-		# Draw window
-		whiptail --msgbox "Not a correct RPM Fusion repository. Sorry, try again." --title "Oops" 8 64
+		# If there is an error
+		echo_message error "Not a valid RPM Fusion repository. Aborting..."
+		whiptail --msgbox "Not a valid RPM Fusion repository. Sorry, try again." --title "Oops" 8 56
+		$2
 	fi
 }
 
@@ -32,13 +34,13 @@ function add_flatpak_repo() {
 	check_flatpak_repo $1
 	# If repo is added
 	if [ $? = 0 ]; then
-		echo_message info 'Repository already added.'
+		echo_message info "Repository already added."
 		whiptail --msgbox "The $1 repository is already added." 8 56
 	else
 		# Add repository
-		echo_message info 'Adding flatpak repository...'
+		echo_message info "Adding flatpak repository..."
 		flatpak remote-add --if-not-exists $1 $2
-		echo_message success 'Done.'
+		echo_message success "Done."
 		whiptail --title "Finished" --msgbox "The '$1' repository has been added." 8 56
 	fi
 }
@@ -64,13 +66,11 @@ function add_repositories {
 		case "${REPOS}" in
 		# RPM Fusion Free
 		rpmfusion_free)
-			add_rpmfusion free
-			add_repositories
+			add_rpmfusion "free" add_repositories
 		;;
 		# RPM Fusion Non-free
 		rpmfusion_nonfree)
-			add_rpmfusion nonfree
-			add_repositories
+			add_rpmfusion "nonfree" add_repositories
 		;;
 		# FlatHub
 		flathub)
@@ -82,7 +82,7 @@ function add_repositories {
 		# Go Back
 		*)
 			# Cancelled
-			echo_message info 'Addition of third-party repositories cancelled.'
+			echo_message info "Addition of third-party repositories cancelled."
 			main
 		;;
 		esac

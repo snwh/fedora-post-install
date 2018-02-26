@@ -31,7 +31,6 @@ function check_os {
 	fi
 }
 
-
 # Check which distribution the user is running
 function check_distribution {
 	echo_message header "Starting 'check_distribution' function"
@@ -122,7 +121,7 @@ function check_privileges {
 			echo_message success "Current user has sudo privileges. :)"
 		fi
 	else
-		if (whiptail --title "Root User" --yesno "You are logged in as the root user. This is not recommended.\n\nAre you sure you want to proceed?" 8 64) then
+		if (whiptail --title "Root User" --yesno "You are logged in as the root user. This is not recommended.\n\nAre you sure you want to proceed?" 8 56) then
 			echo_message warning "You are logged in as the root user. This is not recommended. :/"
 		else
 			echo_message info "Exiting..."

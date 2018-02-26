@@ -4,7 +4,7 @@
 # 'gsettings' can be obtained by executing "dconf watch /" and then manually changing settings
 function set_preferences {
 	echo_message header "Starting 'set_preferences' function..."
-	echo_message info 'Setting preferred application-specific & desktop settings...'
+	echo_message info "Setting preferred application-specific & desktop settings..."
 	# Variables
 	LIST=$(dirname "$0")'/data/gsettings.list'
 	while IFS= read line
@@ -12,7 +12,7 @@ function set_preferences {
 		gsettings set $line
 	done < "$LIST"
 	# Done
-	echo_message success 'Done.'
+	echo_message success "Done."
 	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
 	system_configure
 }
@@ -28,11 +28,11 @@ function set_bash_aliases {
 		--yesno "Current list of preferred bash aliases: \n\n$(while read LINE; do echo "  "$LINE; done < $ALIASES) \n\nProceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext) then
-		echo_message info 'Setting bash aliases...'
+		echo_message info "Setting bash aliases..."
 		# simply copy the list file to the aliases file
 		cp $ALIASES ~/.bash_aliases
-		echo_message success 'Bash aliases set successfully.'
-		whiptail --title "Finished" --msgbox "Bash aliases set successfully." 8 64
+		echo_message success "Bash aliases set successfully."
+		whiptail --title "Finished" --msgbox "Bash aliases set successfully." 8 56
 		system_configure
 	else
 		system_configure
@@ -44,9 +44,9 @@ function selinux {
 	echo_message header "Starting 'selinux' function..."
 	# Check if SELinux is aleady in permissive mode.
 	if [[ $(cat '/etc/selinux/config' | grep -q 'SELINUX=permissive'; echo $?) != 0 ]]; then
-		echo_message info 'Configuring SELinux to run in permissive mode...'
+		echo_message info "Configuring SELinux to run in permissive mode..."
 		elevate_privilege "sed --in-place s/SELINUX=.*$/SELINUX=permissive/g /etc/selinux/config"
-		echo_message success 'Done.'
+		echo_message success "Done."
 		# Done
 		whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
 		system_configure
@@ -70,11 +70,11 @@ function add_to_sudo {
 			elevate_privilege "usermod -a -G wheel $USER"
 			echo_message success "Done."
 			# Done
-			whiptail --title "Finished" --msgbox "User modification complete." 8 64
+			whiptail --title "Finished" --msgbox "User modification complete." 8 56
 		else
 			echo_message error "User cancelled action. Aborting..."
 			# Draw window
-			whiptail --msgbox "Current user not modified at this time." --title "Abort" 8 64
+			whiptail --msgbox "Current user not modified at this time." --title "Abort" 8 56
 			system_configure
 		fi
 	else
@@ -88,9 +88,9 @@ function add_to_sudo {
 # Enable Fedora Test Updates repository
 function test_updates {
 	echo_message header "Starting 'test_updates' function..."
-	echo_message info 'Enabling Fedora Test Updates repository...'
+	echo_message info "Enabling Fedora Test Updates repository..."
 	elevate_privilege "dnf --enablerepo=updates-testing check-update"
-	echo_message success 'Done.'
+	echo_message success "Done."
 	# Done
 	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
 	system_configure
@@ -112,14 +112,14 @@ function limit_packages {
 		if ! [[ "$LIMIT" =~ '^[0-9]+$' ]] && ! [ "$LIMIT" -ge 1 -a "$LIMIT" -le $MAX ] ; then
 			echo_message error "Input was not a integer between 1 and $MAX. Aborting..."
 			# Draw window
-			whiptail --msgbox "Input was not a integer between 1 and $MAX. Sorry, try again." --title "Oops" 8 64
+			whiptail --msgbox "Input was not a integer between 1 and $MAX. Sorry, try again." --title "Oops" 8 56
 			limit_packages
 		else
 			# Change 'installonly_limit' in '/etc/dnf/dnf.conf' to limit packages
-			echo_message info 'Changing installonly_limit in DNF configuration file...'
+			echo_message info "Changing installonly_limit in DNF configuration file..."
 			# Admin privileges
 			elevate_privilege "sed --in-place s/installonly_limit=.*$/installonly_limit=${LIMIT}/g /etc/dnf/dnf.conf"
-			echo_message success 'Done.'
+			echo_message success "Done."
 			# Done
 			whiptail --title "Finished" --msgbox "Package limit changed successfully." 8 56
 			system_configure
@@ -152,7 +152,7 @@ function system_configure {
 		$CONFIGURE
 	else
 		# Cancelled
-		echo_message info 'System configuration cancelled.'
+		echo_message info "System configuration cancelled."
 		main
 	fi
 }

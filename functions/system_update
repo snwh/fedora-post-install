@@ -3,22 +3,36 @@
 # Perform system update
 function system_update {
 	echo_message header "Starting 'system_update' function"
-	echo_message title 'Performing system update...'
-	# Draw window
-	if (whiptail --title "System Update" --yesno "Proceed with system update?" 10 60) then
-		# Admin privileges
-		elevate_privilege "dnf upgrade -y"
-		# Check if failed
-		if [[ $? != 0 ]]; then
-			echo_message info "Nothing to update."
-			whiptail --title "Finished" --msgbox "Nothing to update." 8 64
+	echo_message title "Performing system update..."
+	# Check if there are updates
+	if [[ "$(echo $(dnf list -q --updates | wc -l ))" -gt 0 ]]; then
+		# Draw window
+		if (eval `resize` && whiptail \
+			--title "System Update" \
+			--yesno "Current list of packages to be updated: \n\n$(dnf list -q --updates) \n\nAre you sure you want proceed?" \
+			$LINES $COLUMNS $(( $LINES - 12 )) \
+			--scrolltext ) then
+			# Admin privileges
+			elevate_privilege "dnf update -y"
+			# Check if failed
+			if [[ $? != 0 ]]; then
+				echo_message info "Nothing to update."
+				whiptail --title "Finished" --msgbox "Nothing to update." 8 56
+				main
+			fi
+			# Done
+			echo_message success "System update complete."
+			whiptail --title "Finished" --msgbox "System update complete." 8 56
+			main
+		else
+			# Cancelled
+			echo_message info "System update cancelled."
+			main
 		fi
-		# Done
-		echo_message success 'System update complete.'
-		whiptail --title "Finished" --msgbox "System update complete." 8 64
 	else
-		# Cancelled
-		echo_message info 'System update cancelled.'
+		# If no updates are available
+		echo_message info "No updates available."
+		whiptail --title "Finished" --msgbox "No updates are available." 8 56
 		main
 	fi
 }

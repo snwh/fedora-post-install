@@ -24,7 +24,7 @@ function install_rvm {
 				echo_message info "Importing $NAME signing key..."
 				command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 				# Install
-				echo_message info 'Installing $NAME...'
+				echo_message info "Installing $NAME..."
 				\curl -sSL https://get.rvm.io | bash -s stable --ruby
 			;;
 			dev)
@@ -32,7 +32,7 @@ function install_rvm {
 				echo_message info "Importing $NAME signing key..."
 				command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 				# Install
-				echo_message info 'Installing $NAME...'
+				echo_message info "Installing $NAME..."
 				\curl -sSL https://get.rvm.io | bash
 			;;
 			*)
@@ -42,7 +42,7 @@ function install_rvm {
 		esac
 	else
 		# Cancelled
-		echo_message info 'Installation cancelled.'
+		echo_message info "Installation cancelled."
 		install_thirdparty
 	fi
 }

@@ -14,7 +14,7 @@ function purge_unused {
 		--yesno "Current list of pre-installed apps to remove: \n\n$(cat $LIST) \n\nAre you sure you want proceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext ) then
-		echo_message title 'Removing unused pre-installed apps...'
+		echo_message title "Removing unused pre-installed apps..."
 		# Remove loop
 		for PACKAGE in $(cat $LIST); do
 			# Check if package is installed
@@ -31,10 +31,12 @@ function purge_unused {
 			fi
 		done
 		# Done
-		echo_message success 'Removal of unused packages complete.'
-		whiptail --title "Finished" --msgbox "Unwanted pre-installed apps have been removed." 8 64
+		echo_message success "Removal of unused packages complete."
+		whiptail --title "Finished" --msgbox "Unwanted pre-installed apps have been removed." 8 56
 		system_cleanup
 	else
+		# Cancelled
+		echo_message success "Removal of unused packages cancelled."
 		system_cleanup
 	fi
 }
@@ -42,23 +44,42 @@ function purge_unused {
 # Remove Orphaned Packages
 function remove_orphans {
 	echo_message header "Starting 'remove_orphans' function"
-	echo_message title 'Removing orphaned packages...'
-	# Admin privileges
-	elevate_privilege "dnf autoremove -y"
-	# Done
-	echo_message success 'Orphaned packages have been successfully removed.'
-	whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 56
-	system_cleanup
+	echo_message title "Removing orphaned packages..."
+	# Check if there are orphaned packages
+	if [[ $(echo $(dnf list -q --autoremove | wc -l )) -gt 0 ]]; then
+		# Draw window
+		if (eval `resize` && whiptail \
+			--title "Remove Orphaned Packages" \
+			--yesno "Current list of orphaned packages to remove: \n\n$(dnf list -q --autoremove) \n\nAre you sure you want proceed?" \
+			$LINES $COLUMNS $(( $LINES - 12 )) \
+			--scrolltext ) then
+			# Admin privileges
+			elevate_privilege "dnf autoremove -y"
+			# Done
+			echo_message success "Orphaned packages have been successfully removed."
+			whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 56
+			system_cleanup
+		else
+			# Cancelled
+			echo_message success "Removal of orphaned packages cancelled."
+			system_cleanup
+		fi
+	else
+		# If there are no orphaned packages
+		echo_message info "No orphaned packages are present on this system."
+		whiptail --title "Finished" --msgbox "No orphaned packages are present on this system." 8 56
+		system_cleanup
+	fi
 }
 
 # Clean Cache
 function clean_cache {
 	echo_message header "Starting 'clean_cache' function"
-	echo_message title 'Cleaning package cache...'
+	echo_message title "Cleaning package cache..."
 	# Admin privileges
 	elevate_privilege "dnf clean packages"
 	# Done
-	echo_message success 'Package cache has been cleaned..'
+	echo_message success "Package cache has been cleaned.."
 	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 56
 	system_cleanup
 }
@@ -77,13 +98,13 @@ function system_cleanup {
 		clean_cache			'Clean package cache' \
 		remove_orphans		'Remove orphaned packages' \
 		purge_unused		'Remove unused pre-installed packages' \
-		3>&1 1>&2 2>&3) then
+		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
 		$CLEANUP
 	else
 		# Cancelled
-		echo_message info 'System cleanup cancelled.'
+		echo_message info "System cleanup cancelled."
 		main
 	fi
 }

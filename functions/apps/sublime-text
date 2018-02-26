@@ -19,8 +19,8 @@ function download_sublime_text {
 		elevate_privilege "dnf config-manager --add-repo $REPO"
 		echo_message success "Repository added."
 		# Install package(s)
-		echo_message info "Installing $NAME..."
-		elevate_privilege "dnf install $PACKAGE"
+		echo_message info "Installing '$PACKAGE'..."
+		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
@@ -62,7 +62,7 @@ function install_sublime_text {
 		esac
 	else
 		# Cancelled
-		echo_message info 'Installation of $NAME cancelled.'
+		echo_message info "Installation of $NAME cancelled."
 		install_thirdparty
 	fi
 }
