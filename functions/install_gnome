@@ -2,20 +2,17 @@
 
 # Install GNOME Core Apps
 function install_gnome_apps {
-	echo_message header "Starting 'install_gnome_apps' function"
 	# Update the list of packages in 'data/gnome-apps.list' to suit your preferences
 	install_from_list gnome-apps "GNOME Core Apps" install_gnome
 }
 # Install GNOME Shell Extensions
 function install_shell_extensions {
-	echo_message header "Starting 'install_shell_extensions' function"
 	# Update the list of packages in 'data/gnome-shell-extensions.list' to suit your preferences
 	install_from_list gnome-shell-extensions "GNOME Shell Extensions" install_gnome
 }
 
 # Install Codecs
 function install_gnome {
-	echo_message header "Starting 'install_codecs' function"
 	NAME="GNOME Software"
 	echo_message title "Starting $NAME installation..."
 	# Draw window
@@ -31,6 +28,7 @@ function install_gnome {
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
+		echo_message header "Starting '$GNOME' function"
 		$GNOME
 	else
 		# Cancelled

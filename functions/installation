@@ -2,21 +2,18 @@
 
 # Install preferred apps
 function install_favs {
-	echo_message header "Starting 'install_favs' function..."
 	# Update the list of packages in 'data/favs-apps.list' to suit your preferences
 	install_from_list favs-apps "preferred applications" main
 }
 
 # Install preferred development tools
 function install_dev {
-	echo_message header "Starting 'install_dev' function..."
 	# Update the list of packages in 'data/favs-dev.list' to suit your preferences
 	install_from_list favs-dev "preferred development tools" main
 }
 
 # Install preferred utilities
 function install_utils {
-	echo_message header "Starting 'install_utils' function..."
 	# Update the list of packages in 'data/favs-utils.list' to suit your preferences
 	install_from_list favs-utils "preferred utilities" main
 }

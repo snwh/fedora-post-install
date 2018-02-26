@@ -53,6 +53,7 @@ function main {
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
+		echo_message header "Starting '$MAIN' function"
 		$MAIN
 	else
 		# Quit

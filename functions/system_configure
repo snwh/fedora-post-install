@@ -3,7 +3,6 @@
 # Automatically set preferred gsettings keys as outlined in the 'gsettings.list' file
 # 'gsettings' can be obtained by executing "dconf watch /" and then manually changing settings
 function set_preferences {
-	echo_message header "Starting 'set_preferences' function..."
 	echo_message info "Setting preferred application-specific & desktop settings..."
 	# Variables
 	LIST=$(dirname "$0")'/data/gsettings.list'
@@ -19,7 +18,6 @@ function set_preferences {
 
 # Set preferred bash aliased by copying the 'aliases.list' file to ~/.bash_aliases
 function set_bash_aliases {
-	echo_message header "Starting 'set_bash_aliases' function..."
 	# Check list
 	ALIASES=$(dirname "$0")'/data/aliases.list'
 	# Draw window
@@ -41,7 +39,6 @@ function set_bash_aliases {
 
 # Put SELinux in permissive mode
 function selinux {
-	echo_message header "Starting 'selinux' function..."
 	# Check if SELinux is aleady in permissive mode.
 	if [[ $(cat '/etc/selinux/config' | grep -q 'SELINUX=permissive'; echo $?) != 0 ]]; then
 		echo_message info "Configuring SELinux to run in permissive mode..."
@@ -60,7 +57,6 @@ function selinux {
 
 # Add current user to sudo group (wheel)
 function add_to_sudo {
-	echo_message header "Starting 'add_to_sudo' function..."
 	# Check if user is already in wheel
 	if [[ $(groups $USER | grep -q 'wheel'; echo $?) != 0 ]]; then
 		echo_message warning "This user account isn't in the wheel user group."
@@ -87,7 +83,6 @@ function add_to_sudo {
 
 # Enable Fedora Test Updates repository
 function test_updates {
-	echo_message header "Starting 'test_updates' function..."
 	echo_message info "Enabling Fedora Test Updates repository..."
 	elevate_privilege "dnf --enablerepo=updates-testing check-update"
 	# Finished
@@ -98,7 +93,6 @@ function test_updates {
 
 # limit number of concurrently installed packages 
 function limit_packages {
-	echo_message header "Starting 'limit_packages' function..."
 	# maximum number of packages
 	MAX="5"
 	LIMIT=$(whiptail \
@@ -131,12 +125,12 @@ function limit_packages {
 
 # Configure System
 function system_configure {
-	echo_message header "Starting 'system_configure' function..."
-	echo_message title "Starting system configuration..."
+	NAME="System Configuration"
+	echo_message title "Starting ${NAME,,}..."
 	# Draw window
 	CONFIGURE=$(eval `resize` && whiptail \
 		--notags \
-		--title "Configure System" \
+		--title "$NAME" \
 		--menu "\nWhat would you like to do?" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
@@ -149,10 +143,11 @@ function system_configure {
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
+		echo_message header "Starting '$CONFIGURE' function"
 		$CONFIGURE
 	else
 		# Cancelled
-		echo_message info "System configuration cancelled."
+		echo_message info "$NAME cancelled."
 		main
 	fi
 }

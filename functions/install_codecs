@@ -2,7 +2,6 @@
 
 # Install OpenH264 Codecs
 function openh264_codec {
-	echo_message header "Starting 'openh264_codec' function"
 	# Variables
 	NAME="OpenH264 Codec"
 	REPO="fedora-cisco-openh264"
@@ -30,7 +29,6 @@ function openh264_codec {
 
 # Install FFmpeg Codecs
 function ffpmeg_codecs {
-	echo_message header "Starting 'ffpmeg_codecs' function"
 	# Add RPM Fusion
 	if (eval `resize` && whiptail \
 		--title "Add RPM Fusion (free) Repository?" \
@@ -47,14 +45,12 @@ function ffpmeg_codecs {
 
 # Install GStreamer (free) Codecs
 function gstreamer_free {
-	echo_message header "Starting 'gstreamer_free' function"
 	# Update the list of packages in 'data/codecs-gstreamer-free.list' to suit your preferences
 	install_from_list codecs-gstreamer-free "GStreamer (free) multimedia codecs" install_codecs
 }
 
 # Install GStreamer (non-free) Codecs
 function gstreamer_nonfree {
-	echo_message header "Starting 'gstreamer_nonfree' function"
 	# Add RPM Fusion 
 	if (eval `resize` && whiptail \
 		--title "Add RPM Fusion (non-free) Repository?" \
@@ -71,7 +67,6 @@ function gstreamer_nonfree {
 
 # Install Codecs
 function install_codecs {
-	echo_message header "Starting 'install_codecs' function"
 	NAME="Multimedia Codecs"
 	echo_message title "Starting $NAME installation..."
 	# Draw window
@@ -89,6 +84,7 @@ function install_codecs {
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
+		echo_message header "Starting '$CODECS' function"
 		$CODECS
 	else
 		# Cancelled

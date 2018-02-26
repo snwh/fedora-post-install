@@ -2,13 +2,13 @@
 
 # Perform system update
 function system_update {
-	echo_message header "Starting 'system_update' function"
+	NAME="System update"
 	echo_message title "Performing system update..."
 	# Check if there are updates
 	if [[ "$(echo $(dnf list -q --updates | wc -l ))" -gt 0 ]]; then
 		# Draw window
 		if (eval `resize` && whiptail \
-			--title "System Update" \
+			--title "${NAME^}" \
 			--yesno "Current list of packages to be updated: \n\n$(dnf list -q --updates) \n\nAre you sure you want proceed?" \
 			$LINES $COLUMNS $(( $LINES - 12 )) \
 			--scrolltext ) then
@@ -21,12 +21,12 @@ function system_update {
 				main
 			fi
 			# Finished
-			echo_message success "System update complete."
-			whiptail --title "Finished" --msgbox "System update complete." 8 56
+			echo_message success "$NAME complete."
+			whiptail --title "Finished" --msgbox "$NAME complete." 8 56
 			main
 		else
 			# Cancelled
-			echo_message info "System update cancelled."
+			echo_message info "$NAME cancelled."
 			main
 		fi
 	else

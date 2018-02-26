@@ -48,18 +48,19 @@ function add_flatpak_repo() {
 # Add Repositories
 function add_repositories {
 	echo_message header "Starting 'add_repositories' function"
-	echo_message title "Starting additions of third-party repositories..."
+	NAME="Third-Party Repositories"
+	echo_message title "Starting addition of ${NAME,,}..."
 	# Draw window
 	REPOS=$(eval `resize` && whiptail \
 		--notags \
-		--title "Third-Party Repositories" \
-		--menu "\nWhat third-party repositories would you like to add?" \
+		--title "$NAME" \
+		--menu "\nWhat ${NAME,,} would you like to add?" \
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		"rpmfusion_free"		"RPM Fusion (Free)" \
 		"rpmfusion_nonfree"		"RPM Fusion (Non-free)" \
-		"flathub"				"FlatHub" \
+		"add_flathub"			"FlatHub" \
 		3>&1 1>&2 2>&3)
 	# check exit status
 	while [ $? -eq 0 ]; do
@@ -73,7 +74,7 @@ function add_repositories {
 			add_rpmfusion "nonfree" add_repositories
 		;;
 		# FlatHub
-		flathub)
+		add_flathub)
 			REPONAME="flathub"
 			REPO="https://dl.flathub.org/repo/flathub.flatpakrepo"
 			add_flatpak_repo $REPONAME $REPO
@@ -82,7 +83,7 @@ function add_repositories {
 		# Go Back
 		*)
 			# Cancelled
-			echo_message info "Addition of third-party repositories cancelled."
+			echo_message info "Addition of ${NAME,,} cancelled."
 			main
 		;;
 		esac

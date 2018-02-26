@@ -2,23 +2,24 @@
 
 # Install FreeType Freeworld font renderer
 function freetype_freeworld {
-	echo_message header "Starting 'freetype_freeworld' function"
-	echo_message title "Installing $NAME..."
 	# Variables
 	NAME="FreeType Freeworld font renderer"
 	PACKAGE="freetype-freeworld"
+	echo_message title "Installing $NAME..."
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		# Install package
 		echo_message warning "Package '$PACKAGE' is not installed. Installing..."
-		# Add RPM Fusion
+		# Add repository in this case RPM Fusion
+		REPONAME="RPM Fusion (Free)"
 		if (eval `resize` && whiptail \
-			--title "Add RPM Fusion (free) Repository?" \
-			--yesno "The RPM Fusion (free) repository is required to install $PACKAGE.\n\nProceed with installation?" \
+			--title "Add $REPONAME Repository?" \
+			--yesno "The $REPONAME repository is required to install $NAME.\n\nProceed with installation?" \
 			10 60) then
-			# Add RPM Fusion Free
-			add_rpmfusion free
+			add_rpmfusion "free"
 		else
+			# Cancelled
+			echo_message error "$REPONAME is required for $NAME installation. Aborting..."
 			install_fonts
 		fi
 		# Install package(s)
@@ -37,14 +38,12 @@ function freetype_freeworld {
 
 # Install preferred fonts
 function install_fav_fonts {
-	echo_message header "Starting 'install_fav_fonts' function"
 	# Update the list of packages in 'data/favs-fonts.list' to suit your preferences
 	install_from_list favs-fonts "preferred fonts" install_fonts
 }
 
 # Install Fonts
 function install_fonts {
-	echo_message header "Starting 'install_fonts' function..."
 	NAME="Fonts"
 	echo_message title "Starting $NAME installation..."
 	# Draw window
@@ -59,6 +58,7 @@ function install_fonts {
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
+		echo_message header "Starting '$FONTS' function..."
 		$FONTS
 	else
 		# Cancelled

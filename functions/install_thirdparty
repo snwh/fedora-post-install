@@ -19,9 +19,8 @@ function import_apps_functions {
 
 # Install Third-Party Applications
 function install_thirdparty {
-	echo_message header "Starting 'install_thirdparty' function..."
 	NAME="Third-Party Software"
-	echo_message title "Starting installation of third-party software..."
+	echo_message title "Starting installation of ${NAME,,}..."
 	import_apps_functions
 	# Draw window
 	THIRDPARTY=$(eval `resize` && whiptail \
