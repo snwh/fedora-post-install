@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Java
-function oracle-java {
+function install_oracle_java {
 	# Variables
 	PACKAGE=jre
-	NAME="Oracle Java 7"
+	NAME="Oracle Java"
 	VERSION="7u80"
 	BUILD="b15"
-	echo_message header "Begin $NAME installation"
+	echo_message title "Starting $NAME installation..."
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		# Install package(s)
@@ -21,8 +21,8 @@ function oracle-java {
 				curl -jkLH "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/${VERSION}-${BUILD}/jre-${VERSION}-linux-x64.rpm > jre-${VERSION}-linux-x64.rpm
 				;;
 			*)
-				whiptail --title "No packages available to download." --msgbox "Error." 8 78
-				thirdparty
+				whiptail --title "No packages available to download." --msgbox "Error." 8 56
+				install_thirdparty
 				;;
 		esac
 		# Install package(s)
@@ -33,12 +33,12 @@ function oracle-java {
 		rm $PACKAGE*.rpm
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 56
+		install_thirdparty
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
+		install_thirdparty
 	fi
 }

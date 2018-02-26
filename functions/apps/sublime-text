@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install Sublime Text
-function install_sublime_text { 
+function download_sublime_text { 
 	# Variables
 	NAME="Sublime Text ($@)"
 	PACKAGE=sublime-text
@@ -23,18 +23,18 @@ function install_sublime_text {
 		elevate_privilege "dnf install $PACKAGE"
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
+		install_thirdparty
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
+		install_thirdparty
 	fi
 }
 
 # Sublime Text
-function sublime_text {
+function install_sublime_text {
 	EXITSTATUS="0"
 	while [ "$EXITSTATUS" -eq 0 ]; do
 		eval `resize`
@@ -50,16 +50,16 @@ function sublime_text {
 		# Change to lower case and remove spaces.
 		case "${VERSION}" in
 			stable)
-				install_sublime_text stable
+				download_sublime_text stable
 				EXITSTATUS=1
 			;;
 			dev)
-				install_sublime_text dev
+				download_sublime_text dev
 				EXITSTATUS=1
 			;;
 			*)
 				EXITSTATUS=1 
-				thirdparty
+				install_thirdparty
 			;;
 		esac
 	done

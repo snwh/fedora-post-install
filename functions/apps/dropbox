@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Dropbox
-function dropbox {
+function install_dropbox {
 	# Variables
 	PACKAGE=nautilus-dropbox
 	VERSION="2015.10.28-1.fedora"
 	REPO="https://linux.dropbox.com/packages/fedora"
 	NAME="Dropbox"
 	# Install
-	echo_message header "Begin $NAME installation"
+	echo_message title "Starting $NAME installation..."
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		# Install package(s)
@@ -26,19 +26,19 @@ function dropbox {
 				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}-${VERSION}.x86_64.rpm"
 				;;
 			*)
-				whiptail --title "No packages available to download." --msgbox "Error." 8 78
+				whiptail --title "No packages available to download." --msgbox "Error." 8 56
 				;;
 		esac
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
+		install_thirdparty
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
+		install_thirdparty
 	fi
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ruby Version Manager
-function rvm {
+function install_rvm {
 	# Variables
 	NAME="Ruby Version Manager"
 	KEY="https://rvm.io/mpapis.asc "
@@ -40,11 +40,11 @@ function rvm {
 				;;
 				*)
 					status=1 
-					thirdparty
+					install_thirdparty
 				;;
 			esac
 		done
 	else
-		thirdparty
+		install_thirdparty
 	fi
 }

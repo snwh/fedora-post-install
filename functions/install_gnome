@@ -2,25 +2,22 @@
 
 # Install GNOME Core Apps
 function install_gnome_apps {
-	echo_message title "Starting 'install_gnome_apps' function"
+	echo_message header "Starting 'install_gnome_apps' function"
 	# Update the list of packages in 'data/gnome-apps.list' to suit your preferences
 	install_from_list gnome-apps "GNOME Core Apps" install_gnome
 }
 # Install GNOME Shell Extensions
 function install_shell_extensions {
-	echo_message title "Starting 'install_shell_extensions' function"
+	echo_message header "Starting 'install_shell_extensions' function"
 	# Update the list of packages in 'data/gnome-shell-extensions.list' to suit your preferences
 	install_from_list gnome-shell-extensions "GNOME Shell Extensions" install_gnome
 }
 
 # Install Codecs
 function install_gnome {
-	echo_message title "Starting 'install_gnome' function"
+	echo_message header "Starting 'install_gnome' function"
 	# check exit status
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
-		# Draw window
-		$(eval `resize` && whiptail \
+	if ! (eval `resize` && whiptail \
 		--notags \
 		--title "Install GNOME Software" \
 		--menu "\nWhich GNOME Software would you like to install?" \
@@ -29,8 +26,9 @@ function install_gnome {
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		'install_gnome_apps'		'GNOME Core Apps' \
 		'install_shell_extensions'	'GNOME Shell Extensions' \
-		3>&1 1>&2 2>&3)
-	else
+		3>&1 1>&2 2>&3) then
+		# Cancelled
+		echo_message info 'Installation cancelled.'
 		main
 	fi
 }

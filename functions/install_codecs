@@ -2,14 +2,14 @@
 
 # Install OpenH264 Codecs
 function openh264_codec {
-	echo_message title "Starting 'openh264_codec' function"
+	echo_message header "Starting 'openh264_codec' function"
 	# Variables
 	NAME="OpenH264 Codec"
 	REPO="fedora-cisco-openh264"
 	PACKAGE=gstreamer1-plugin-openh264
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
-		echo_message info "$NAME is not installed."
+		echo_message warning "Package '$PACKAGE' is not installed. Installing..."
 		# Add repository
 		echo_message info "Enabling '$REPO' repository..."
 		elevate_privilege "dnf config-manager --set-enabled $REPO"
@@ -18,19 +18,19 @@ function openh264_codec {
 		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		install_codecs
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
 		install_codecs
 	fi
 }
 
 # Install FFmpeg Codecs
 function ffpmeg_codecs {
-	echo_message title "Starting 'ffpmeg_codecs' function"
+	echo_message header "Starting 'ffpmeg_codecs' function"
 	# Add RPM Fusion
 	if (eval `resize` && whiptail \
 		--title "Add RPM Fusion (free) Repository?" \
@@ -47,14 +47,14 @@ function ffpmeg_codecs {
 
 # Install GStreamer (free) Codecs
 function gstreamer_free {
-	echo_message title "Starting 'gstreamer_free' function"
+	echo_message header "Starting 'gstreamer_free' function"
 	# Update the list of packages in 'data/codecs-gstreamer-free.list' to suit your preferences
 	install_from_list codecs-gstreamer-free "GStreamer (free) multimedia codecs" install_codecs
 }
 
 # Install GStreamer (non-free) Codecs
 function gstreamer_nonfree {
-	echo_message title "Starting 'gstreamer_nonfree' function"
+	echo_message header "Starting 'gstreamer_nonfree' function"
 	# Add RPM Fusion 
 	if (eval `resize` && whiptail \
 		--title "Add RPM Fusion (non-free) Repository?" \
@@ -71,11 +71,9 @@ function gstreamer_nonfree {
 
 # Install Codecs
 function install_codecs {
-	echo_message title "Starting 'install_codecs' function"
-	# check exit status
-	if [ $? = 0 ]; then
-		# Draw window
-		$(eval `resize` && whiptail \
+	echo_message header "Starting 'install_codecs' function"
+	# Draw window
+	CODECS=$(eval `resize` && whiptail \
 		--notags \
 		--title "Multimedia Codecs" \
 		--menu "\nWhich multimedia codecs would you like to install?" \
@@ -87,7 +85,12 @@ function install_codecs {
 		'ffpmeg_codecs'		'FFmpeg Codecs' \
 		'openh264_codec'	'OpenH264 Codec' \
 		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
+		$CODECS
 	else
+		# Cancelled
+		echo_message info 'Multimedia codecs installation cancelled.'
 		main
 	fi
 }

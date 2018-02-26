@@ -1,12 +1,11 @@
 #!/bin/bash
 
 # Install VLC
-function vlc {
+function install_vlc {
 	# Variables
 	PACKAGE=vlc
 	NAME="VLC Media Player"
-	# Install
-	echo_message header "Begin $NAME installation"
+	echo_message title "Starting $NAME installation..."
 	# Check if package is installed
 	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
 		echo_message info "$NAME is not installed."
@@ -20,18 +19,18 @@ function vlc {
 			echo_message info 'Adding repository...'
 			add_rpmfusion $REPOVERSION
 		else
-			thirdparty
+			install_thirdparty
 		fi
 		# Admin privileges
 		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "Installation of $NAME is complete." 8 56
+		install_thirdparty
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
+		install_thirdparty
 	fi
 }

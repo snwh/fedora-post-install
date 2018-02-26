@@ -1,0 +1,52 @@
+#!/bin/bash#
+#
+# When adding (or removing) any functions remember to update
+# the 'install_thirdparty' function below to reflect any changes you make
+
+# Automatically import apps functions
+function import_apps_functions {
+	DIR="functions/apps"
+	# iterate through the files in the 'functions/apps' folder
+	for FUNCTION in $(dirname "$0")/$DIR/*; do
+		if [[ -d $FUNCTION ]]; then
+			continue
+		elif [[ -f $FUNCTION ]]; then
+			# source the function file
+			. $FUNCTION
+		fi
+	done
+}
+
+# Install Third-Party Applications
+function install_thirdparty {
+	echo_message header "Starting 'install_thirdparty' function..."
+	echo_message title "Starting installation of third-party software..."
+	import_apps_functions
+	# Draw window
+	THIRDPARTY=$(eval `resize` && whiptail \
+		--notags \
+		--title "Third-Party Installation" \
+		--menu "\nWhat third-party software would you like to install?" \
+		--ok-button "Install" \
+		--cancel-button "Go Back" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		'install_chrome'		'Google Chrome' \
+		'install_dropbox'		'Dropbox' \
+		'install_oracle_java'	'Oracle Java' \
+		'install_rvm'			'Ruby Version Manager (RVM)' \
+		'install_slack'			'Slack' \
+		'install_spotify'		'Spotify' \
+		'install_sublime_text'	'Sublime Text 3' \
+		'install_vlc'			'VLC Media Player' \
+		3>&1 1>&2 2>&3)
+
+	# check exit status
+	if [ $? = 0 ]; then
+		echo_message header "Starting '$THIRDPARTY' function..."
+		$THIRDPARTY
+	else
+		# Cancelled
+		echo_message info "'$THIRDPARTY' installation cancelled."
+		main
+	fi
+}

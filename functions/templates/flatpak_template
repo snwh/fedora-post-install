@@ -8,7 +8,7 @@
 #	flatpak_url = the url of the flatpak repository, e.g.: "https://flathub.org/repo/appstream"
 #	app_name = a human readable name of the app you're installing
 #
-# next set the 'function_name' and reference it in the 'thirdparty' function in the 'thirdparty' function file 
+# next set the 'function_name' and reference it in the 'install_thirdparty' function in the 'install_thirdparty' function file 
 # and be sure to 'source' it in the list at the top of that file as well
 
 # Function
@@ -27,13 +27,13 @@ function function_name {
 		flatpak install --from $REPO/$PACKAGE.flatpakref
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 78
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		status=1
-		thirdparty
+		install_thirdparty
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 78
-		thirdparty
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
+		install_thirdparty
 	fi
 }

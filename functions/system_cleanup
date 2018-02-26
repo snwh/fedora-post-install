@@ -5,7 +5,7 @@
 
 # Remove unused preinstalled apps
 function purge_unused {
-	echo_message title "Starting 'purge_unused' function..."
+	echo_message header "Starting 'purge_unused' function..."
 	# Check list
 	LIST=$(dirname "$0")'/data/purge.list'
 	# Draw window
@@ -14,7 +14,7 @@ function purge_unused {
 		--yesno "Current list of pre-installed apps to remove: \n\n$(cat $LIST) \n\nAre you sure you want proceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext ) then
-		echo_message header 'Removing unused pre-installed apps...'
+		echo_message title 'Removing unused pre-installed apps...'
 		# Remove loop
 		for PACKAGE in $(cat $LIST); do
 			# Check if package is installed
@@ -33,44 +33,42 @@ function purge_unused {
 		# Done
 		echo_message success 'Removal of unused packages complete.'
 		whiptail --title "Finished" --msgbox "Unwanted pre-installed apps have been removed." 8 64
-		cleanup
+		system_cleanup
 	else
-		cleanup
+		system_cleanup
 	fi
 }
 
 # Remove Orphaned Packages
 function remove_orphans {
-	echo_message title "Starting 'remove_orphans' function"
-	echo_message header 'Removing orphaned packages...'
+	echo_message header "Starting 'remove_orphans' function"
+	echo_message title 'Removing orphaned packages...'
 	# Admin privileges
 	elevate_privilege "dnf autoremove -y"
 	# Done
 	echo_message success 'Orphaned packages have been successfully removed.'
-	whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 78
-	cleanup
+	whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 56
+	system_cleanup
 }
 
 # Clean Cache
 function clean_cache {
-	echo_message title "Starting 'clean_cache' function"
-	echo_message header 'Cleaning package cache...'
+	echo_message header "Starting 'clean_cache' function"
+	echo_message title 'Cleaning package cache...'
 	# Admin privileges
 	elevate_privilege "dnf clean packages"
 	# Done
 	echo_message success 'Package cache has been cleaned..'
-	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 78
-	cleanup
+	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 56
+	system_cleanup
 }
 
 # Cleanup System
-function cleanup {
-	echo_message title "Starting 'cleanup' function"
-	# check exit status
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
-		# Draw window
-		$(eval `resize` && whiptail \
+function system_cleanup {
+	echo_message header "Starting 'system_cleanup' function"
+	echo_message title "Starting system cleanup..."
+	# Draw window
+	CLEANUP=$(eval `resize` && whiptail \
 		--notags \
 		--title "System Cleanup" \
 		--menu "\nWhat would you like to do?" \
@@ -79,8 +77,13 @@ function cleanup {
 		clean_cache			'Clean package cache' \
 		remove_orphans		'Remove orphaned packages' \
 		purge_unused		'Remove unused pre-installed packages' \
-		3>&1 1>&2 2>&3)
+		3>&1 1>&2 2>&3) then
+	# check exit status
+	if [ $? = 0 ]; then
+		$CLEANUP
 	else
+		# Cancelled
+		echo_message info 'System cleanup cancelled.'
 		main
 	fi
 }

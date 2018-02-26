@@ -3,7 +3,7 @@
 # accept user passwords and pass them to another command that requires elevated privilege
 
 function elevate_privilege() {
-	echo_message title "Starting 'elevate_privilege' function"
+	echo_message header "Starting 'elevate_privilege' function"
 	# check if current user is root
 	if [[ $EUID = 0 ]]; then
 		echo_message warning "You are logged in as the root user. Again, this is not recommended. :/"
@@ -21,7 +21,7 @@ function elevate_privilege() {
 				MAXCOUNT=3
 				while [ $COUNT -lt $MAXCOUNT ]; do
 					# check if sudo command fails
-					if [ $(sudo -S <<< "$PASSWORD" echo) != 0 ];then
+					if [[ $(sudo -S <<< "$PASSWORD" echo) -ne 0 ]]; then
 						echo_message warning "Incorrect password."
 						# Prompt for password again
 						PASSWORD=$(whiptail --title "Password Error" --passwordbox "\nThe password you provided was not correct.\n\nPlease enter your password again:\n" 12 48 3>&1 1>&2 2>&3)

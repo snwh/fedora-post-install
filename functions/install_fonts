@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Install FreeType Freeworld font renderer
+function freetype_freeworld {
+	echo_message header "Starting 'freetype_freeworld' function"
+	echo_message title "Installing $NAME..."
+	# Variables
+	NAME="FreeType Freeworld font renderer"
+	PACKAGE="freetype-freeworld"
+	# Check if package is installed
+	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
+		# Install package
+		echo_message warning "Package '$PACKAGE' is not installed. Installing..."
+		# Add RPM Fusion
+		if (eval `resize` && whiptail \
+			--title "Add RPM Fusion (free) Repository?" \
+			--yesno "The RPM Fusion (free) repository is required to install $PACKAGE.\n\nProceed with installation?" \
+			10 60) then
+			# Add RPM Fusion Free
+			add_rpmfusion free
+		else
+			configure
+		fi
+		# Install package(s)
+		elevate_privilege "dnf install -y $PACKAGE"
+		# Done
+		echo_message success "Installation of '$PACKAGE' complete."
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
+		configure
+	else
+		# Already installed
+		echo_message success "$NAME already installed."
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
+		configure
+	fi
+}
+
+# Install preferred fonts
+function install_fav_fonts {
+	echo_message header "Starting 'install_fav_fonts' function"
+	# Update the list of packages in 'data/favs-fonts.list' to suit your preferences
+	install_from_list favs-fonts "preferred fonts" install_fonts
+}
+
+# Install Fonts
+function install_fonts {
+	echo_message header "Starting 'install_fonts' function..."
+	# Draw window
+	FONTS=$(eval `resize` && whiptail \
+		--notags \
+		--title "Install Fonts" \
+		--menu "\nWhat would you like to do?" \
+		--cancel-button "Go Back" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		install_fav_fonts	'Install preferred fonts' \
+		freetype_freeworld	'Install FreeType Freeworld renderer' \
+		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
+		$FONTS
+	else
+		# Cancelled
+		echo_message info 'Fonts installation cancelled.'
+		main
+	fi
+}

@@ -25,20 +25,68 @@
 tabs 4
 clear
 
-#----- Import Functions -----#
+# Title of script set
+TITLE="Fedora Post-Install Script"
 
-dir="$(dirname "$0")"
+# Main
+function main {
+	echo_message header "Starting 'main' function"
+	echo_message title "Starting $TITLE..."
+	# Draw window
+	MAIN=$(eval `resize` && whiptail \
+		--notags \
+		--title "$TITLE" \
+		--menu "\nWhat would you like to do?" \
+		--cancel-button "Quit" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		'system_update'			'Perform system update' \
+		'install_favs'			'Install preferred applications' \
+		'install_utils'			'Install preferred utilities' \
+		'install_dev'			'Install preferred development tools' \
+		'install_gnome'			'Install additional GNOME software' \
+		'install_codecs'		'Install multimedia codecs' \
+		'install_fonts'			'Install additional fonts' \
+		'install_thirdparty'	'Install third-party applications' \
+		'add_repositories'		'Add third-party repositories' \
+		'system_configure'		'Configure system' \
+		'system_cleanup'		'Cleanup the system' \
+		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
+		$MAIN
+	else
+		# Quit
+		quit
+	fi
+}
 
-. $dir/functions/checks
-. $dir/functions/cleanup
-. $dir/functions/codecs
-. $dir/functions/configure
-. $dir/functions/installation
-. $dir/functions/gnome
-. $dir/functions/password
-. $dir/functions/repos
-. $dir/functions/thirdparty
-. $dir/functions/update
+
+# Quit
+function quit {
+	echo_message header "Starting 'quit' function"
+	echo_message title "Exiting $TITLE..."
+	# Draw window
+	if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 10 60) then
+		echo_message welcome 'Thanks for using!'
+		exit 99
+	else
+		main
+	fi
+}
+
+# Import Functions
+function import_functions {
+	DIR="functions"
+	# iterate through the files in the 'functions' folder
+	for FUNCTION in $(dirname "$0")/$DIR/*; do
+		if [[ -d $FUNCTION ]]; then
+			continue
+		elif [[ -f $FUNCTION ]]; then
+			# source the function file
+			. $FUNCTION
+		fi
+	done
+}
 
 # Fancy colorful echo messages
 function echo_message(){
@@ -47,81 +95,42 @@ function echo_message(){
 	if ! [[ $color =~ '^[0-9]$' ]] ; then
 		case $(echo -e $color | tr '[:upper:]' '[:lower:]') in
 			# black
-			title) color=0 ;;
+			header) color=0 ;;
 			# red
 			error) color=1 ;;
 			# green
 			success) color=2 ;;
 			# yellow
-			warning) color=3 ;;
+			welcome) color=3 ;;
 			# blue
-			header) color=4 ;;
-			# magenta
+			title) color=4 ;;
+			# purple
 			info) color=5 ;;
 			# cyan
 			question) color=6 ;;
+			# orange
+			warning) color=202 ;;
 			# white
 			*) color=7 ;;
 		esac
 	fi
 	tput bold;
 	tput setaf $color;
-	echo '-- ' $message;
+	echo '-- '$message;
 	tput sgr0;
 }
 
-# Main
-function main {
-	echo_message title "Starting 'main' function"
-	MAIN=$(eval `resize` && whiptail \
-		--notags \
-		--title "Fedora Post-Install Script" \
-		--menu "\nWhat would you like to do?" \
-		--cancel-button "Quit" \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		update			'Perform system update' \
-		install_favs	'Install preferred applications' \
-		install_utils	'Install preferred utilities' \
-		install_dev		'Install preferred development tools' \
-		install_gnome	'Install additional GNOME software' \
-		install_codecs	'Install multimedia codecs' \
-		thirdparty		'Install third-party applications' \
-		repositories	'Add third-party repositories' \
-		configure		'Configure system' \
-		cleanup			'Cleanup the system' \
-		3>&1 1>&2 2>&3)
-
-	# Check if fails
-	if [ $? = 0 ]; then
-		$MAIN
-	else
-		quit
-	fi
-}
-
-
-# Quit
-function quit {
-	echo_message title "Starting 'quit' function"
-	# Draw window
-	if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 10 60) then
-		echo_message info "Exiting..."
-		echo_message header 'Thanks for using!'
-		exit 99
-	else
-		main
-	fi
-}
 
 # Welcome message
-echo_message header "Fedora Post-Install Script"
+echo_message welcome "$TITLE"
+# Import main functions
+import_functions
 # Run check
-check
-
-#RUN
+system_checks
+# main
 while :
 do
-  main
+	main
 done
 
 #END OF SCRIPT

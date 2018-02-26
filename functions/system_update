@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Perform system update
-function update {
-	echo_message title "Starting 'update' function"
-	echo_message header 'Performing system update...'
+function system_update {
+	echo_message header "Starting 'system_update' function"
+	echo_message title 'Performing system update...'
 	# Draw window
 	if (whiptail --title "System Update" --yesno "Proceed with system update?" 10 60) then
 		# Admin privileges
@@ -17,6 +17,8 @@ function update {
 		echo_message success 'System update complete.'
 		whiptail --title "Finished" --msgbox "System update complete." 8 64
 	else
+		# Cancelled
+		echo_message info 'System update cancelled.'
 		main
 	fi
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install Chrome
-function install_chrome { 
+function download_chrome { 
 	# Variables
 	REPO="https://dl.google.com/linux/direct"
 	PACKAGE=google-chrome-$@
@@ -13,8 +13,8 @@ function install_chrome {
 		# Download RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
-				whiptail --title  "No 32-bit packages are available to download." --msgbox "Error." 8 78
-				thirdparty
+				whiptail --title  "No 32-bit packages are available to download." --msgbox "Error." 8 56
+				install_thirdparty
 				;;
 			x86_64)
 				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}_current_x86_64.rpm"
@@ -29,47 +29,48 @@ function install_chrome {
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 64
 		status=1
-		thirdparty
+		install_thirdparty
 	else
 		# Already installed
 		echo_message info "$NAME already installed."
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 64
-		thirdparty
+		install_thirdparty
 	fi
 }
 
 # Google Chrome
-function chrome {
-	EXITSTATUS="0"
-	while [ "$EXITSTATUS" -eq 0 ]; do
-		VERSION=$(eval `resize` && whiptail \
-		--title "Google Chrome" \
-		--radiolist "Which version of Chrome would you like to install?" \
-		--ok-button "Install" \
-		--cancel-button "Go Back" \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		"stable"	"Stable build" ON \
-		"beta"		"Beta build" OFF \
-		"unstable"	"Unstable build" OFF \
-		3>&1 1>&2 2>&3) 
-		# Change to lower case and remove spaces.
+function install_chrome {
+	NAME="Google Chrome"
+	# Install
+	echo_message title "Starting $NAME installation..."
+	VERSION=$(eval `resize` && whiptail \
+			--title "Google Chrome" \
+			--radiolist "Which version of Chrome would you like to install?" \
+			--ok-button "Install" \
+			--cancel-button "Go Back" \
+			$LINES $COLUMNS $(( $LINES - 12 )) \
+			"stable"	"Stable build" ON \
+			"beta"		"Beta build" OFF \
+			"unstable"	"Unstable build" OFF \
+			3>&1 1>&2 2>&3)
+	if [ $? = 0 ]; then
 		case "${VERSION}" in
 			stable)
-				install_chrome stable
-				EXITSTATUS=1
+				download_chrome stable
 			;;
 			beta)
-				install_chrome beta
-				EXITSTATUS=1
+				download_chrome beta
 			;;
 			unstable)
-				install_chrome unstable
-				EXITSTATUS=1
+				download_chrome unstable
 			;;
 			*)
-				EXITSTATUS=1
-				thirdparty
+				install_thirdparty
 			;;
 		esac
-	done
+	else
+		# Cancelled
+		echo_message info 'Installation cancelled.'
+		install_thirdparty
+	fi
 }

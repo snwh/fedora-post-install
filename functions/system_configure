@@ -3,7 +3,7 @@
 # Automatically set preferred gsettings keys as outlined in the 'gsettings.list' file
 # 'gsettings' can be obtained by executing "dconf watch /" and then manually changing settings
 function set_preferences {
-	echo_message title "Starting 'set_preferences' function..."
+	echo_message header "Starting 'set_preferences' function..."
 	echo_message info 'Setting preferred application-specific & desktop settings...'
 	# Variables
 	LIST=$(dirname "$0")'/data/gsettings.list'
@@ -13,13 +13,13 @@ function set_preferences {
 	done < "$LIST"
 	# Done
 	echo_message success 'Done.'
-	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
-	configure
+	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
+	system_configure
 }
 
 # Set preferred bash aliased by copying the 'aliases.list' file to ~/.bash_aliases
 function set_bash_aliases {
-	echo_message title "Starting 'set_bash_aliases' function..."
+	echo_message header "Starting 'set_bash_aliases' function..."
 	# Check list
 	ALIASES=$(dirname "$0")'/data/aliases.list'
 	# Draw window
@@ -33,34 +33,34 @@ function set_bash_aliases {
 		cp $ALIASES ~/.bash_aliases
 		echo_message success 'Bash aliases set successfully.'
 		whiptail --title "Finished" --msgbox "Bash aliases set successfully." 8 64
-		configure
+		system_configure
 	else
-		configure
+		system_configure
 	fi
 }
 
 # Put SELinux in permissive mode
 function selinux {
-	echo_message title "Starting 'selinux' function..."
+	echo_message header "Starting 'selinux' function..."
 	# Check if SELinux is aleady in permissive mode.
 	if [[ $(cat '/etc/selinux/config' | grep -q 'SELINUX=permissive'; echo $?) != 0 ]]; then
 		echo_message info 'Configuring SELinux to run in permissive mode...'
 		elevate_privilege "sed --in-place s/SELINUX=.*$/SELINUX=permissive/g /etc/selinux/config"
 		echo_message success 'Done.'
 		# Done
-		whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
-		configure
+		whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
+		system_configure
 	else
 		# Already configured
 		echo_message info "SELinux is aleady in permissive mode."
-		whiptail --title "Finished" --msgbox "SELinux is aleady in permissive mode." 8 78
-		configure
+		whiptail --title "Finished" --msgbox "SELinux is aleady in permissive mode." 8 56
+		system_configure
 	fi
 }
 
 # Add current user to sudo group (wheel)
 function add_to_sudo {
-	echo_message title "Starting 'add_to_sudo' function..."
+	echo_message header "Starting 'add_to_sudo' function..."
 	# Check if user is already in wheel
 	if [[ $(groups $USER | grep -q 'wheel'; echo $?) != 0 ]]; then
 		echo_message warning "This user account isn't in the wheel user group."
@@ -75,30 +75,30 @@ function add_to_sudo {
 			echo_message error "User cancelled action. Aborting..."
 			# Draw window
 			whiptail --msgbox "Current user not modified at this time." --title "Abort" 8 64
-			configure
+			system_configure
 		fi
 	else
 		# Already configured
 		echo_message info "User aleady in sudo group."
-		whiptail --title "Finished" --msgbox "Current user aleady has sudo privileges." 8 78
-		configure
+		whiptail --title "Finished" --msgbox "Current user aleady has sudo privileges." 8 56
+		system_configure
 	fi
 }
 
 # Enable Fedora Test Updates repository
 function test_updates {
-	echo_message title "Starting 'test_updates' function..."
+	echo_message header "Starting 'test_updates' function..."
 	echo_message info 'Enabling Fedora Test Updates repository...'
 	elevate_privilege "dnf --enablerepo=updates-testing check-update"
 	echo_message success 'Done.'
 	# Done
-	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 78
-	configure
+	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
+	system_configure
 }
 
 # limit number of concurrently installed packages 
 function limit_packages {
-	echo_message title "Starting 'limit_packages' function..."
+	echo_message header "Starting 'limit_packages' function..."
 	# maximum number of packages
 	MAX="5"
 	LIMIT=$(whiptail \
@@ -106,8 +106,8 @@ function limit_packages {
 		--title "Set Installed Package Limit" \
 		"\nLimit the number of packages that will be concurrently installed by DNF. The minimal number of packages is 2 and a value of 1 is unlimited. \n\nPlease enter a number between 1 and $MAX (default = 3):\n" \
 		14 72 3>&1 1>&2 2>&3)
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
+	# check exit status
+	if [ $? = 0 ]; then
 		# check if input is a number
 		if ! [[ "$LIMIT" =~ '^[0-9]+$' ]] && ! [ "$LIMIT" -ge 1 -a "$LIMIT" -le $MAX ] ; then
 			echo_message error "Input was not a integer between 1 and $MAX. Aborting..."
@@ -121,22 +121,20 @@ function limit_packages {
 			elevate_privilege "sed --in-place s/installonly_limit=.*$/installonly_limit=${LIMIT}/g /etc/dnf/dnf.conf"
 			echo_message success 'Done.'
 			# Done
-			whiptail --title "Finished" --msgbox "Package limit changed successfully." 8 78
-			configure
+			whiptail --title "Finished" --msgbox "Package limit changed successfully." 8 56
+			system_configure
 		fi
 	else
-		configure
+		system_configure
 	fi
 }
 
 # Configure System
-function configure {
-	echo_message title "Starting 'configure' function..."
-	# check exit status
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
-		# Draw window
-		$(eval `resize` && whiptail \
+function system_configure {
+	echo_message header "Starting 'system_configure' function..."
+	echo_message title "Starting system configuration..."
+	# Draw window
+	CONFIGURE=$(eval `resize` && whiptail \
 		--notags \
 		--title "Configure System" \
 		--menu "\nWhat would you like to do?" \
@@ -149,7 +147,12 @@ function configure {
 		add_to_sudo				'Add current user to sudoers group' \
 		test_updates			'Enable Fedora Test Updates repository' \
 		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
+		$CONFIGURE
 	else
+		# Cancelled
+		echo_message info 'System configuration cancelled.'
 		main
 	fi
 }

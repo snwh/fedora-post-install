@@ -2,44 +2,38 @@
 
 # Install preferred apps
 function install_favs {
-	echo_message title "Starting 'install_favs' function..."
+	echo_message header "Starting 'install_favs' function..."
 	# Update the list of packages in 'data/favs-apps.list' to suit your preferences
 	install_from_list favs-apps "preferred applications" main
 }
 
 # Install preferred development tools
 function install_dev {
-	echo_message title "Starting 'install_dev' function..."
+	echo_message header "Starting 'install_dev' function..."
 	# Update the list of packages in 'data/favs-dev.list' to suit your preferences
 	install_from_list favs-dev "preferred development tools" main
 }
 
 # Install preferred utilities
 function install_utils {
-	echo_message title "Starting 'install_utils' function..."
+	echo_message header "Starting 'install_utils' function..."
 	# Update the list of packages in 'data/favs-utils.list' to suit your preferences
 	install_from_list favs-utils "preferred utilities" main
 }
 
-# Install preferred gnome apps
-function install_gnome {
-	echo_message title "Starting 'install_gnome' function..."
-	# Update the list of packages in 'data/favs-gnome.list' to suit your preferences
-	install_from_list favs-gnome "additional GNOME software" main
-}
-
 # Install from list
 function install_from_list() {
-	echo_message title "Starting 'install_from_list' function..."
-	echo_message header "Starting installation of ${2}..."
+	# echo_message header "Starting 'install_from_list' function..."
+	echo_message title "Starting installation of ${2}..."
 	# Variables
 	LIST=$(dirname "$0")'/data/'${1}'.list'
 	# Draw window
 	if (eval `resize` && whiptail \
 		--title "Install ${2^}" \
-		--yesno "Current list of packages that will be installed: \n\n$(cat $LIST) \n\nWould you like to proceed?" \
+		--yesno "Current list of packages that will be installed: \n\n$(cat ${LIST}) \n\nWould you like to proceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		--scrolltext) then
+		--scrolltext \
+		3>&1 1>&2 2>&3) then
 		# Install loop
 		for PACKAGE in $(cat $LIST); do
 			# Check if package is installed
@@ -59,9 +53,11 @@ function install_from_list() {
 		done
 		# Finished
 		echo_message success 'Installation complete.'
-		whiptail --title "Finished" --msgbox "Installation of ${2} is complete." 8 78
+		whiptail --title "Finished" --msgbox "Installation of ${2} is complete." 8 56
 		$3
 	else
+		# Cancelled
+		echo_message info 'Installation cancelled.'
 		$3
 	fi
 }
