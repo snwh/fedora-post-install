@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Install Chrome
+# Download Chrome
 function download_chrome { 
 	# Variables
 	REPO="https://dl.google.com/linux/direct"
@@ -38,21 +38,22 @@ function download_chrome {
 	fi
 }
 
-# Google Chrome
+# Install Google Chrome
 function install_chrome {
 	NAME="Google Chrome"
 	# Install
 	echo_message title "Starting $NAME installation..."
 	VERSION=$(eval `resize` && whiptail \
-			--title "Google Chrome" \
-			--radiolist "Which version of Chrome would you like to install?" \
-			--ok-button "Install" \
-			--cancel-button "Go Back" \
-			$LINES $COLUMNS $(( $LINES - 12 )) \
-			"stable"	"Stable build" ON \
-			"beta"		"Beta build" OFF \
-			"unstable"	"Unstable build" OFF \
-			3>&1 1>&2 2>&3)
+		--title "$NAME" \
+		--radiolist "Which version of $NAME would you like to install?" \
+		--ok-button "Install" \
+		--cancel-button "Go Back" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		"stable"	"Stable build" ON \
+		"beta"		"Beta build" OFF \
+		"unstable"	"Unstable build" OFF \
+		3>&1 1>&2 2>&3)
+	# check exit status
 	if [ $? = 0 ]; then
 		case "${VERSION}" in
 			stable)
@@ -70,7 +71,7 @@ function install_chrome {
 		esac
 	else
 		# Cancelled
-		echo_message info 'Installation cancelled.'
+		echo_message info 'Installation of $NAME cancelled.'
 		install_thirdparty
 	fi
 }

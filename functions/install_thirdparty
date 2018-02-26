@@ -20,13 +20,14 @@ function import_apps_functions {
 # Install Third-Party Applications
 function install_thirdparty {
 	echo_message header "Starting 'install_thirdparty' function..."
+	NAME="Third-Party Software"
 	echo_message title "Starting installation of third-party software..."
 	import_apps_functions
 	# Draw window
 	THIRDPARTY=$(eval `resize` && whiptail \
 		--notags \
-		--title "Third-Party Installation" \
-		--menu "\nWhat third-party software would you like to install?" \
+		--title "Install $NAME" \
+		--menu "\nWhat ${NAME,,} would you like to install?" \
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
@@ -46,7 +47,7 @@ function install_thirdparty {
 		$THIRDPARTY
 	else
 		# Cancelled
-		echo_message info "'$THIRDPARTY' installation cancelled."
+		echo_message info "Installation of ${NAME,,} cancelled."
 		main
 	fi
 }

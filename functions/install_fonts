@@ -19,19 +19,19 @@ function freetype_freeworld {
 			# Add RPM Fusion Free
 			add_rpmfusion free
 		else
-			configure
+			install_fonts
 		fi
 		# Install package(s)
 		elevate_privilege "dnf install -y $PACKAGE"
 		# Done
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
-		configure
+		install_fonts
 	else
 		# Already installed
 		echo_message success "$NAME already installed."
 		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
-		configure
+		install_fonts
 	fi
 }
 
@@ -45,10 +45,12 @@ function install_fav_fonts {
 # Install Fonts
 function install_fonts {
 	echo_message header "Starting 'install_fonts' function..."
+	NAME="Fonts"
+	echo_message title "Starting $NAME installation..."
 	# Draw window
 	FONTS=$(eval `resize` && whiptail \
 		--notags \
-		--title "Install Fonts" \
+		--title "Install $NAME" \
 		--menu "\nWhat would you like to do?" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
@@ -60,7 +62,7 @@ function install_fonts {
 		$FONTS
 	else
 		# Cancelled
-		echo_message info 'Fonts installation cancelled.'
+		echo_message info "$NAME installation cancelled."
 		main
 	fi
 }

@@ -15,20 +15,26 @@ function install_shell_extensions {
 
 # Install Codecs
 function install_gnome {
-	echo_message header "Starting 'install_gnome' function"
-	# check exit status
-	if ! (eval `resize` && whiptail \
+	echo_message header "Starting 'install_codecs' function"
+	NAME="GNOME Software"
+	echo_message title "Starting $NAME installation..."
+	# Draw window
+	GNOME=$(eval `resize` && whiptail \
 		--notags \
-		--title "Install GNOME Software" \
-		--menu "\nWhich GNOME Software would you like to install?" \
+		--title "Install $NAME" \
+		--menu "\nWhich $NAME would you like to install?" \
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		'install_gnome_apps'		'GNOME Core Apps' \
 		'install_shell_extensions'	'GNOME Shell Extensions' \
-		3>&1 1>&2 2>&3) then
+		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
+		$GNOME
+	else
 		# Cancelled
-		echo_message info 'Installation cancelled.'
+		echo_message info "$NAME installation cancelled."
 		main
 	fi
 }

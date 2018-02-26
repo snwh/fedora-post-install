@@ -1,50 +1,48 @@
 #!/bin/bash
 
-# Ruby Version Manager
+# Install RVM
 function install_rvm {
 	# Variables
 	NAME="Ruby Version Manager"
 	KEY="https://rvm.io/mpapis.asc "
-	# Draw window
-	eval `resize` 
-	EXITSTATUS=$?
-	if [ $EXITSTATUS = 0 ]; then
-		status="0"
-		while [ "$status" -eq 0 ]; do
-			VERSION=$(whiptail \
-			--title "$NAME" --radiolist \
-			"Which version of $NAME would you like to install?" \
-			--ok-button "Install" \
-			--cancel-button "Go Back" \
-			$LINES $COLUMNS $(( $LINES - 12 )) \
-			"stable"	"Stable version" ON \
-			"dev"		"Development version" OFF \
-			3>&1 1>&2 2>&3) 
-			# Change to lower case and remove spaces.
-			case "${VERSION}" in
-				stable)
-					# Import signing key
-					echo_message info "Importing $NAME signing key..."
-					command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
-					# Install
-					echo_message info 'Installing $NAME...'
-					\curl -sSL https://get.rvm.io | bash -s stable --ruby
-				;;
-				dev)
-					# Import signing key
-					echo_message info "Importing $NAME signing key..."
-					command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
-					# Install
-					echo_message info 'Installing $NAME...'
-					\curl -sSL https://get.rvm.io | bash
-				;;
-				*)
-					status=1 
-					install_thirdparty
-				;;
-			esac
-		done
+	# Install
+	echo_message title "Starting $NAME installation..."
+	VERSION=$(eval `resize` && whiptail \
+		--title "$NAME" \
+		--radiolist "Which version of $NAME would you like to install?" \
+		--ok-button "Install" \
+		--cancel-button "Go Back" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		"stable"	"Stable version" ON \
+		"dev"		"Development version" OFF \
+		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
+		case "${VERSION}" in
+			stable)
+				# Import signing key
+				echo_message info "Importing $NAME signing key..."
+				command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+				# Install
+				echo_message info 'Installing $NAME...'
+				\curl -sSL https://get.rvm.io | bash -s stable --ruby
+			;;
+			dev)
+				# Import signing key
+				echo_message info "Importing $NAME signing key..."
+				command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+				# Install
+				echo_message info 'Installing $NAME...'
+				\curl -sSL https://get.rvm.io | bash
+			;;
+			*)
+				status=1 
+				install_thirdparty
+			;;
+		esac
 	else
+		# Cancelled
+		echo_message info 'Installation cancelled.'
 		install_thirdparty
 	fi
 }

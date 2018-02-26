@@ -33,34 +33,36 @@ function download_sublime_text {
 	fi
 }
 
-# Sublime Text
+# Install Sublime Text
 function install_sublime_text {
-	EXITSTATUS="0"
-	while [ "$EXITSTATUS" -eq 0 ]; do
-		eval `resize`
-		VERSION=$(whiptail \
-		--title "Sublime Text" --radiolist \
-		"Which version of Sublime Text would you like to install?" \
+	NAME="Sublime Text"
+	# Install
+	echo_message title "Starting $NAME installation..."
+	VERSION=$(eval `resize` && whiptail \
+		--title "$NAME" \
+		--radiolist "Which version of $NAME would you like to install?" \
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		"stable"	"Stable build" ON \
 		"dev"		"Beta build" OFF \
-		3>&1 1>&2 2>&3) 
-		# Change to lower case and remove spaces.
+		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
 		case "${VERSION}" in
 			stable)
 				download_sublime_text stable
-				EXITSTATUS=1
 			;;
 			dev)
 				download_sublime_text dev
-				EXITSTATUS=1
 			;;
 			*)
-				EXITSTATUS=1 
 				install_thirdparty
 			;;
 		esac
-	done
+	else
+		# Cancelled
+		echo_message info 'Installation of $NAME cancelled.'
+		install_thirdparty
+	fi
 }

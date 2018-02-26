@@ -52,7 +52,7 @@ function install_from_list() {
 			fi
 		done
 		# Finished
-		echo_message success 'Installation complete.'
+		echo_message success 'Installation of ${2} complete.'
 		whiptail --title "Finished" --msgbox "Installation of ${2} is complete." 8 56
 		$3
 	else

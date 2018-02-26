@@ -72,11 +72,13 @@ function gstreamer_nonfree {
 # Install Codecs
 function install_codecs {
 	echo_message header "Starting 'install_codecs' function"
+	NAME="Multimedia Codecs"
+	echo_message title "Starting $NAME installation..."
 	# Draw window
 	CODECS=$(eval `resize` && whiptail \
 		--notags \
-		--title "Multimedia Codecs" \
-		--menu "\nWhich multimedia codecs would you like to install?" \
+		--title "Install $NAME" \
+		--menu "\nWhich $NAME would you like to install?" \
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
@@ -90,7 +92,7 @@ function install_codecs {
 		$CODECS
 	else
 		# Cancelled
-		echo_message info 'Multimedia codecs installation cancelled.'
+		echo_message info "$NAME installation cancelled."
 		main
 	fi
 }
