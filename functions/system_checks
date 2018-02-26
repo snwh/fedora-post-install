@@ -10,11 +10,6 @@ function check_flatpak() {
 	flatpak list | grep $@ &> /dev/null
 }
 
-# Check if flatpak repo is added
-function check_flatpak_repo() {
-	flatpak remotes | grep $@ &> /dev/null
-}
-
 # Check which distribution the user is running
 function check_os {
 	echo_message header "Starting 'check_os' function"
@@ -69,7 +64,7 @@ function check_distribution {
 	fi
 }
 
-# Check for and install required packages for this script set.
+# Check for and install if missing the required packages for this script set.
 function check_dependencies {
 	echo_message header "Starting 'check_dependencies' function"
 	echo_message title "Checking if necessary dependencies are installed..."
@@ -95,7 +90,7 @@ function check_dependencies {
 				;;
 			# Error
 			* )
-				echo_message error 'Sorry, try again.' && check
+				echo_message error 'Sorry, try again.' && check_dependencies
 				;;
 			esac
 		else
@@ -130,10 +125,11 @@ function check_privileges {
 	fi
 }
 
+# Run system checks
 function system_checks {
 	# Check OS
 	check_os
-	# Check OS
+	# Check distribution
 	check_distribution
 	# Check sudo
 	check_privileges

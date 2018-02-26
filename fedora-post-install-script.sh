@@ -125,7 +125,7 @@ function echo_message(){
 echo_message welcome "$TITLE"
 # Import main functions
 import_functions
-# Run check
+# Run system checks
 system_checks
 # main
 while :
