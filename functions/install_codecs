@@ -16,7 +16,7 @@ function openh264_codec {
 		# Install package(s)
 		echo_message info "Installing $NAME..."
 		elevate_privilege "dnf install -y $PACKAGE"
-		# Done
+		# Finished
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		install_codecs

@@ -26,11 +26,11 @@ function purge_unused {
 				echo_message info "'$PACKAGE' is installed. Removing..."
 				# Admin privileges
 				elevate_privilege "dnf remove -y $PACKAGE"
-				# Done
+				# Finished
 				echo_message success "'$PACKAGE' removal is complete."
 			fi
 		done
-		# Done
+		# Finished
 		echo_message success "Removal of unused packages complete."
 		whiptail --title "Finished" --msgbox "Unwanted pre-installed apps have been removed." 8 56
 		system_cleanup
@@ -55,7 +55,7 @@ function remove_orphans {
 			--scrolltext ) then
 			# Admin privileges
 			elevate_privilege "dnf autoremove -y"
-			# Done
+			# Finished
 			echo_message success "Orphaned packages have been successfully removed."
 			whiptail --title "Finished" --msgbox "Orphaned packages have been successfully removed." 8 56
 			system_cleanup
@@ -78,7 +78,7 @@ function clean_cache {
 	echo_message title "Cleaning package cache..."
 	# Admin privileges
 	elevate_privilege "dnf clean packages"
-	# Done
+	# Finished
 	echo_message success "Package cache has been cleaned.."
 	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 56
 	system_cleanup

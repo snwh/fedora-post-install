@@ -11,8 +11,8 @@ function set_preferences {
 	do
 		gsettings set $line
 	done < "$LIST"
-	# Done
-	echo_message success "Done."
+	# Finished
+	echo_message success "Settings changed successfully."
 	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
 	system_configure
 }
@@ -46,9 +46,9 @@ function selinux {
 	if [[ $(cat '/etc/selinux/config' | grep -q 'SELINUX=permissive'; echo $?) != 0 ]]; then
 		echo_message info "Configuring SELinux to run in permissive mode..."
 		elevate_privilege "sed --in-place s/SELINUX=.*$/SELINUX=permissive/g /etc/selinux/config"
-		echo_message success "Done."
-		# Done
-		whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
+		# Finished
+		echo_message info "SELinux successfully set to permissive mode."
+		whiptail --title "Finished" --msgbox "SELinux successfully set to permissive mode." 8 56
 		system_configure
 	else
 		# Already configured
@@ -68,8 +68,8 @@ function add_to_sudo {
 			# Adding user to 'wheel' group.
 			echo_message info "Adding user to 'wheel' group."
 			elevate_privilege "usermod -a -G wheel $USER"
-			echo_message success "Done."
-			# Done
+			# Finished
+			echo_message success "User added to 'wheel' group."
 			whiptail --title "Finished" --msgbox "User modification complete." 8 56
 		else
 			echo_message error "User cancelled action. Aborting..."
@@ -90,9 +90,9 @@ function test_updates {
 	echo_message header "Starting 'test_updates' function..."
 	echo_message info "Enabling Fedora Test Updates repository..."
 	elevate_privilege "dnf --enablerepo=updates-testing check-update"
-	echo_message success "Done."
-	# Done
-	whiptail --title "Finished" --msgbox "Settings changed successfully." 8 56
+	# Finished
+	echo_message success "Fedora Test Updates repository enabled."
+	whiptail --title "Finished" --msgbox "Fedora Test Updates repository enabled." 8 56
 	system_configure
 }
 
@@ -119,8 +119,8 @@ function limit_packages {
 			echo_message info "Changing installonly_limit in DNF configuration file..."
 			# Admin privileges
 			elevate_privilege "sed --in-place s/installonly_limit=.*$/installonly_limit=${LIMIT}/g /etc/dnf/dnf.conf"
-			echo_message success "Done."
-			# Done
+			# Finished
+			echo_message success "Package limit changed successfully."
 			whiptail --title "Finished" --msgbox "Package limit changed successfully." 8 56
 			system_configure
 		fi

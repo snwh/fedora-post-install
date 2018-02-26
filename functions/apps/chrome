@@ -25,7 +25,7 @@ function download_chrome {
 		esac
 		# Cleanup and finish
 		rm $PACKAGE*.rpm
-		# Done
+		# Finished
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		status=1

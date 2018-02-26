@@ -12,7 +12,7 @@ function install_spotify {
 		# Install package(s)
 		echo_message info "Installing $NAME flatpak..."
 		flatpak install --from $REPO/$PACKAGE.flatpakref
-		# Done
+		# Finished
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		install_thirdparty

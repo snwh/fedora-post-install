@@ -20,7 +20,7 @@ function system_update {
 				whiptail --title "Finished" --msgbox "Nothing to update." 8 56
 				main
 			fi
-			# Done
+			# Finished
 			echo_message success "System update complete."
 			whiptail --title "Finished" --msgbox "System update complete." 8 56
 			main

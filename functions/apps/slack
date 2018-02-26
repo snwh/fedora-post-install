@@ -30,7 +30,7 @@ function install_slack {
 				install_thirdparty
 				;;
 		esac
-		# Done
+		# Finished
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
 		install_thirdparty

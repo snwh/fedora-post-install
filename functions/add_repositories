@@ -14,7 +14,7 @@ function add_rpmfusion() {
 			# Add repository
 			echo_message info "Downloading RPM Fusion repository package..."
 			elevate_privilege "dnf install -y https://download1.rpmfusion.org/$1/fedora/rpmfusion-$1-release-$(rpm -E %fedora).noarch.rpm"
-			# Done
+			# Finished
 			echo_message success "RPM Fusion (${1^}) repository has been added."
 			whiptail --title "Finished" --msgbox "RPM Fusion (${1^}) repository has been added." 8 56
 			$2
@@ -40,7 +40,7 @@ function add_flatpak_repo() {
 		# Add repository
 		echo_message info "Adding flatpak repository..."
 		flatpak remote-add --if-not-exists $1 $2
-		echo_message success "Done."
+		echo_message success "Repository added."
 		whiptail --title "Finished" --msgbox "The '$1' repository has been added." 8 56
 	fi
 }
