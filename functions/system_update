@@ -5,7 +5,7 @@ function system_update {
 	NAME="System update"
 	echo_message title "Performing system update..."
 	# Check if there are updates
-	if [[ "$(echo $(dnf list -q --updates | wc -l ))" -gt 0 ]]; then
+	if [[ "$(echo $(dnf check-update -q | wc -l ))" -gt 0 ]]; then
 		# Draw window
 		if (eval `resize` && whiptail \
 			--title "${NAME^}" \

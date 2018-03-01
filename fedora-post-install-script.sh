@@ -31,7 +31,6 @@ TITLE="Fedora Post-Install Script"
 # Main
 function main {
 	echo_message header "Starting 'main' function"
-	echo_message title "Starting $TITLE..."
 	# Draw window
 	MAIN=$(eval `resize` && whiptail \
 		--notags \
