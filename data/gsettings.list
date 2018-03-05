@@ -6,6 +6,7 @@ org.gnome.gedit.preferences.editor display-line-numbers true
 org.gnome.gedit.preferences.editor insert-spaces true
 org.gnome.gedit.preferences.editor tabs-size 4
 org.gnome.nautilus.preferences sort-directories-first true
+org.gnome.settings-daemon.plugins.color night-light-temperature "5000"
 org.gnome.settings-daemon.plugins.xsettings antialiasing "rgba"
 org.gnome.settings-daemon.plugins.xsettings hinting "slight"
 org.gtk.Settings.Debug enable-inspector-keybinding true

@@ -16,17 +16,20 @@ function install_slack {
 		# Install RPM file that matches system architecture
 		case `uname -i` in
 			i386|i486|i586|i686)
-				whiptail --title  "No 32-bit packages are available to download." --msgbox "Error." 8 56
+				# Install 32-bit
+				echo_message error "$NAME has no '$(uname -i)' packages available."
+				whiptail --title  "$NAME has no '$(uname -i)' packages available for download." --msgbox "Error." 8 56
 				install_thirdparty
 				;;
 			x86_64)
-				echo_message warning "Requires root privileges"
+				# Install 64-bit
+				echo_message info "Installing '$(uname -i)' package for $NAME."
 				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}-${VERSION}.x86_64.rpm"
-				# Cleanup and finish
-				rm $PACKAGE*.rpm
 				;;
 			*)
-				whiptail --title "No packages available to download." --msgbox "Error." 8 56
+				# Other architectures
+				echo_message error "$NAME has no '$(uname -i)' packages available."
+				whiptail --title  "$NAME has no '$(uname -i)' packages available for download." --msgbox "Error." 8 56
 				install_thirdparty
 				;;
 		esac
