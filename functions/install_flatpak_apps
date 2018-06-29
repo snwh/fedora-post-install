@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# install app from flathub repository
+function install_flathub_app() {
+	echo_message header "Starting 'install_flathub_app' function..."
+	# check if flathub repo is added
+	check_flatpak_repo "flathub" "https://flathub.org/repo/flathub.flatpakrepo" install_flatpak_apps
+	#install_flatpak_package "Name" "remote" "com.package.Name" return_function
+	install_flatpak_package ${1} "flathub" ${2} install_flatpak_apps
+}
+
+# Install Flatpak Applications
+function install_flatpak_apps {
+	# check if 'flatpak' is installed
+	check_package "flatpak" main
+	# install
+	NAME="Flatpak Applications"
+	echo_message title "Starting installation of ${NAME,,}..."
+	status="0"
+	while [ "$status" -eq 0 ]; do
+		# Draw window
+		FLATPAKS=$(eval `resize` && whiptail \
+			--notags \
+			--title "Install $NAME" \
+			--menu "\nWhat ${NAME,,} would you like to install?" \
+			--ok-button "Install" \
+			--cancel-button "Go Back" \
+			$LINES $COLUMNS $(( $LINES - 12 )) \
+			'install_flatpak_gimp'          'GIMP' \
+			'install_flatpak_inkscape'      'Inkscape' \
+			'install_flatpak_peek'          'Peek' \
+			'install_flatpak_riot'          'Riot' \
+			'install_flatpak_slack'         'Slack' \
+			'install_flatpak_spotify'       'Spotify' \
+			'install_flatpak_sublime_text'  'Sublime Text 3' \
+			'install_flatpak_transmission'  'Transmission' \
+			'install_flatpak_vlc'           'VLC' \
+			3>&1 1>&2 2>&3)
+
+		case "${FLATPAKS}" in
+			install_flatpak_gimp)
+				# install GIMP
+				install_flathub_app "GIMP" "org.gimp.GIMP"
+				;;
+			install_flatpak_inkscape)
+				# install Inkscape
+				install_flathub_app "Inkscape" "org.inkscape.Inkscape"
+				;;
+			install_flatpak_peek)
+				# install Peek
+				install_flathub_app "Peek" "com.uploadedlobster.peek"
+				;;
+			install_flatpak_riot)
+				# install Riot chat
+				install_flathub_app "Riot" "im.riot.Riot"
+				;;
+			install_flatpak_slack)
+				# install Slack
+				install_flathub_app "Slack" "com.slack.Slack"
+				;;
+			install_flatpak_spotify)
+				# install Spotify
+				install_flathub_app "Spotify" "com.spotify.Client"
+				;;
+			install_flatpak_sublime_text)
+				# install Sublime Text 3
+				install_flathub_app "Sublime Text 3" "com.sublimetext.three"
+				;;
+			install_flatpak_transmission)
+				# install Transmission
+				install_flathub_app "Transmission" "com.transmissionbt.Transmission"
+				;;
+			install_flatpak_vlc)
+				# install VLC
+				install_flathub_app "VLC" "org.videolan.VLC"
+				;;
+			*) 
+				# cancel
+				echo_message info "Returning..."
+				status=1
+				main
+			;;
+		esac
+	done
+}

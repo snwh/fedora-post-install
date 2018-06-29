@@ -1,48 +1,40 @@
 #!/bin/bash
 
-# Install RVM
+# RVM
 function install_rvm {
 	# Variables
 	NAME="Ruby Version Manager"
-	KEY="https://rvm.io/mpapis.asc "
-	# Install
-	echo_message title "Starting $NAME installation..."
-	VERSION=$(eval `resize` && whiptail \
-		--title "$NAME" \
-		--radiolist "Which version of $NAME would you like to install?" \
-		--ok-button "Install" \
-		--cancel-button "Go Back" \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		"stable"	"Stable version" ON \
-		"dev"		"Development version" OFF \
-		3>&1 1>&2 2>&3)
-	# check exit status
-	if [ $? = 0 ]; then
-		case "${VERSION}" in
-			stable)
-				# Import signing key
-				echo_message info "Importing $NAME signing key..."
-				command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
-				# Install
-				echo_message info "Installing $NAME..."
-				\curl -sSL https://get.rvm.io | bash -s stable --ruby
-			;;
-			dev)
-				# Import signing key
-				echo_message info "Importing $NAME signing key..."
-				command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
-				# Install
-				echo_message info "Installing $NAME..."
-				\curl -sSL https://get.rvm.io | bash
-			;;
-			*)
-				status=1 
-				install_thirdparty
-			;;
-		esac
+	KEYID='409B6B1796C275462A1703113804BB82D39DC0E3'
+	KEYSERVER='hkp://keys.gnupg.net'
+	# Check if already installed
+	echo_message info "Checking if $NAME already installed..."
+	if [ ! -f ~/.rvm/installed.at ]; then
+		echo_message info "$NAME is not installed."
+		echo 'Proceeding'
+		# Check if key already exists in keyring
+		KEYCHECK=$(gpg --list-keys | grep -w ${KEYID})
+		if [ "" == "$KEYCHECK" ]; then
+			# Add the repository signing key to be able to verify downloaded packages
+			echo_message info "Adding $NAME signing key to keyring..."
+			# Import Key
+			gpg --keyserver $KEYSERVER --recv-keys $KEYID
+			# Done
+			echo_message success "Installation of '$PACKAGE' complete."
+		else
+			echo_message info "$NAME signing key already in keyring."
+		fi
+		# Install
+		echo_message info "Installing $NAME..."
+		\curl -sSL https://get.rvm.io | bash -s stable --ruby
+		# \curl -sSL https://get.rvm.io | bash # Uncomment for development version
+		# Done
+		echo_message success "Installation of $NAME complete."
+		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
+		thirdparty
 	else
-		# Cancelled
-		echo_message info "Installation cancelled."
-		install_thirdparty
+		# Already installed
+		echo_message info "$NAME already installed."
+		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
+		thirdparty
 	fi
 }

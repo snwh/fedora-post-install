@@ -3,43 +3,11 @@
 # Dropbox
 function install_dropbox {
 	# Variables
-	PACKAGE=nautilus-dropbox
-	VERSION="2015.10.28-1.fedora"
-	REPO="https://linux.dropbox.com/packages/fedora"
 	NAME="Dropbox"
-	# Install
-	echo_message title "Starting $NAME installation..."
-	# Check if package is installed
-	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
-		# Install package(s)
-		echo_message info "$NAME is not installed. Downloading remote package..."
-		# Download RPM file that matches system architecture
-		case `uname -i` in
-			i386|i486|i586|i686)
-				# Install 32-bit
-				echo_message info "Installing '$(uname -i)' package for $NAME."
-				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}-${VERSION}.i386.rpm"
-				;;
-			x86_64)
-				# Install 64-bit
-				echo_message info "Installing '$(uname -i)' package for $NAME."
-				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}-${VERSION}.x86_64.rpm"
-				;;
-			*)
-				# Other architectures
-				echo_message error "$NAME has no '$(uname -i)' packages available."
-				whiptail --title  "$NAME has no '$(uname -i)' packages available for download." --msgbox "Error." 8 56
-				install_thirdparty
-				;;
-		esac
-		# Finished
-		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
-		install_thirdparty
-	else
-		# Already installed
-		echo_message success "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
-		install_thirdparty
-	fi
+	PACKAGE="nautilus-dropbox"
+	BASEURL='http://linux.dropbox.com/fedora/$releasever/'
+	GPGKEY="https://linux.dropbox.com/fedora/rpm-public-key.asc"
+	add_rpm_repo $NAME $BASEURL $GPGKEY
+	# Download and install remote package
+	install_remote_package $NAME $PACKAGE $REMOTE install_thirdparty
 }

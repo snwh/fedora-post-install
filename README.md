@@ -11,13 +11,13 @@ This project is designed to be fairly modular (and not be one huge script) so yo
 
  * [`data`](/data): files which are lists of packages<sup>&dagger;</sup> read by various functions.
  * [`functions`](/functions): the main functions of this scriptset. They should require little user-preference modification.
- * [`apps`](/functions/apps): functions for installing third-party applications. They are called in the [`apps`](/functions/apps) function.
+ * [`apps`](/functions/apps): functions for installing third-party applications. They are called in the [`install_thirdparty`](/functions/install_thirdparty) function.
 
 *<sup>&dagger;</sup>These lists are preferential and you should to update them with packages you prefer*
 
 ## Adding Functions
 
-Adding additional functions is as easy as editing one of the many already included functions (or one of the [function templates](/functions/templates)) and simply changing the variables. When you do add (or remove) functions be sure to update the main [`apps`](/functions/apps) function to reflect those changes.
+Adding additional functions is as easy as editing one of the many already included functions and simply changing the variables. When you do add (or remove) functions be sure to update any main function (such as [`thirdparty`](/functions/thirdparty)) to reflect those changes.
 
 ## Usage
 

@@ -15,18 +15,17 @@ function purge_unused {
 		--yesno "Current list of ${NAME,,} to remove: \n\n$(cat $LIST) \n\nAre you sure you want proceed?" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		--scrolltext ) then
-		echo_message title "Removing ${NAME,,}..."
 		# Remove loop
 		for PACKAGE in $(cat $LIST); do
 			# Check if package is installed
-			if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
+			if [ $(check_package_installed ${PACKAGE};) = 1 ]; then
 				# Show already removed message
 				echo_message info "Package '$PACKAGE' already removed."
 			else
 				# Remove package
 				echo_message info "'$PACKAGE' is installed. Removing..."
 				# Admin privileges
-				elevate_privilege "dnf remove -y $PACKAGE"
+				superuser_do "dnf remove -y $PACKAGE"
 				# Finished
 				echo_message success "'$PACKAGE' removal is complete."
 			fi
@@ -55,7 +54,7 @@ function remove_orphans {
 			$LINES $COLUMNS $(( $LINES - 12 )) \
 			--scrolltext ) then
 			# Admin privileges
-			elevate_privilege "dnf autoremove -y"
+			superuser_do "dnf autoremove -y"
 			# Finished
 			echo_message success "Removal of ${NAME,,} has been successful."
 			whiptail --title "Finished" --msgbox "Removal of ${NAME,,} has been successful." 8 56
@@ -77,7 +76,7 @@ function remove_orphans {
 function clean_cache {
 	echo_message title "Cleaning package cache..."
 	# Admin privileges
-	elevate_privilege "dnf clean packages"
+	superuser_do "dnf clean packages"
 	# Finished
 	echo_message success "Package cache has been cleaned.."
 	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 56

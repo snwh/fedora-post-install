@@ -4,8 +4,8 @@ gedit
 gnome-builder
 gnome-calculator
 gnome-calendar
+gnome-characters
 gnome-clocks
-gnome-disk-utility
 gnome-documents
 gnome-logs
 gnome-maps
@@ -13,7 +13,9 @@ gnome-music
 gnome-photos
 gnome-screenshot
 gnome-software
+gnome-tweaks
 gnome-system-monitor
 gnome-terminal
-gnome-to-do
+gnome-todo
+gnome-usage
 gnome-weather

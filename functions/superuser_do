@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# accept user passwords and pass them to another command that requires elevated privilege
+# accept user passwords and pass them to another command that requires superuser privilege
 
-function elevate_privilege() {
-	echo_message header "Starting 'elevate_privilege' function"
+function superuser_do() {
+	echo_message header "Starting 'superuser_do' function"
 	# check if current user is root
 	if [[ $EUID = 0 ]]; then
 		echo_message warning "You are logged in as the root user. Again, this is not recommended. :/"
@@ -41,7 +41,7 @@ function elevate_privilege() {
 						fi
 					else
 						# pass the command to sudo
-						sudo $@
+						sudo ${@}
 						break
 					fi
 				done

@@ -2,7 +2,7 @@
 
 # Automatically set preferred gsettings keys as outlined in the 'gsettings.list' file
 # 'gsettings' can be obtained by executing "dconf watch /" and then manually changing settings
-function set_preferences {
+function gsettings_config {
 	echo_message info "Setting preferred application-specific & desktop settings..."
 	# Variables
 	LIST=$(dirname "$0")'/data/gsettings.list'
@@ -16,33 +16,13 @@ function set_preferences {
 	system_configure
 }
 
-# Set preferred bash aliased by copying the 'aliases.list' file to ~/.bash_aliases
-function set_bash_aliases {
-	# Check list
-	ALIASES=$(dirname "$0")'/data/aliases.list'
-	# Draw window
-	if (eval `resize` && whiptail \
-		--title "Preferred Bash Aliases" \
-		--yesno "Current list of preferred bash aliases: \n\n$(while read LINE; do echo "  "$LINE; done < $ALIASES) \n\nProceed?" \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		--scrolltext) then
-		echo_message info "Setting bash aliases..."
-		# simply copy the list file to the aliases file
-		cp $ALIASES ~/.bash_aliases
-		echo_message success "Bash aliases set successfully."
-		whiptail --title "Finished" --msgbox "Bash aliases set successfully." 8 56
-		system_configure
-	else
-		system_configure
-	fi
-}
 
 # Put SELinux in permissive mode
 function selinux {
 	# Check if SELinux is aleady in permissive mode.
 	if [[ $(cat '/etc/selinux/config' | grep -q 'SELINUX=permissive'; echo $?) != 0 ]]; then
 		echo_message info "Configuring SELinux to run in permissive mode..."
-		elevate_privilege "sed --in-place s/SELINUX=.*$/SELINUX=permissive/g /etc/selinux/config"
+		superuser_do "sed --in-place s/SELINUX=.*$/SELINUX=permissive/g /etc/selinux/config"
 		# Finished
 		echo_message info "SELinux successfully set to permissive mode."
 		whiptail --title "Finished" --msgbox "SELinux successfully set to permissive mode." 8 56
@@ -63,7 +43,7 @@ function add_to_sudo {
 		if (whiptail --title "Change User Group" --yesno "Are you sure you want to proceed with modifying current user?" 10 60) then
 			# Adding user to 'wheel' group.
 			echo_message info "Adding user to 'wheel' group."
-			elevate_privilege "usermod -a -G wheel $USER"
+			superuser_do "usermod -a -G wheel $USER"
 			# Finished
 			echo_message success "User added to 'wheel' group."
 			whiptail --title "Finished" --msgbox "User modification complete." 8 56
@@ -84,7 +64,7 @@ function add_to_sudo {
 # Enable Fedora Test Updates repository
 function test_updates {
 	echo_message info "Enabling Fedora Test Updates repository..."
-	elevate_privilege "dnf --enablerepo=updates-testing check-update"
+	superuser_do "dnf --enablerepo=updates-testing check-update"
 	# Finished
 	echo_message success "Fedora Test Updates repository enabled."
 	whiptail --title "Finished" --msgbox "Fedora Test Updates repository enabled." 8 56
@@ -112,7 +92,7 @@ function limit_packages {
 			# Change 'installonly_limit' in '/etc/dnf/dnf.conf' to limit packages
 			echo_message info "Changing installonly_limit in DNF configuration file..."
 			# Admin privileges
-			elevate_privilege "sed --in-place s/installonly_limit=.*$/installonly_limit=${LIMIT}/g /etc/dnf/dnf.conf"
+			superuser_do "sed --in-place s/installonly_limit=.*$/installonly_limit=${LIMIT}/g /etc/dnf/dnf.conf"
 			# Finished
 			echo_message success "Package limit changed successfully."
 			whiptail --title "Finished" --msgbox "Package limit changed successfully." 8 56
@@ -134,12 +114,11 @@ function system_configure {
 		--menu "\nWhat would you like to do?" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		set_preferences			'Set preferred application-specific & desktop settings' \
-		set_bash_aliases		'Set preferred bash aliases' \
-		limit_packages			'Limit the number of concurrently installed packages' \
-		selinux					'Put SELinux in permissive mode' \
-		add_to_sudo				'Add current user to sudoers group' \
-		test_updates			'Enable Fedora Test Updates repository' \
+		'gsettings_config'          'Set preferred application & desktop settings' \
+		'test_updates'              'Enable Fedora Test Updates repository' \
+		'limit_packages'            'Limit the number of concurrently installed packages' \
+		'selinux'                   'Put SELinux in permissive mode' \
+		'add_to_sudo'               'Add current user to sudoers group' \
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then

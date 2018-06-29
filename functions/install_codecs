@@ -7,14 +7,14 @@ function openh264_codec {
 	REPO="fedora-cisco-openh264"
 	PACKAGE=gstreamer1-plugin-openh264
 	# Check if package is installed
-	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
+	if [ $(check_package_installed ${PACKAGE}) = 1 ]; then
 		echo_message warning "Package '$PACKAGE' is not installed. Installing..."
 		# Add repository
 		echo_message info "Enabling '$REPO' repository..."
-		elevate_privilege "dnf config-manager --set-enabled $REPO"
+		superuser_do "dnf config-manager --set-enabled $REPO"
 		# Install package(s)
 		echo_message info "Installing $NAME..."
-		elevate_privilege "dnf install -y $PACKAGE"
+		superuser_do "dnf install -y $PACKAGE"
 		# Finished
 		echo_message success "Installation of '$PACKAGE' complete."
 		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
@@ -29,40 +29,24 @@ function openh264_codec {
 
 # Install FFmpeg Codecs
 function ffpmeg_codecs {
-	# Add RPM Fusion
-	if (eval `resize` && whiptail \
-		--title "Add RPM Fusion (free) Repository?" \
-		--yesno "The RPM Fusion (free) repository is required for these codecs.\n\nProceed with installation?" \
-		10 60) then
-		# Add RPM Fusion Free
-		add_rpmfusion free
-	else
-		install_codecs
-	fi
+	# Add RPM Fusion free
+	add_rpmfusion 'free' echo
 	# Update the list of packages in 'data/codecs-ffmpeg.list' to suit your preferences
-	install_from_list codecs-ffmpeg "FFmpeg multimedia codecs" install_codecs
+	install_from_list "FFmpeg multimedia codecs" "codecs-ffmpeg" install_codecs
 }
 
 # Install GStreamer (free) Codecs
 function gstreamer_free {
 	# Update the list of packages in 'data/codecs-gstreamer-free.list' to suit your preferences
-	install_from_list codecs-gstreamer-free "GStreamer (free) multimedia codecs" install_codecs
+	install_from_list "GStreamer (free) multimedia codecs" "codecs-gstreamer-free" install_codecs
 }
 
 # Install GStreamer (non-free) Codecs
 function gstreamer_nonfree {
-	# Add RPM Fusion 
-	if (eval `resize` && whiptail \
-		--title "Add RPM Fusion (non-free) Repository?" \
-		--yesno "The RPM Fusion (non-free) repository is required for these codecs.\n\nProceed with installation?" \
-		10 60) then
-		# Add RPM Fusion Non-free
-		add_rpmfusion nonfree
-	else
-		install_codecs
-	fi
+	# Add RPM Fusion Non-free
+	add_rpmfusion 'nonfree' echo
 	# Update the list of packages in 'data/codecs-gstreamer-nonfree.list' to suit your preferences
-	install_from_list codecs-gstreamer-nonfree "GStreamer (non-free) multimedia codecs" install_codecs
+	install_from_list "GStreamer (non-free) multimedia codecs" "codecs-gstreamer-nonfree" install_codecs
 }
 
 # Install Codecs

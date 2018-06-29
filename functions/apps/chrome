@@ -1,82 +1,46 @@
 #!/bin/bash
 
-# Download Chrome
+# Install Chrome
 function download_chrome { 
 	# Variables
-	REPO="https://dl.google.com/linux/direct"
-	PACKAGE=google-chrome-$@
-	NAME="Google Chrome ($@)"
-	# Check if package is installed
-	if [ $(check_packages $PACKAGE; echo $?) = 1 ]; then
-		# Install package(s)
-		echo_message info "$NAME is not installed. Downloading remote package..."
-		# Download RPM file that matches system architecture
-		case `uname -i` in
-			i386|i486|i586|i686)
-				# Install 32-bit
-				echo_message error "$NAME has no '$(uname -i)' packages available."
-				whiptail --title  "$NAME has no '$(uname -i)' packages available for download." --msgbox "Error." 8 56
-				install_thirdparty
-				;;
-			x86_64)
-				# Install 64-bit
-				echo_message info "Installing '$(uname -i)' package for $NAME."
-				elevate_privilege "dnf --nogpgcheck install -y ${REPO}/${PACKAGE}_current_x86_64.rpm"
-				;;
-			*)
-				echo_message error "$NAME has no '$(uname -i)' packages available."
-				whiptail --title  "$NAME has no '$(uname -i)' packages available for download." --msgbox "Error." 8 56
-				;;
-		esac
-		# Cleanup and finish
-		rm $PACKAGE*.rpm
-		# Finished
-		echo_message success "Installation of '$PACKAGE' complete."
-		whiptail --title "Finished" --msgbox "Installation of $NAME complete." 8 56
-		status=1
-		install_thirdparty
-	else
-		# Already installed
-		echo_message info "$NAME already installed."
-		whiptail --title "Finished" --msgbox "$NAME is already installed." 8 56
-		install_thirdparty
-	fi
+	NAME="Google Chrome (${@^})"
+	PACKAGE="google-chrome-$@_current_"
+	REMOTE="https://dl.google.com/linux/direct"
+	# Download and install remote package
+	install_remote_package "$NAME" $PACKAGE $REMOTE install_thirdparty
+	status=1
 }
 
-# Install Google Chrome
+# Google Chrome
 function install_chrome {
+	status="0"
 	NAME="Google Chrome"
-	# Install
-	echo_message title "Starting $NAME installation..."
-	VERSION=$(eval `resize` && whiptail \
+	while [ "$status" -eq 0 ]; do
+		VERSION=$(eval `resize` && whiptail \
 		--title "$NAME" \
 		--radiolist "Which version of $NAME would you like to install?" \
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		"stable"	"Stable build" ON \
-		"beta"		"Beta build" OFF \
-		"unstable"	"Unstable build" OFF \
-		3>&1 1>&2 2>&3)
-	# check exit status
-	if [ $? = 0 ]; then
+		"stable"    "Stable build" ON \
+		"beta"      "Beta build" OFF \
+		"unstable"  "Unstable build" OFF \
+		3>&1 1>&2 2>&3) 
+		# Change to lower case and remove spaces.
 		case "${VERSION}" in
 			stable)
-				download_chrome stable
+				download_chrome stable;
 			;;
 			beta)
-				download_chrome beta
+				download_chrome beta;
 			;;
 			unstable)
-				download_chrome unstable
+				download_chrome unstable;
 			;;
-			*)
+			# return
+			*) status=1 
 				install_thirdparty
 			;;
 		esac
-	else
-		# Cancelled
-		echo_message info "Installation of $NAME cancelled."
-		install_thirdparty
-	fi
+	done
 }

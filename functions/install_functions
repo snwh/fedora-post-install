@@ -1,0 +1,163 @@
+#!/bin/bash
+
+# Install single package function
+#
+# ${1} = Name
+# ${2} = package-name
+# ${3} = return_function
+
+function install_package() {
+	echo_message header "Starting 'install_package' function..."
+	# If package is not installed
+	if [ $(check_package_installed ${2}) != 0 ]; then
+		echo_message info "${2} is not installed. Installing..."
+		if (whiptail \
+			--title "Install ${1^}" \
+			--yesno "Proceed with installation of ${1^}?" 8 56) then
+			# Install
+			echo_message info "Installing package '${2}'..."
+			# Admin privileges
+			superuser_do "dnf install -y ${2}"
+			# Finished
+			echo_message success "Installation of package '${2}' is complete."
+			whiptail --title "Finished" --msgbox "Installation of ${1} complete." 8 56
+			# return
+			${3}
+		else
+			# Cancelled
+			echo_message info "Installation of ${1} cancelled."
+			# return
+			${3}
+		fi
+	else
+		# Already installed
+		echo_message info "Package '${2}' is already installed."
+		whiptail --title "Finished" --msgbox "Installation of ${1} is already complete." 8 56
+		# return
+		${3}
+	fi
+}
+
+# Install single remote package function
+#
+# ${1} = Name
+# ${2} = package
+# ${3} = https://remote.example.com/
+# ${4} = return_function
+
+function install_remote_package() {
+	echo_message header "Starting 'install_remote_package' function..."
+	# If package is not installed
+	if [ $(check_package_installed ${2}) != 0 ]; then
+		echo_message info "${1} is not installed."
+		# Download Debian file that matches system architecture
+		case `uname -i` in
+			i386|i486|i586|i686)
+				# Download 32 bit package
+				echo_message info "Downloading remote package '${2}i386.rpm' from '${3}'..."
+				superuser_do "dnf --nogpgcheck install -y ${3}/${2}i386.rpm"
+				;;
+			x86_64)
+				# Download 64 bit package
+				echo_message info "Downloading remote package '${2}x86_64.rpm' from '${3}'..."
+				superuser_do "dnf --nogpgcheck install -y ${3}/${2}x86_64.rpm"
+				;;
+			*)
+				whiptail --title "Error." --msgbox "No remote packages available to download." 8 56
+				${4}
+				;;
+		esac
+		# Cleanup and finish
+		rm ${2}*.rpm
+		# Done
+		echo_message success "Installation of ${1} complete."
+		whiptail --title "Finished" --msgbox "Installation of ${1} complete." 8 56
+		${4}
+	else
+		# Already installed
+		echo_message info "${1} already installed."
+		whiptail --title "Finished" --msgbox "${1} is already installed." 8 56
+		${4}
+	fi
+}
+
+# Install from list function
+#
+# ${1} = Name
+# ${2} = list-name
+# ${3} = return_function
+
+function install_from_list() {
+	# echo_message header "Starting 'install_from_list' function..."
+	echo_message title "Starting installation of ${1}..."
+	# Variables
+	LIST=$(dirname "$0")'/data/'${2}'.list'
+	# Draw window
+	if (eval `resize` && whiptail \
+		--title "Install ${2^}" \
+		--yesno "Current list of packages that will be installed: \n\n$(cat ${LIST}) \n\nWould you like to proceed?" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		--scrolltext \
+		3>&1 1>&2 2>&3) then
+		# Install loop
+		for PACKAGE in $(cat $LIST); do
+			# If package is not installed
+			if [ $(check_package_installed $PACKAGE) != 0 ]; then
+				# Install package
+				echo_message warning "Package '$PACKAGE' is not installed. Installing..."
+				# Admin privileges
+				superuser_do "dnf install -y $PACKAGE"
+				# Check if failed
+				if [[ $? != 0 ]]; then
+					echo_message error "Error installing '$PACKAGE'."
+				fi
+			else
+				# Show already installed message
+				echo_message info "Package '$PACKAGE' is installed."
+			fi
+		done
+		# Finished
+		echo_message success "Installation of ${1} complete."
+		whiptail --title "Finished" --msgbox "Installation of ${1} is complete." 8 56
+		${3}
+	else
+		# Cancelled
+		echo_message info "Installation of ${1} cancelled."
+		${3}
+	fi
+}
+
+# Install flatpak package
+#
+# ${1} = Name
+# ${2} = remote
+# ${3} = com.package.Name
+# ${4} = return_function
+
+function install_flatpak_package() {
+	# echo_message header "Starting 'install_flatpak_package' function..."
+	# If package is not installed
+	if [[ $(flatpak list | grep ${3} &> /dev/null; echo $?) != 0 ]]; then
+		echo_message info "${1} is not installed. Installing..."
+		if (whiptail \
+			--title "Install ${1}" \
+			--yesno "The flatpak package for ${1} is not installed. \n\nProceed with installation of '${3}'?" 10 64) then
+			# Install
+			echo_message info "Installing flatpak '${3}'..."
+			flatpak install -y ${2} ${3}
+			# Finished
+			echo_message success "Installation of '${3}' is complete."
+			whiptail --title "Finished" --msgbox "Installation of ${1^} (Flatpak) complete." 8 56
+			${4}
+		else
+			# Cancelled
+			echo_message info "Installation of ${1^} cancelled."
+			${4}
+		fi
+	else
+		# Already installed
+		echo_message info "Flatpak '${3}' is already installed."
+		whiptail --title "Installed" --msgbox "${1^} is already installed." 8 56
+		${4}
+	fi
+}

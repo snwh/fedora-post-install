@@ -1,47 +1,117 @@
 #!/bin/bash
 
-# Add RPM Fusion
+# Add RPM Repo
+#
+# ${1} = name
+# ${2} = baseurl
+# ${3} = gpgkey
+# ${4} = return_function
+
+function add_rpm_repo() {
+	echo_message header "Starting 'add_rpm_repo' function"
+	# Check if repo is already added
+	if [ -e /etc/yum.repos.d/${1,,}.repo ]; then
+		echo_message info "${1} repository already added."
+		whiptail --msgbox "The ${1} RPM repository is already added." 8 56
+		${4}
+	else
+		# Add repository
+		echo_message info "Creating temporary repository file for ${1}..."
+		# create temporary repo file
+		touch /tmp/${1,,}.repo
+		# write lines to repo file
+		echo -e "[${1}]" >> /tmp/${1,,}.repo
+		echo -e "name=${1}" >> /tmp/${1,,}.repo
+		echo -e "baseurl=${2}" >> /tmp/${1,,}.repo
+		echo -e "gpgkey=${3}" >> /tmp/${1,,}.repo
+		# Draw window
+		if (eval `resize` && whiptail \
+			--title "Adding ${1^} Repository" \
+			--yesno "Newly created repository file for ${1}: \n\n$(cat /tmp/${1,,}.repo) \n\nWould you like to proceed?" \
+			$LINES $COLUMNS $(( $LINES - 12 )) \
+			--scrolltext \
+			3>&1 1>&2 2>&3) then
+			# Move temporary repo file to /etc/yum.repos.d/
+			echo_message info "Moving temporary repository file..."
+			superuser_do mv /tmp/${1,,}.repo /etc/yum.repos.d/
+			# Refresh dnf
+			echo_message info "Refreshing repository metadata..."
+			superuser_do dnf refresh
+			# Finished
+			echo_message success "Repository added."
+			whiptail --title "Finished" --msgbox "The '${1}' RPM repository has been added." 8 56
+			${4}
+		else
+			# delete temporary repo file
+			rm /tmp/${1,,}.repo
+			# Cancelled
+			echo_message info "Addition of ${1} repository cancelled."
+			${4}
+		fi
+	fi
+}
+
+# Add Flatpak Repo
+#
+# ${1} = remote
+# ${2} = https://remote.example.com/
+# ${3} = return_function
+
+function add_flatpak_repo() {
+	echo_message header "Starting 'add_flatpak_repo' function"
+	# Check if repo is already added
+	if [ $(flatpak remotes | grep ${1} &> /dev/null; echo $?) = 0 ]; then
+		echo_message info "Repository already added."
+		whiptail --msgbox "The ${1} Flatpak repository is already added." 8 56
+		${3}
+	else
+		# Add repository
+		echo_message info "Adding flatpak repository..."
+		flatpak remote-add --if-not-exists ${1} ${2}
+		echo_message success "Repository added."
+		whiptail --title "Finished" --msgbox "The '${1}' Flatpak repository has been added." 8 56
+		${3}
+	fi
+}
+
+# Add RPM Fusion repository
+#
+# ${1} = free or nonfree
+# ${2} = return_function
+
 function add_rpmfusion() {
 	echo_message header "Starting 'add_rpmfusion' function"
 	# Check if valid RPM Fusion repository
-	if [[ "$1" = "free" ]] || [[ "$1" = "nonfree" ]] ; then
+	if [[ "${1}" = "free" ]] || [[ "${1}" = "nonfree" ]] ; then
 		# Check if already present
-		if [ -e /etc/yum.repos.d/rpmfusion-$1.repo ]; then
+		if [ -e /etc/yum.repos.d/rpmfusion-${1}.repo ]; then
 			echo_message info "RPM Fusion (${1^}) repository already added."
 			whiptail --msgbox "The RPM Fusion (${1^}) repository is already added." 8 56
-			$2
+			${2}
 		else
 			# Add repository
-			echo_message info "Downloading RPM Fusion repository package..."
-			elevate_privilege "dnf install -y https://download1.rpmfusion.org/$1/fedora/rpmfusion-$1-release-$(rpm -E %fedora).noarch.rpm"
-			# Finished
-			echo_message success "RPM Fusion (${1^}) repository has been added."
-			whiptail --title "Finished" --msgbox "RPM Fusion (${1^}) repository has been added." 8 56
-			$2
+			if (eval `resize` && whiptail \
+				--title "Add RPM Fusion (${1^}) Repository?" \
+				--yesno "The RPM Fusion (${1^}) repository is required for this installation.\n\nAre you sure you want to proceed?" \
+				10 60) then
+					# Add repository
+					echo_message info "Downloading RPM Fusion (${1}) repository package..."
+					superuser_do "dnf install -y https://download1.rpmfusion.org/${1}/fedora/rpmfusion-${1}-release-$(rpm -E %fedora).noarch.rpm"
+					# Finished
+					echo_message success "RPM Fusion (${1^}) repository has been added."
+					whiptail --title "Finished" --msgbox "RPM Fusion (${1^}) repository has been added." 8 56
+					${2}
+			else
+				# Cancelled
+				echo_message info "Addition of RPM Fusion (${1^}) repository was cancelled."
+				${2}
+			fi
 		fi
 	else
 		# If there is an error
 		echo_message error "Not a valid RPM Fusion repository. Aborting..."
 		whiptail --msgbox "Not a valid RPM Fusion repository. Sorry, try again." --title "Oops" 8 56
-		$2
-	fi
-}
-
-# Add Flatpak Repo
-function add_flatpak_repo() {
-	echo_message header "Starting 'add_flatpak_repo' function"
-	# Check
-	check_flatpak_repo $1
-	# If repo is added
-	if [ $? = 0 ]; then
-		echo_message info "Repository already added."
-		whiptail --msgbox "The $1 repository is already added." 8 56
-	else
-		# Add repository
-		echo_message info "Adding flatpak repository..."
-		flatpak remote-add --if-not-exists $1 $2
-		echo_message success "Repository added."
-		whiptail --title "Finished" --msgbox "The '$1' repository has been added." 8 56
+		${2}
 	fi
 }
 
@@ -75,10 +145,7 @@ function add_repositories {
 		;;
 		# FlatHub
 		add_flathub)
-			REPONAME="flathub"
-			REPO="https://dl.flathub.org/repo/flathub.flatpakrepo"
-			add_flatpak_repo $REPONAME $REPO
-			add_repositories
+			add_flatpak_repo "flathub" "https://dl.flathub.org/repo/flathub.flatpakrepo" add_repositories
 		;;
 		# Go Back
 		*)

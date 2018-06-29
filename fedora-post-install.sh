@@ -38,17 +38,19 @@ function main {
 		--menu "\nWhat would you like to do?" \
 		--cancel-button "Quit" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		'system_update'			'Perform system update' \
-		'install_favs'			'Install preferred applications' \
-		'install_utils'			'Install preferred utilities' \
-		'install_dev'			'Install preferred development tools' \
-		'install_gnome'			'Install additional GNOME software' \
-		'install_codecs'		'Install multimedia codecs' \
-		'install_fonts'			'Install additional fonts' \
-		'install_thirdparty'	'Install third-party applications' \
-		'add_repositories'		'Add third-party repositories' \
-		'system_configure'		'Configure system' \
-		'system_cleanup'		'Cleanup the system' \
+		'system_update'         'Perform system updates' \
+		'install_favs'          'Install preferred applications' \
+		'install_favs_dev'      'Install preferred development tools' \
+		'install_favs_utils'    'Install preferred utilities' \
+		'install_gnome'         'Install preferred GNOME software' \
+		'install_codecs'        'Install multimedia codecs' \
+		'install_fonts'         'Install additional fonts' \
+		'install_flatpak_apps'  'Install Flatpak applications' \
+		'install_thirdparty'    'Install third-party applications' \
+		'add_repositories'      'Add third-party repositories' \
+		'setup_dotfiles'        'Setup user-specific dotfiles' \
+		'system_configure'      'Configure system' \
+		'system_cleanup'        'Cleanup the system' \
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
@@ -60,13 +62,12 @@ function main {
 	fi
 }
 
-
 # Quit
 function quit {
 	echo_message header "Starting 'quit' function"
 	echo_message title "Exiting $TITLE..."
 	# Draw window
-	if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 10 60) then
+	if (whiptail --title "Quit" --yesno "Are you sure you want quit?" 8 56) then
 		echo_message welcome 'Thanks for using!'
 		exit 99
 	else
@@ -79,7 +80,11 @@ function import_functions {
 	DIR="functions"
 	# iterate through the files in the 'functions' folder
 	for FUNCTION in $(dirname "$0")/$DIR/*; do
+		# skip directories
 		if [[ -d $FUNCTION ]]; then
+			continue
+		# exclude markdown readmes
+		elif [[ $FUNCTION == *.md ]]; then
 			continue
 		elif [[ -f $FUNCTION ]]; then
 			# source the function file
@@ -88,43 +93,10 @@ function import_functions {
 	done
 }
 
-# Fancy colorful echo messages
-function echo_message(){
-	local color=$1;
-	local message=$2;
-	if ! [[ $color =~ '^[0-9]$' ]] ; then
-		case $(echo -e $color | tr '[:upper:]' '[:lower:]') in
-			# black
-			header) color=0 ;;
-			# red
-			error) color=1 ;;
-			# green
-			success) color=2 ;;
-			# yellow
-			welcome) color=3 ;;
-			# blue
-			title) color=4 ;;
-			# purple
-			info) color=5 ;;
-			# cyan
-			question) color=6 ;;
-			# orange
-			warning) color=202 ;;
-			# white
-			*) color=7 ;;
-		esac
-	fi
-	tput bold;
-	tput setaf $color;
-	echo '-- '$message;
-	tput sgr0;
-}
-
-
-# Welcome message
-echo_message welcome "$TITLE"
 # Import main functions
 import_functions
+# Welcome message
+echo_message welcome "$TITLE"
 # Run system checks
 system_checks
 # main

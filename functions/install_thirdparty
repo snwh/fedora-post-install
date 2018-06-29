@@ -1,4 +1,4 @@
-#!/bin/bash#
+#!/bin/bash
 #
 # When adding (or removing) any functions remember to update
 # the 'install_thirdparty' function below to reflect any changes you make
@@ -30,14 +30,9 @@ function install_thirdparty {
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		'install_chrome'		'Google Chrome' \
-		'install_dropbox'		'Dropbox' \
-		'install_oracle_java'	'Oracle Java' \
-		'install_rvm'			'Ruby Version Manager (RVM)' \
-		'install_slack'			'Slack' \
-		'install_spotify'		'Spotify' \
-		'install_sublime_text'	'Sublime Text 3' \
-		'install_vlc'			'VLC Media Player' \
+		'install_chrome'        'Google Chrome' \
+		'install_dropbox'       'Dropbox' \
+		'install_rvm'           'Ruby Version Manager (RVM)' \
 		3>&1 1>&2 2>&3)
 
 	# check exit status
