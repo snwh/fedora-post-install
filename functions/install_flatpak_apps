@@ -26,6 +26,8 @@ function install_flatpak_apps {
 			--ok-button "Install" \
 			--cancel-button "Go Back" \
 			$LINES $COLUMNS $(( $LINES - 12 )) \
+			'install_flatpak_atom'          'Atom' \
+			'install_flatpak_dropbox'       'Dropbox' \
 			'install_flatpak_gimp'          'GIMP' \
 			'install_flatpak_inkscape'      'Inkscape' \
 			'install_flatpak_peek'          'Peek' \
@@ -38,6 +40,14 @@ function install_flatpak_apps {
 			3>&1 1>&2 2>&3)
 
 		case "${FLATPAKS}" in
+			install_flatpak_atom)
+				# install Atom
+				install_flathub_app "Atom" "io.atom.Atom"
+				;;
+			install_flatpak_dropbox)
+				# install Dropbox
+				install_flathub_app "Dropbox" "com.dropbox.Client"
+				;;
 			install_flatpak_gimp)
 				# install GIMP
 				install_flathub_app "GIMP" "org.gimp.GIMP"
@@ -74,7 +84,7 @@ function install_flatpak_apps {
 				# install VLC
 				install_flathub_app "VLC" "org.videolan.VLC"
 				;;
-			*) 
+			*)
 				# cancel
 				echo_message info "Returning..."
 				status=1
