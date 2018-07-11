@@ -26,12 +26,11 @@ function install_flatpak_apps {
 			--ok-button "Install" \
 			--cancel-button "Go Back" \
 			$LINES $COLUMNS $(( $LINES - 12 )) \
-			install_flatpak_atom          'Atom' \
 			install_flatpak_dropbox       'Dropbox' \
+			install_flatpak_fractal       'Fractal' \
 			install_flatpak_gimp          'GIMP' \
 			install_flatpak_inkscape      'Inkscape' \
 			install_flatpak_peek          'Peek' \
-			install_flatpak_riot          'Riot' \
 			install_flatpak_slack         'Slack' \
 			install_flatpak_spotify       'Spotify' \
 			install_flatpak_sublime_text  'Sublime Text 3' \
@@ -40,13 +39,13 @@ function install_flatpak_apps {
 			3>&1 1>&2 2>&3)
 
 		case "${FLATPAKS}" in
-			install_flatpak_atom)
-				# install Atom
-				install_flathub_app "Atom" "io.atom.Atom"
-				;;
 			install_flatpak_dropbox)
 				# install Dropbox
 				install_flathub_app "Dropbox" "com.dropbox.Client"
+				;;
+			install_flatpak_fractal)
+				# install Fractal chat
+				install_flathub_app "Fractal" "org.gnome.Fractal"
 				;;
 			install_flatpak_gimp)
 				# install GIMP
@@ -59,10 +58,6 @@ function install_flatpak_apps {
 			install_flatpak_peek)
 				# install Peek
 				install_flathub_app "Peek" "com.uploadedlobster.peek"
-				;;
-			install_flatpak_riot)
-				# install Riot chat
-				install_flathub_app "Riot" "im.riot.Riot"
 				;;
 			install_flatpak_slack)
 				# install Slack
