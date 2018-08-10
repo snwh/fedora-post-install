@@ -26,19 +26,29 @@ function install_flatpak_apps {
 			--ok-button "Install" \
 			--cancel-button "Go Back" \
 			$LINES $COLUMNS $(( $LINES - 12 )) \
+			install_flatpak_blender       'Blender' \
 			install_flatpak_dropbox       'Dropbox' \
 			install_flatpak_fractal       'Fractal' \
+			install_flatpak_gitg          'gitg' \
 			install_flatpak_gimp          'GIMP' \
+			install_flatpak_gnome_games   'GNOME Games' \
+			install_flatpak_gnome_recipes 'GNOME Recipes' \
 			install_flatpak_inkscape      'Inkscape' \
 			install_flatpak_peek          'Peek' \
+			install_flatpak_pitivi        'Pitivi' \
 			install_flatpak_slack         'Slack' \
 			install_flatpak_spotify       'Spotify' \
 			install_flatpak_sublime_text  'Sublime Text 3' \
+			install_flatpak_telegram      'Telegram' \
 			install_flatpak_transmission  'Transmission' \
 			install_flatpak_vlc           'VLC' \
 			3>&1 1>&2 2>&3)
 
 		case "${FLATPAKS}" in
+			install_flatpak_blender)
+				# install Blender
+				install_flathub_app "Blender" "org.blender.Blender"
+				;;
 			install_flatpak_dropbox)
 				# install Dropbox
 				install_flathub_app "Dropbox" "com.dropbox.Client"
@@ -47,9 +57,21 @@ function install_flatpak_apps {
 				# install Fractal chat
 				install_flathub_app "Fractal" "org.gnome.Fractal"
 				;;
+			install_flatpak_gitg)
+				# install gitg
+				install_flathub_app "gitg" "org.gnome.gitg"
+				;;
 			install_flatpak_gimp)
 				# install GIMP
 				install_flathub_app "GIMP" "org.gimp.GIMP"
+				;;
+			install_flatpak_gnome_games)
+				# install GNOME Games
+				install_flathub_app "GNOME Games" "org.gnome.Games"
+				;;
+			install_flatpak_gnome_recipes)
+				# install GNOME Recipes
+				install_flathub_app "GNOME Recipes" "org.gnome.Recipes"
 				;;
 			install_flatpak_inkscape)
 				# install Inkscape
@@ -58,6 +80,10 @@ function install_flatpak_apps {
 			install_flatpak_peek)
 				# install Peek
 				install_flathub_app "Peek" "com.uploadedlobster.peek"
+				;;
+			install_flatpak_pitivi)
+				# install Pitivi
+				install_flathub_app "Pitivi" "org.pitivi.Pitivi"
 				;;
 			install_flatpak_slack)
 				# install Slack
@@ -70,6 +96,10 @@ function install_flatpak_apps {
 			install_flatpak_sublime_text)
 				# install Sublime Text 3
 				install_flathub_app "Sublime Text 3" "com.sublimetext.three"
+				;;
+			install_flatpak_telegram)
+				# install Telegram
+				install_flathub_app "Telegram" "org.telegram.desktop"
 				;;
 			install_flatpak_transmission)
 				# install Transmission

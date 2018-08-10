@@ -128,9 +128,12 @@ function add_repositories {
 		--ok-button "Install" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		"rpmfusion_free"		"RPM Fusion (Free)" \
-		"rpmfusion_nonfree"		"RPM Fusion (Non-free)" \
-		"add_flathub"			"FlatHub" \
+		"rpmfusion_free"                "RPM Fusion (Free)" \
+		"rpmfusion_nonfree"             "RPM Fusion (Non-free)" \
+		"flatpak_flathub"               "FlatHub" \
+		"flatpak_gnome"                 "GNOME" \
+		"flatpak_gnome_nightly"         "GNOME Nightly" \
+		"flatpak_gnome_apps_nightly"    "GNOME Apps Nightly" \
 		3>&1 1>&2 2>&3)
 	# check exit status
 	while [ $? -eq 0 ]; do
@@ -144,8 +147,20 @@ function add_repositories {
 			add_rpmfusion "nonfree" add_repositories
 		;;
 		# FlatHub
-		add_flathub)
+		flatpak_flathub)
 			add_flatpak_repo "flathub" "https://dl.flathub.org/repo/flathub.flatpakrepo" add_repositories
+		;;
+		# GNOME
+		flatpak_gnome)
+			add_flatpak_repo "gnome" "https://sdk.gnome.org/gnome.flatpakrepo" add_repositories
+		;;
+		# GNOME
+		flatpak_gnome_nightly)
+			add_flatpak_repo "gnome-nightly" "https://sdk.gnome.org/gnome-nightly.flatpakrepo" add_repositories
+		;;
+		# GNOME
+		flatpak_gnome_apps_nightly)
+			add_flatpak_repo "gnome-apps-nightly" "https://sdk.gnome.org/gnome-apps-nightly.flatpakrepo" add_repositories
 		;;
 		# Go Back
 		*)
