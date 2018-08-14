@@ -37,6 +37,8 @@ function ffpmeg_codecs {
 
 # Install GStreamer (free) Codecs
 function gstreamer_free {
+	# Add RPM Fusion free
+	add_rpmfusion 'free' echo
 	# Update the list of packages in 'data/codecs-gstreamer-free.list' to suit your preferences
 	install_from_list "GStreamer (free) multimedia codecs" "codecs-gstreamer-free" install_codecs
 }
