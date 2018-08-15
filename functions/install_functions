@@ -81,6 +81,35 @@ function install_remote_package() {
 	fi
 }
 
+# Install single remote package from a URL function
+#
+# ${1} = Name
+# ${2} = package-name
+# ${3} = https://remote.example.com/package.rpm
+# ${4} = return_function
+
+function install_remote_package_from_url() {
+	echo_message header "Starting 'install_remote_package_from_url' function..."
+	# If package is not installed
+	if [ $(check_package_installed ${2}) != 0 ]; then
+		echo_message info "${1} is not installed."
+		# Download RPM package from supplied URL
+		echo_message info "Downloading remote package from '${3}'..."
+		superuser_do "dnf --nogpgcheck install -y ${3}"
+		# Cleanup and finish
+		rm ${2}*.rpm
+		# Done
+		echo_message success "Installation of ${1} complete."
+		whiptail --title "Finished" --msgbox "Installation of ${1} complete." 8 56
+		${4}
+	else
+		# Already installed
+		echo_message info "${1} already installed."
+		whiptail --title "Finished" --msgbox "${1} is already installed." 8 56
+		${4}
+	fi
+}
+
 # Install from list function
 #
 # ${1} = Name

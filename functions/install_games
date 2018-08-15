@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Install preferred games
+function install_favs_games {
+	# Update the list of packages in 'data/favs-games.list' to suit your preferences
+	install_from_list "preferred games" "favs-games" main
+}
+
+# Install Doomsday Engine
+function install_doomsday {
+	# Download and install remote package
+	install_remote_package_from_url "Doomsday Engine" "doomsday" "http://files.dengine.net/archive/doomsday-2.0.3-1.x86_64.rpm" main
+}
+
+# Install Games
+function install_games {
+	NAME="Games"
+	echo_message title "Starting $NAME installation..."
+	# Draw window
+	GAMES=$(eval `resize` && whiptail \
+		--notags \
+		--title "Install $NAME" \
+		--menu "\nWhich $NAME would you like to install?" \
+		--ok-button "Install" \
+		--cancel-button "Go Back" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		'install_favs_games'    'Preferred games' \
+		'install_doomsday'      'Doomsday Engine (Doom source port)' \
+		3>&1 1>&2 2>&3)
+	# check exit status
+	if [ $? = 0 ]; then
+		echo_message header "Starting '$GAMES' function"
+		$GAMES
+	else
+		# Cancelled
+		echo_message info "$NAME installation cancelled."
+		main
+	fi
+}
