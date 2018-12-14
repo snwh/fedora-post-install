@@ -173,7 +173,8 @@ function install_flatpak_package() {
 			--yesno "The flatpak package for ${1} is not installed. \n\nProceed with installation of '${3}'?" 10 64) then
 			# Install
 			echo_message info "Installing flatpak '${3}'..."
-			flatpak install -y ${2} ${3}
+			# Configured to install for --user
+			flatpak install --user -y ${2} ${3}
 			# Finished
 			echo_message success "Installation of '${3}' is complete."
 			whiptail --title "Finished" --msgbox "Installation of ${1^} (Flatpak) complete." 8 56

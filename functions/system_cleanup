@@ -4,7 +4,7 @@
 # Listed packages that are are not any system-crucial software to avoid breakage
 
 # Remove pre-installed apps
-function purge_unused {
+function purge_unused_packages {
 	NAME="Unused Pre-installed Applications"
 	echo_message title "Removing ${NAME,,}..."
 	# Check list
@@ -73,7 +73,7 @@ function remove_orphans {
 }
 
 # Clean Cache
-function clean_cache {
+function clean_dnf_cache {
 	echo_message title "Cleaning package cache..."
 	# Admin privileges
 	superuser_do "dnf clean packages"
@@ -81,6 +81,31 @@ function clean_cache {
 	echo_message success "Package cache has been cleaned.."
 	whiptail --title "Finished" --msgbox "Package cache has been cleaned." 8 56
 	system_cleanup
+}
+
+# Clean systemd journal
+function clean_systemd_journal {
+	NAME="systemd Journal Archives"
+	# Remove logs older than the following (d = days)
+	TIMEFRAME="7d"
+	echo_message title "Removing ${NAME,,}..."
+	# Draw window
+	if (eval `resize` && whiptail \
+		--title "$NAME" \
+		--yesno "Current size of ${NAME} is: \n\n$(du -sh /var/log/journal) \n\nClear archives older than: ${TIMEFRAME}?" \
+		$LINES $COLUMNS $(( $LINES - 12 )) \
+		--scrolltext ) then
+		# Admin privileges
+		superuser_do "journalctl --vacuum-time=${TIMEFRAME}"
+		# Finished
+		echo_message success "Removal of old ${NAME,,} has been successful."
+		whiptail --title "Finished" --msgbox "Removal of old ${NAME,,} has been successful." 8 56
+		system_cleanup
+	else
+		# Cancelled
+		echo_message success "Removal of old ${NAME,,} cancelled."
+		system_cleanup
+	fi
 }
 
 # Cleanup System
@@ -94,9 +119,10 @@ function system_cleanup {
 		--menu "\nWhat would you like to do?" \
 		--cancel-button "Go Back" \
 		$LINES $COLUMNS $(( $LINES - 12 )) \
-		clean_cache			'Clean package cache' \
-		remove_orphans		'Remove orphaned packages' \
-		purge_unused		'Remove unused pre-installed packages' \
+		clean_dnf_cache			'Clean package cache' \
+		remove_orphans			'Remove orphaned packages' \
+		purge_unused_packages	'Remove unused pre-installed packages' \
+		clean_systemd_journal	'Clean systemd journal archives' \
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
