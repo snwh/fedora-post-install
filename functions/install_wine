@@ -22,6 +22,8 @@ function create_wine_app_folder {
 	# Add wine app desktop files to folder
 	echo_message info "Adding Wine app .desktop files to folder..."
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Wine/ apps "['wine-mime-msi.desktop',\
+	'wine-notepad.desktop',\
+	'wine-regedit.desktop',\
 	'wine-wineboot.desktop',\
 	'wine-winecfg.desktop',\
 	'wine-winefile.desktop',\
