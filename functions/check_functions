@@ -78,7 +78,7 @@ function check_os {
 function check_distribution {
 	# if Fedora
 	if $(cat /etc/system-release | grep -qE 'Fedora'); then
-		echo 'Current distribution is: '
+		echo 'Current distribution is: '$(cat /etc/system-release)
 		echo_message success "You are using Fedora. :D"
 		echo "Proceeding."
 	# if not Fedora else

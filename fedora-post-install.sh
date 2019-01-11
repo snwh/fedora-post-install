@@ -48,6 +48,7 @@ function main {
 		'install_fonts'         'Install additional fonts' \
 		'install_flatpak_apps'  'Install Flatpak applications' \
 		'install_thirdparty'    'Install third-party applications' \
+		'install_wine'          'Install and configure Wine' \
 		'add_repositories'      'Add third-party repositories' \
 		'setup_dotfiles'        'Setup user-specific dotfiles' \
 		'system_configure'      'Configure system' \

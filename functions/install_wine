@@ -37,72 +37,71 @@ function create_wine_app_folder {
 	install_wine
 }
 
-function wine_regedit {
+# function wine_regedit {
 	
-	echo "REGEDIT4
+# 	echo "REGEDIT4
 
-	[HKEY_CURRENT_USER\Control Panel\Desktop]
-	\"FontSmoothing\"=\"$MODE\"
-	\"FontSmoothingOrientation\"=dword:0000000$ORIENTATION
-	\"FontSmoothingType\"=dword:0000000$TYPE
-	\"FontSmoothingGamma\"=dword:00000578" > $TMPFILE
+# 	[HKEY_CURRENT_USER\Control Panel\Desktop]
+# 	\"FontSmoothing\"=\"$MODE\"
+# 	\"FontSmoothingOrientation\"=dword:0000000$ORIENTATION
+# 	\"FontSmoothingType\"=dword:0000000$TYPE
+# 	\"FontSmoothingGamma\"=dword:00000578" > $TMPFILE
 
-	echo -n "Updating configuration... "
+# 	echo -n "Updating configuration... "
 
-	$WINE regedit $TMPFILE 2> /dev/null
-}
+# 	$Wine regedit $TMPFILE 2> /dev/null
+# }
 
-function wine_font_smoothing {
-	status="0"
-	while [ "$status" -eq 0 ]; do
-		VERSION=$(eval `resize` && whiptail \
-		--title "Wine Font Smoothing" \
-		--menu "Select font smoothing mode for wine apps." \
-		$LINES $COLUMNS $(( $LINES - 12 )) \
-		"disabled" "Smoothing disabled"\
-		"greyscale" "Grayscale smoothing"\
-		"subpixel_rgb" "Subpixel smoothing (ClearType) RGB"\
-		"subpixel_bgr" "Subpixel smoothing (ClearType) BGR" \
-		3>&1 1>&2 2>&3) 
-		# Change to lower case and remove spaces.
-		case "${VERSION}" in
-			disabled)
-				# disable
-				MODE=0 # 0 = disabled; 2 = enabled
-				TYPE=0 # 1 = regular;  2 = subpixel
-				ORIENTATION=1 # 0 = BGR; 1 = RGB
-				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
-				;;
-			;;
-			greyscale)
-				# enable greyscale smoothing
-				MODE=2
-				TYPE=1
-				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
-				;;
-			;;
-			subpixel_rgb)
-				# enable greyscale smoothing
-				MODE=2
-				TYPE=2
-				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
-				;;
-			;;
-			subpixel_bgr)
-				# enable greyscale smoothing
-				MODE=2
-				TYPE=2
-				ORIENTATION=0
-				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
-				;;
-			;;
-			# return
-			*) status=1 
-				install_wine
-			;;
-		esac
-	done
-}
+# function wine_font_smoothing {
+# 	status="0"
+# 	while [ "$status" -eq 0 ]; do
+# 		VERSION=$(eval `resize` && whiptail \
+# 		--title "Wine Font Smoothing" \
+# 		--menu "Select font smoothing mode for wine apps." \
+# 		$LINES $COLUMNS $(( $LINES - 12 )) \
+# 		"disabled" "Smoothing disabled"\
+# 		"greyscale" "Grayscale smoothing"\
+# 		"subpixel_rgb" "Subpixel smoothing (ClearType) RGB"\
+# 		"subpixel_bgr" "Subpixel smoothing (ClearType) BGR" \
+# 		3>&1 1>&2 2>&3) 
+# 		# Change to lower case and remove spaces.
+# 		case "${VERSION}" in
+# 			disabled)
+# 				# disable
+# 				MODE=0 # 0 = disabled; 2 = enabled
+# 				TYPE=0 # 1 = regular;  2 = subpixel
+# 				ORIENTATION=1 # 0 = BGR; 1 = RGB
+# 				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
+# 			;;
+# 			greyscale)
+# 				# enable greyscale smoothing
+# 				MODE=2
+# 				TYPE=1
+# 				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
+# 				;;
+# 			;;
+# 			subpixel_rgb)
+# 				# enable greyscale smoothing
+# 				MODE=2
+# 				TYPE=2
+# 				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
+# 				;;
+# 			;;
+# 			subpixel_bgr)
+# 				# enable greyscale smoothing
+# 				MODE=2
+# 				TYPE=2
+# 				ORIENTATION=0
+# 				wine_regedit $MODE $TYPE $ORIENTATION wine_font_smoothing
+# 				;;
+# 			;;
+# 			# return
+# 			*) status=1 
+# 				install_wine
+# 			;;
+# 		esac
+# 	done
+# }
 
 # Install Wine
 function install_wine {
@@ -118,7 +117,6 @@ function install_wine {
 		$LINES $COLUMNS $(( $LINES - 12 )) \
 		'install_wine_package'      'Install Wine' \
 		'create_wine_app_folder'    'Create app folder for Wine apps' \
-		# 'wine_font_smoothing'       'Configure Wine font mmoothing' \
 		3>&1 1>&2 2>&3)
 	# check exit status
 	if [ $? = 0 ]; then
